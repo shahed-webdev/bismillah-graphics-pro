@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BismillahGraphicsPro.Data\BismillahGraphicsPro.Data.csproj" />
-    <ProjectReference Include="..\BismillahGraphicsPro.ViewModel\BismillahGraphicsPro.ViewModel.csproj" />
   </ItemGroup>
 
 </Project>
