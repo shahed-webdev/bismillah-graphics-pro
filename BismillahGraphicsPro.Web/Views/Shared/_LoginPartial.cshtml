@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="nav-link" href="/Dashboard/Index" title="Dashboard">
+                <i class="fal fa-user"></i>
+                @User.Identity.Name
+            </a>
+        }
+        else
+        {
+            <a class="nav-link" href="/Customer/Dashboard" title="Dashboard">
+                <i class="fal fa-user"></i>
+                @User.Identity.Name
+            </a>
+        }
+    </li>
+    <li class="nav-item">
+        <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+            <a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">
+                <i class="fal fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link" href="/Account/Login">Login <i class="fal fa-sign-in-alt"></i></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/Account/Signup"><i class="fal fa-user-plus mr-1"></i>SignUp</a>
+    </li>
+}
+
