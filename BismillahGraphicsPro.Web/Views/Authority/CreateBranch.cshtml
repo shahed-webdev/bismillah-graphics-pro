@@ -1,80 +1,81 @@
-﻿@model Branch
+﻿@model BranchCreateModel
 @{
     ViewData["Title"] = "Create Branch";
     Layout = "_AuthorityLayout";
 }
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 col-lg-8 mx-auto mt-5">
-            <div class="card card-signin my-5 pt-3">
-                <div class="card-body">
-                    <h4 class="card-title text-center">
-                        <strong class="dark-grey-text">Create Branch</strong>
-                    </h4>
+    <div class="card card-signin my-5 pt-3">
+        <div class="card-body">
+            <h4 class="card-title text-center">
+                <strong class="dark-grey-text">Create Branch</strong>
+            </h4>
 
-                    <form asp-controller="Authority" asp-action="CreateBranch" method="post">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="md-form">
-                                    <label asp-for="BranchName">Full Name</label>
-                                    <input asp-for="BranchName" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="md-form">
-                                    <label asp-for="BranchPhone">Mobile Number</label>
-                                    <input type="text" asp-for="BranchPhone" maxlength="11" class="form-control" required>
-                                    <span asp-validation-for="BranchPhone"></span>
-                                </div>
-                            </div>
+            <form asp-controller="Authority" asp-action="CreateBranch" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="md-form">
+                            <label asp-for="Name">Branch Name</label>
+                            <input asp-for="Name" class="form-control" required>
+                            <span asp-validation-for="Name"></span>
                         </div>
-                       @* <div class="row">
-                            <div class="col-md-6">
-                                <div class="md-form">
-                                    <label asp-for="UserName">Username</label>
-                                    <input asp-for="UserName" type="text" class="form-control" required>
-                                    <span asp-validation-for="UserName"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="md-form">
-                                    <label asp-for="BranchEmail">Email</label>
-                                    <input asp-for="BranchEmail" type="email" class="form-control">
-                                </div>
-                            </div>
-                        </div>*@
-                      @*  <div class="row">
-                            <div class="col-md-6">
-                                <div class="md-form">
-                                    <label asp-for="Password">Password</label>
-                                    <input asp-for="Password" type="password" class="form-control" required>
-                                    <span asp-validation-for="Password"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="md-form">
-                                    <label asp-for="ConfirmPassword">Confirm Password</label>
-                                    <input asp-for="ConfirmPassword" type="password" class="form-control" required>
-                                    <span asp-validation-for="ConfirmPassword"></span>
-                                </div>
-                            </div>
-                        </div>*@
-
-                        <button class="btn z-depth-1a my-3 btn-custom-bg" type="submit">SignUp</button>
-                        <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="md-form">
+                            <label asp-for="Phone">Mobile Number</label>
+                            <input type="text" asp-for="Phone" maxlength="11" class="form-control" required>
+                            <span asp-validation-for="Phone"></span>
                         </div>
-                    </form>
-
-                   
+                    </div>
                 </div>
-            </div>
+                 <div class="row">
+                <div class="col-md-6">
+                    <div class="md-form">
+                        <label asp-for="UserName">Username</label>
+                        <input asp-for="UserName" type="text" class="form-control" required>
+                        <span asp-validation-for="UserName"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="md-form">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" type="email" class="form-control">
+                    </div>
+                </div>
+                </div>
+                  <div class="row">
+                <div class="col-md-6">
+                    <div class="md-form">
+                        <label asp-for="Password">Password</label>
+                        <input asp-for="Password" type="password" class="form-control" required>
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="md-form">
+                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" required>
+                        <span asp-validation-for="ConfirmPassword"></span>
+                    </div>
+                </div>
+                </div>
+                
+                <div class="md-form">
+                    <label asp-for="Address">Address</label>
+                    <input asp-for="Address" type="text" class="form-control">
+                </div>
+
+                <button class="btn z-depth-1a my-3 btn-custom-bg" type="submit">SignUp</button>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
+    </div>      
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>

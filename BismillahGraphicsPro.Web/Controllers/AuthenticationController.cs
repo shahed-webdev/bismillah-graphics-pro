@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+// ReSharper disable once IdentifierTypo
 namespace BismillahGraphicsPro.Web.Controllers
 {
 
@@ -67,17 +68,6 @@ namespace BismillahGraphicsPro.Web.Controllers
             return View(model);
         }
 
-        //GET: SignUp
-        [AllowAnonymous]
-        public IActionResult SignUp(string returnUrl)
-        {
-            ViewBag.ReturnUrl = returnUrl;
-
-            if (User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "home");
-
-            return View();
-        }
 
         // GET: ChangePassword
         public ActionResult ChangePassword()
@@ -109,7 +99,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             await _signInManager.RefreshSignInAsync(user);
 
-            return RedirectToAction("ChangePassword", "Account", new { Message = "Your password has been changed." });
+            return RedirectToAction("ChangePassword", "Authentication", new { Message = "Your password has been changed." });
         }
 
         //POST: logout

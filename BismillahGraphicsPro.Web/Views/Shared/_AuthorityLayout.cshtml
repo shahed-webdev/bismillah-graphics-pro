@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - Bismillah Graphic</title>
     <link rel="icon" type="image/png" href="/imgs/fabicon.ico">
-
+    
+    <!--alpine js-->
+    <script defer src="https://unpkg.com/alpinejs@3.8.0/dist/cdn.min.js"></script>
 
     <!-- font awesome -->
     <link href="https://pro.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet" />
@@ -26,9 +28,6 @@
     <link href="~/css/custom-layout.css?v=1.1.2" rel="stylesheet" />
     <!-- others style-->
     @await RenderSectionAsync("Styles", false)
-    
-    <!--alpine js-->
-    <script defer src="https://unpkg.com/alpinejs@3.8.0/dist/cdn.min.js"></script>
 </head>
 <body>
     <header>
@@ -62,12 +61,6 @@
                 <strong>
                     <span class="far fa-list-ul"></span>
                     <a class="links" href="/Authority/BranchList">Branch List</a>
-                </strong>
-            </li>
-            <li>
-                <strong>
-                    <span class="fas fa-key"></span>
-                    <a class="links" href="/Authority/BranchAccessControl">Login Access</a>
                 </strong>
             </li>
         </ul>
@@ -111,10 +104,7 @@
     <script src="https://cdn.muicss.com/mui-latest/js/mui.min.js"></script>
     <script src="~/js/sidedrawer-links.js"></script>
     <script src="~/js/sidedrawer-show-hide.js"></script>
-
-    <!--shopping-cart-->
-    <script src="~/pages-js/shopping-cart.js?v=1.0.1"></script>
-
+    <!---global method-->
     <script src="~/pages-js/global-methods.js"></script>
     <!-- others js -->
     @await RenderSectionAsync("Scripts", false)

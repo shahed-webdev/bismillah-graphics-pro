@@ -1,4 +1,6 @@
-﻿using BismillahGraphicsPro.Data;
+﻿using BismillahGraphicsPro.BusinessLogic;
+using BismillahGraphicsPro.Data;
+using BismillahGraphicsPro.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,13 @@ namespace BismillahGraphicsPro.Web.Controllers
     [Authorize (Roles = "Authority")]
     public class AuthorityController : Controller
     {
+        private readonly IRegistrationCore _registration;
+
+        public AuthorityController(IRegistrationCore registration)
+        {
+            _registration = registration;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -19,21 +28,30 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateBranch(Branch model)
+        public async Task<IActionResult> CreateBranch(BranchCreateModel model)
         {
-            return View();
+            if (!ModelState.IsValid) return View(model);
+
+            var response = await _registration.BranchSignUpAsync(model);
+
+            if (response.IsSuccess) return RedirectToAction("BranchList");
+      
+            ModelState.AddModelError("", response.Message);
+            return View(model);
         }
 
         //Branch list
         public IActionResult BranchList()
         {
+
             return View();
         }
 
         //Branch Access Control
-        public IActionResult BranchAccessControl()
-        {
-            return View();
-        }
+        // [HttpPost]
+        // public IActionResult PostBranchAccessControl()
+        // {
+        //     return View();
+        // }
     }
 }

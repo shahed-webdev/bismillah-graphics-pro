@@ -4,5 +4,42 @@
     Layout = "_AuthorityLayout";
 }
 
-<h1>BranchList</h1>
+<div class="m-4">
+    <h1 class="page-header mb-5">Branch List</h1>
 
+    <table x-data="initData()" class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"><strong>First</strong></th>
+            <th scope="col"><strong>Last</strong></th>
+            <th scope="col" style="width: 100px"><strong>Active</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>
+                <div class="form-check-inline">
+                    <input x-on:change="branchActivation(1)" type="checkbox" class="form-check-input" id="defaultChecked2">
+                    <label class="form-check-label" for="defaultChecked2">Active</label>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        function initData() {
+            return {
+                branchActivation(isActive) {
+                    console.log(isActive)
+                }
+            }
+        }
+    </script>
+}
