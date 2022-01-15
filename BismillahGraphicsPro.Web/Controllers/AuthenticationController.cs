@@ -23,9 +23,9 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //GET: Login
         [AllowAnonymous]
-        public IActionResult Login(string returnUrl)
+        public IActionResult Login(string? returnUrl=null)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            if (returnUrl != null) ViewBag.ReturnUrl = returnUrl;
 
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "home");
@@ -38,7 +38,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl=null)
         {
             if (!ModelState.IsValid) return View(model);
 
@@ -50,10 +50,10 @@ namespace BismillahGraphicsPro.Web.Controllers
 
                 return type switch
                 {
-                    UserType.Admin => LocalRedirect(returnUrl ??= Url.Content($"/Dashboard/Index")),
-                    UserType.SubAdmin => LocalRedirect(returnUrl ??= Url.Content($"/Dashboard/Index")),
-                    UserType.Authority => LocalRedirect(returnUrl ??= Url.Content($"/Authority/Dashboard")),
-                    _ => LocalRedirect(returnUrl ??= Url.Content($"/Authentication/Login"))
+                    UserType.Admin => LocalRedirect(returnUrl ?? Url.Content($"/Admin")),
+                    UserType.SubAdmin => LocalRedirect(returnUrl ?? Url.Content($"/Admin")),
+                    UserType.Authority => LocalRedirect(returnUrl ?? Url.Content($"/Authority")),
+                    _ => LocalRedirect(returnUrl ?? Url.Content($"/Authentication/Login"))
                 };
             }
 

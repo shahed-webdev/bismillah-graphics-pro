@@ -33,19 +33,8 @@
                 <div>
                     <a class="sidedrawer-toggle d-md-none js-show-sidedrawer d-print-none"><i class="fas fa-bars"></i></a>
                     <a class="sidedrawer-toggle d-none d-md-inline-block js-hide-sidedrawer d-print-none"><i class="fas fa-bars"></i></a>
-                    <a href="/Home/Index" class="navbar-brand ml-1">Muslim Fashion Ltd.</a>
+                    <a href="/Home/Index" class="navbar-brand ml-1">Bismillah Graphic</a>
                 </div>
-
-                <ul class="navbar-nav ml-sm-auto flex-row">
-                    <li class="nav-item mr-3">
-                        <div id="cartCount" class="cart-area">
-                            <span class="nav-link"><i class="fal fa-shopping-cart"></i></span>
-                            <span class="cart-product-count">
-                                <span class="total-cart-count">0</span>
-                            </span>
-                        </div>
-                    </li>
-                </ul>
             </div>
         </nav>
     </header>
@@ -56,19 +45,25 @@
             <li>
                 <strong>
                     <span class="fas fa-tachometer-alt"></span>
-                    <a class="links" href="/Customer/Dashboard">Dashboard</a>
+                    <a class="links" href="/Authority">Dashboard</a>
+                </strong>
+            </li>
+            <li>
+                <strong>
+                    <span class="fas fa-store"></span>
+                    <a class="links" href="/Authority/CreateBranch">Create Branch</a>
                 </strong>
             </li>
             <li>
                 <strong>
                     <span class="fas fa-address-book"></span>
-                    <a class="links" href="/Customer/AddressBook">Address Book</a>
+                    <a class="links" href="/Authority/BranchAccessControl">Login Access</a>
                 </strong>
             </li>
             <li>
                 <strong>
                     <span class="far fa-credit-card"></span>
-                    <a class="links" href="/Customer/PaymentMethod">Payment Method</a>
+                    <a class="links" href="/Authority/BranchList">Branch List</a>
                 </strong>
             </li>
         </ul>
@@ -83,48 +78,14 @@
     <footer class="page-footer font-small wow fadeIn mt-4">
         <div class="footer-copyright text-center py-3">
             © @DateTime.Now.Year Copyright:
-            <a href="#">Muslim Fashion Ltd.</a>
+            <a href="#">Bismillah Graphic</a>
         </div>
     </footer>
-    
-<!-- cart Modal -->
-<div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-notify modal-danger modal-lg" role="document">
-        <div class="modal-content text-center">
-            <div class="modal-header">
-                <p class="heading mb-0"><strong>Shopping Cart</strong></p>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" class="white-text">&times;</span>
-                </button>
-            </div>
-            <form asp-action="Checkout" asp-controller="Product">
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="show-cart table product-table">
-                            <thead>
-                            <tr>
-                                <th class="text-left"><strong>Product</strong></th>
-                                <th><strong>Price</strong></th>
-                                <th class="text-left"><strong>Quantity</strong></th>
-                                <th class="text-right"><strong>Remove</strong></th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer flex-end">
-                    <h5 class="mb-0 font-weight-bold">Total: ৳<strong class="grand-total-amount">0</strong></h5>
-                    <button type="submit" class="btn btn-danger btn-rounded">Checkout <i class="fas fa-angle-right right"></i></button>
-                </div>
-            </form> 
-        </div>
-    </div>
-</div>
 
 
-<!-- jQuery -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- bootstrap tooltips -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
     <!-- bootstrap core JavaScript -->
@@ -133,8 +94,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
     <!-- autocomplete -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
-<!-- data-tables -->
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+    <!-- data-tables -->
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
 
     <!-- MDB core JavaScript -->
     <script src="~/mdb/js/mdb-admin.min.js"></script>
