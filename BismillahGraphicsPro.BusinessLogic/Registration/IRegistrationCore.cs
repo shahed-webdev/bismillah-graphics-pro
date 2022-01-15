@@ -8,5 +8,6 @@ namespace BismillahGraphicsPro.BusinessLogic
     {
         UserType UserTypeByUserName(string userName);
         Task<DbResponse<IdentityUser>> BranchSignUpAsync(BranchCreateModel model);
+        List<BranchListModel> BranchList();
     }
 }

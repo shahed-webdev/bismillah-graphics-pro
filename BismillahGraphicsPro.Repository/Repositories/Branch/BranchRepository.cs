@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 
@@ -16,5 +17,12 @@ public class BranchRepository : Repository, IBranchRepository
         registration.Type = UserType.Admin;
         Db.Registrations.Add(registration);
         Db.SaveChanges();
+    }
+
+    public List<BranchListModel> BranchList()
+    {
+        return Db.Branches
+            .ProjectTo<BranchListModel>(_mapper.ConfigurationProvider)
+            .ToList();
     }
 }
