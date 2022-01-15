@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         public IActionResult Index()

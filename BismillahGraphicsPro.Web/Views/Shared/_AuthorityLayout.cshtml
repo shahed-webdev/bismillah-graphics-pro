@@ -7,6 +7,7 @@
     <title>@ViewData["Title"] - Bismillah Graphic</title>
     <link rel="icon" type="image/png" href="/imgs/fabicon.ico">
 
+
     <!-- font awesome -->
     <link href="https://pro.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet" />
     <!-- bootstrap core CSS -->
@@ -25,6 +26,9 @@
     <link href="~/css/custom-layout.css?v=1.1.2" rel="stylesheet" />
     <!-- others style-->
     @await RenderSectionAsync("Styles", false)
+    
+    <!--alpine js-->
+    <script defer src="https://unpkg.com/alpinejs@3.8.0/dist/cdn.min.js"></script>
 </head>
 <body>
     <header>
@@ -56,14 +60,14 @@
             </li>
             <li>
                 <strong>
-                    <span class="fas fa-address-book"></span>
-                    <a class="links" href="/Authority/BranchAccessControl">Login Access</a>
+                    <span class="far fa-list-ul"></span>
+                    <a class="links" href="/Authority/BranchList">Branch List</a>
                 </strong>
             </li>
             <li>
                 <strong>
-                    <span class="far fa-credit-card"></span>
-                    <a class="links" href="/Authority/BranchList">Branch List</a>
+                    <span class="fas fa-key"></span>
+                    <a class="links" href="/Authority/BranchAccessControl">Login Access</a>
                 </strong>
             </li>
         </ul>

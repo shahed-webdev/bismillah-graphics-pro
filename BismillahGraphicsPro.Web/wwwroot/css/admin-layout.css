@@ -1,6 +1,6 @@
 ﻿body { background-color: #e9f2f9; }
 
-:root { --bg-primary: #e53935; --bg-secondary: #ef5350; }
+:root { --bg-primary: #5F3E78; --bg-secondary: #6911AD; }
 
 header nav { background-color: var(--bg-primary) }
 .btn-custom-bg { background-color: var(--bg-secondary); color: #fff }
