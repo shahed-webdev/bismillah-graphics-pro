@@ -11,4 +11,8 @@
     <ProjectReference Include="..\BismillahGraphicsPro.ViewModel\BismillahGraphicsPro.ViewModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\Branch\" />
+  </ItemGroup>
+
 </Project>
