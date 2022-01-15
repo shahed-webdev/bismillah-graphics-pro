@@ -43,8 +43,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         //Branch list
         public IActionResult BranchList()
         {
-
-            return View();
+            var branchList = _registration.BranchList();
+            return View(branchList);
         }
 
         //Branch Access Control

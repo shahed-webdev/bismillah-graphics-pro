@@ -1,6 +1,7 @@
 ﻿using BismillahGraphicsPro.Data;
 using System.ComponentModel.DataAnnotations;
 
+// ReSharper disable once CheckNamespace
 namespace BismillahGraphicsPro.ViewModel
 {
     public class RegisterViewModel

@@ -28,7 +28,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         {
             if (returnUrl != null) ViewBag.ReturnUrl = returnUrl;
 
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity is { IsAuthenticated: true })
                 return RedirectToAction("Index", "home");
 
             return View();
