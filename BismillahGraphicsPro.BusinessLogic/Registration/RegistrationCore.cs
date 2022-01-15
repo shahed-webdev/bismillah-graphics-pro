@@ -46,5 +46,10 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
                 return new DbResponse<IdentityUser>(false, e.Message);
             }
         }
+
+        public List<BranchListModel> BranchList()
+        {
+           return _db.Branch.BranchList();
+        }
     }
 }
