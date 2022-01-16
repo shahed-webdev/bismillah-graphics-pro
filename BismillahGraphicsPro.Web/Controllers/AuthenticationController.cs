@@ -49,6 +49,14 @@ namespace BismillahGraphicsPro.Web.Controllers
             {
                 var type = _registration.UserTypeByUserName(model.UserName);
 
+                if (type != UserType.Authority && !_registration.IsBranchActive(model.UserName))
+                {
+                    await _signInManager.SignOutAsync();
+                    ModelState.AddModelError(string.Empty, "Branch is not activated");
+                    return View(model);
+                }
+
+
                 return type switch
                 {
                     UserType.Admin => LocalRedirect(returnUrl ?? Url.Content($"/Admin")),
