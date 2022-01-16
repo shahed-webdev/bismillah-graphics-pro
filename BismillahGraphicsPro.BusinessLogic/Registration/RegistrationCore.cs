@@ -10,7 +10,9 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
     public class RegistrationCore : Core, IRegistrationCore
     {
         private readonly UserManager<IdentityUser> _userManager;
-        public RegistrationCore(IUnitOfWork db, IMapper mapper, UserManager<IdentityUser> userManager) : base(db, mapper)
+
+        public RegistrationCore(IUnitOfWork db, IMapper mapper, UserManager<IdentityUser> userManager) : base(db,
+            mapper)
         {
             _userManager = userManager;
         }
@@ -31,16 +33,16 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             try
             {
                 var branch = _db.Branch.BranchDetails(branchId);
-                if(branch== null) return new DbResponse(false, "Branch not found");
-            if (branch.IsActive?? false)
-            {
-                _db.Branch.Deactivate(branchId);
-                return new DbResponse(true,$"{branch.BranchName} is deactivated" ); 
-            }
-            else
-            {
-                _db.Branch.Activate(branchId);
-                return new DbResponse(true, $"{branch.BranchName} is Activated");
+                if (branch == null) return new DbResponse(false, "Branch not found");
+                if (branch.IsActive)
+                {
+                    _db.Branch.Deactivate(branchId);
+                    return new DbResponse(true, $"{branch.BranchName} is deactivated");
+                }
+                else
+                {
+                    _db.Branch.Activate(branchId);
+                    return new DbResponse(true, $"{branch.BranchName} is Activated");
                 }
             }
             catch (Exception e)
@@ -62,7 +64,9 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
 
                 var result = await _userManager.CreateAsync(user, password).ConfigureAwait(false);
 
-                if (!result.Succeeded) return new DbResponse<IdentityUser>(false, result.Errors.FirstOrDefault()?.Description, null, "CustomError");
+                if (!result.Succeeded)
+                    return new DbResponse<IdentityUser>(false, result.Errors.FirstOrDefault()?.Description, null,
+                        "CustomError");
 
                 await _userManager.AddToRoleAsync(user, UserType.Admin.ToString()).ConfigureAwait(false);
 
@@ -78,7 +82,7 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
 
         public List<BranchListModel> BranchList()
         {
-           return _db.Branch.BranchList();
+            return _db.Branch.BranchList();
         }
     }
 }

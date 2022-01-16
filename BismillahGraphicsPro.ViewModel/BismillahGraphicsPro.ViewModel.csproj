@@ -14,8 +14,4 @@
     <ProjectReference Include="..\BismillahGraphicsPro.Data\BismillahGraphicsPro.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\MeasurementUnit\" />
-  </ItemGroup>
-
 </Project>

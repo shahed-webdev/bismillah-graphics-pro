@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Repositories\Branch\" />
+    <Folder Include="Repositories\MeasurementUnit\" />
   </ItemGroup>
 
 </Project>
