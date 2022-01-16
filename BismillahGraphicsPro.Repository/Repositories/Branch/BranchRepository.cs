@@ -37,6 +37,7 @@ public class BranchRepository : Repository, IBranchRepository
         if (branch == null) return;
         branch.IsActive = true;
         Db.Branches.Update(branch);
+        Db.SaveChanges();
     }
 
     public void Deactivate(int branchId)
@@ -44,7 +45,8 @@ public class BranchRepository : Repository, IBranchRepository
         var branch = Db.Branches.Find(branchId);
         if (branch == null) return;
         branch.IsActive = false;
-        Db.Branches.Update(branch); 
+        Db.Branches.Update(branch);
+        Db.SaveChanges();
     }
 
     public BranchDetailsModel? BranchDetails(int branchId)
