@@ -7,6 +7,7 @@ namespace BismillahGraphicsPro.Web.Controllers
     public class ProductController : Controller
     {
         private readonly IMeasurementUnitCore _measurementUnit;
+
         public ProductController(IMeasurementUnitCore measurementUnit)
         {
             _measurementUnit = measurementUnit;
@@ -29,9 +30,9 @@ namespace BismillahGraphicsPro.Web.Controllers
         [HttpPost]
         public IActionResult PostMeasurementUnit([FromBody] MeasurementUnitCrudModel model)
         {
-            var response = _measurementUnit.Add(model);
+            var response = _measurementUnit.Add(model.MeasurementUnitName, User.Identity.Name);
             return Json(response);
-        } //post Measurement unit
+        }
 
 
         //Update MeasurementUnit
@@ -39,6 +40,14 @@ namespace BismillahGraphicsPro.Web.Controllers
         public IActionResult UpdateMeasurementUnit([FromBody] MeasurementUnitCrudModel model)
         {
             var response = _measurementUnit.Edit(model);
+            return Json(response);
+        }
+
+        //delete MeasurementUnit
+        [HttpDelete]
+        public IActionResult DeleteMeasurementUnit(int id)
+        {
+            var response = _measurementUnit.Delete(id);
             return Json(response);
         }
     }
