@@ -24,7 +24,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //GET: Login
         [AllowAnonymous]
-        public IActionResult Login(string returnUrl=null)
+        public IActionResult Login(string? returnUrl=null)
         {
             if (returnUrl != null) ViewBag.ReturnUrl = returnUrl;
 
@@ -39,7 +39,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl=null)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl=null)
         {
             if (!ModelState.IsValid) return View(model);
 
