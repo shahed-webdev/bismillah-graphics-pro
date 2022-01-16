@@ -9,6 +9,7 @@ namespace BismillahGraphicsPro.BusinessLogic
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IAccountCore, AccountCore>();
             services.AddTransient<IRegistrationCore, RegistrationCore>();
             services.AddTransient<IMeasurementUnitCore, MeasurementUnitCore>();
 

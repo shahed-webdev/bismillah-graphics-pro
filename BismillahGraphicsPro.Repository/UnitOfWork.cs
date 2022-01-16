@@ -10,12 +10,14 @@ namespace BismillahGraphicsPro.Repository
         public UnitOfWork(ApplicationDbContext db, IMapper mapper)
         {
             _db = db;
+            Account = new AccountRepository(_db, mapper);
             Branch = new BranchRepository(_db, mapper);
             MeasurementUnit = new MeasurementUnitRepository(_db, mapper);
             Registration = new RegistrationRepository(_db, mapper);
 
         }
 
+        public IAccountRepository Account { get; }
         public IBranchRepository Branch { get; }
         public IMeasurementUnitRepository MeasurementUnit { get; }
         public IRegistrationRepository Registration { get; }
