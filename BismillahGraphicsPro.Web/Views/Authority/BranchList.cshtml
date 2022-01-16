@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<BranchListModel>
+﻿@model IEnumerable<BranchListModel>
 
 @{
     ViewData["Title"] = "Branch List";
@@ -12,14 +11,25 @@
     <table x-data="initData()" class="table">
         <thead>
         <tr>
-            <th scope="col">Branch Name</th>
-            <th scope="col"><strong>Phone</strong></th>
-            <th scope="col"><strong>Email</strong></th>
-            <th scope="col"><strong>Address</strong></th>
-            <th scope="col" style="width: 100px;text-align: center"><strong>Active</strong></th>
+            <th scope="col">
+                <strong>Branch Name</strong>
+            </th>
+            <th scope="col">
+                <strong>Phone</strong>
+            </th>
+            <th scope="col">
+                <strong>Email</strong>
+            </th>
+            <th scope="col">
+                <strong>Address</strong>
+            </th>
+            <th scope="col" style="width: 100px; text-align: center">
+                <strong>Active</strong>
+            </th>
         </tr>
         </thead>
         <tbody>
+
         @foreach (var item in Model)
         {
             <tr>
@@ -29,7 +39,7 @@
                 <td>@item.BranchAddress</td>
                 <td>
                     <div class="form-check-inline">
-                        <input id="@item.BranchId" x-on:change="branchActivation(@item.BranchId)" type="checkbox" class="form-check-input" @(item.IsActive == true? "checked":"")>
+                        <input id="@item.BranchId" x-on:change="branchActivation(@item.BranchId)" type="checkbox" class="form-check-input" @(item.IsActive == true ? "checked" : "")>
                         <label for="@item.BranchId" class="form-check-label">Active</label>
                     </div>
                 </td>
@@ -39,12 +49,22 @@
     </table>
 </div>
 
-@section Scripts{
+
+@section Scripts {
     <script>
         function initData() {
             return {
-                branchActivation(isActive) {
-                    console.log(isActive)
+                async branchActivation(branchId) {
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: `branchId=${branchId}`
+                    }
+
+                    const response = await fetch("/Authority/PostBranchAccessControl", options);
+                    const responseData = await response.json();
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
                 }
             }
         }

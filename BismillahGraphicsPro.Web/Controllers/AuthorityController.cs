@@ -37,6 +37,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             if (response.IsSuccess) return RedirectToAction("BranchList");
       
             ModelState.AddModelError("", response.Message);
+           
             return View(model);
         }
 
@@ -48,10 +49,12 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         //Branch Access Control
-        // [HttpPost]
-        // public IActionResult PostBranchAccessControl()
-        // {
-        //     return View();
-        // }
+        [HttpPost]
+        public IActionResult PostBranchAccessControl(int branchId)
+        {
+            var response = _registration.ToggleBranchActivation(branchId);
+            
+            return Json(response);
+        }
     }
 }
