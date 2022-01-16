@@ -35,7 +35,7 @@ namespace BismillahGraphicsPro.Data
         public string? BranchPhone { get; set; }
         public string? BranchEmail { get; set; }
         public byte[]? InstitutionLogo { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public DateTime InsertDateBdTime { get; set; }
 
         public virtual ICollection<AccountLog> AccountLogs { get; set; }

@@ -11,11 +11,13 @@ namespace BismillahGraphicsPro.Repository
         {
             _db = db;
             Branch = new BranchRepository(_db, mapper);
+            MeasurementUnit = new MeasurementUnitRepository(_db, mapper);
             Registration = new RegistrationRepository(_db, mapper);
 
         }
 
         public IBranchRepository Branch { get; }
+        public IMeasurementUnitRepository MeasurementUnit { get; }
         public IRegistrationRepository Registration { get; }
 
 

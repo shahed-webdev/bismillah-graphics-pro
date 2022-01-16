@@ -28,7 +28,7 @@ public class BranchRepository : Repository, IBranchRepository
 
     public bool IsBranchActive(int branchId)
     {
-        return Db.Branches.Find(branchId).IsActive ?? false;
+        return Db.Branches.Find(branchId)!.IsActive;
     }
 
     public void Activate(int branchId)
