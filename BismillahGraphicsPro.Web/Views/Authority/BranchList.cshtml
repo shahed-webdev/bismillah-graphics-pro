@@ -40,7 +40,7 @@
                 <td>
                     <div class="form-check-inline">
                         <input id="@item.BranchId" x-on:change="branchActivation(@item.BranchId)" type="checkbox" class="form-check-input" @(item.IsActive == true ? "checked" : "")>
-                        <label for="@item.BranchId" class="form-check-label">Active</label>
+                        <label for="@item.BranchId" class="form-check-label">@(item.IsActive == true ? "Active" : "Deactivate")</label>
                     </div>
                 </td>
             </tr>
