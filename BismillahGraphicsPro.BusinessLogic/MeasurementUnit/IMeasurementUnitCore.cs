@@ -4,7 +4,7 @@ namespace BismillahGraphicsPro.BusinessLogic;
 
 public interface IMeasurementUnitCore
 {
-    DbResponse<MeasurementUnitCrudModel> Add(MeasurementUnitCrudModel model);
+    DbResponse<MeasurementUnitCrudModel> Add(string measurementUnitName, string userName);
     DbResponse Edit(MeasurementUnitCrudModel model);
     DbResponse Delete(int id);
     DbResponse<MeasurementUnitCrudModel> Get(int id);

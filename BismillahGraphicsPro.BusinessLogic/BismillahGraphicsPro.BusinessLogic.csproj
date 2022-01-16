@@ -10,4 +10,8 @@
     <ProjectReference Include="..\BismillahGraphicsPro.Repository\BismillahGraphicsPro.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Account\" />
+  </ItemGroup>
+
 </Project>

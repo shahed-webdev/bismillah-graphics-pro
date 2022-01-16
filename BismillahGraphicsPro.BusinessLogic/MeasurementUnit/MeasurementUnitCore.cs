@@ -11,12 +11,19 @@ namespace BismillahGraphicsPro.BusinessLogic
 
         }
 
-        public DbResponse<MeasurementUnitCrudModel> Add(MeasurementUnitCrudModel model)
+        public DbResponse<MeasurementUnitCrudModel> Add(string measurementUnitName, string userName)
         {
             try
             {
-                if (string.IsNullOrEmpty(model.MeasurementUnitName))
+               
+                if (string.IsNullOrEmpty(measurementUnitName))
                     return new DbResponse<MeasurementUnitCrudModel>(false, "Invalid Data");
+                
+                var model = new MeasurementUnitCrudModel
+                {
+                    BranchId = _db.Registration.BranchIdByUserName(userName),
+                    MeasurementUnitName = measurementUnitName
+                };
 
                 if (_db.MeasurementUnit.IsExistName(model.BranchId ,model.MeasurementUnitName))
                     return new DbResponse<MeasurementUnitCrudModel>(false, $" {model.MeasurementUnitName} already Exist");
