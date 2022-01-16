@@ -24,7 +24,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //GET: Login
         [AllowAnonymous]
-        public IActionResult Login(string? returnUrl=null)
+        public IActionResult Login(string returnUrl=null)
         {
             if (returnUrl != null) ViewBag.ReturnUrl = returnUrl;
 
@@ -39,7 +39,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl=null)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl=null)
         {
             if (!ModelState.IsValid) return View(model);
 
@@ -83,6 +83,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var user = await _userManager.GetUserAsync(User);
+           
             if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
@@ -104,7 +105,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //POST: logout
         [HttpPost]
-        public async Task<IActionResult> Logout(string? returnUrl = null)
+        public async Task<IActionResult> Logout(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
 

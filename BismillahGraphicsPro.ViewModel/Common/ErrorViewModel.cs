@@ -1,4 +1,5 @@
-﻿namespace BismillahGraphicsPro.ViewModel
+﻿// ReSharper disable once CheckNamespace
+namespace BismillahGraphicsPro.ViewModel
 {
     public class ErrorViewModel
     {
