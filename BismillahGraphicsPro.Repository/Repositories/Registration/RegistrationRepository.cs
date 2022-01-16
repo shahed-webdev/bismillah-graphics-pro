@@ -9,9 +9,15 @@ namespace BismillahGraphicsPro.Repository
         public RegistrationRepository(ApplicationDbContext db, IMapper mapper) : base(db, mapper)
         {
         }
+
+        public int BranchIdByUserName(string userName)
+        {
+            return Db.Registrations.FirstOrDefault(r => r.UserName == userName)?.BranchId ?? 0;
+        }
+
         public UserType UserTypeByUserName(string userName)
         {
-            return Db.Registrations.FirstOrDefault(r => r.UserName == userName).Type;
+            return Db.Registrations.FirstOrDefault(r => r.UserName == userName)!.Type;
         }
     }
 }

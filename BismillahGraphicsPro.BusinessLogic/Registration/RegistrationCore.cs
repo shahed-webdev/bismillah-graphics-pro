@@ -20,6 +20,35 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             return _db.Registration.UserTypeByUserName(userName);
         }
 
+        public bool IsBranchActive(string userName)
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return _db.Branch.IsBranchActive(branchId);
+        }
+
+        public DbResponse ToggleBranchActivation(int branchId)
+        {
+            try
+            {
+                var branch = _db.Branch.BranchDetails(branchId);
+                if(branch== null) return new DbResponse(false, "Branch not found");
+            if (branch.IsActive?? false)
+            {
+                _db.Branch.Deactivate(branchId);
+                return new DbResponse(true,$"{branch.BranchName} is deactivated" ); 
+            }
+            else
+            {
+                _db.Branch.Activate(branchId);
+                return new DbResponse(true, $"{branch.BranchName} is Activated");
+                }
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
         public async Task<DbResponse<IdentityUser>> BranchSignUpAsync(BranchCreateModel model)
         {
             try

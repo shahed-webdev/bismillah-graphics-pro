@@ -25,4 +25,32 @@ public class BranchRepository : Repository, IBranchRepository
             .ProjectTo<BranchListModel>(_mapper.ConfigurationProvider)
             .ToList();
     }
+
+    public bool IsBranchActive(int branchId)
+    {
+        return Db.Branches.Find(branchId).IsActive ?? false;
+    }
+
+    public void Activate(int branchId)
+    {
+        var branch = Db.Branches.Find(branchId);
+        if (branch == null) return;
+        branch.IsActive = true;
+        Db.Branches.Update(branch);
+    }
+
+    public void Deactivate(int branchId)
+    {
+        var branch = Db.Branches.Find(branchId);
+        if (branch == null) return;
+        branch.IsActive = false;
+        Db.Branches.Update(branch); 
+    }
+
+    public BranchDetailsModel? BranchDetails(int branchId)
+    {
+        return Db.Branches.Where(b=> b.BranchId == branchId)
+            .ProjectTo<BranchDetailsModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefault();
+    }
 }
