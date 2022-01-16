@@ -1,12 +1,19 @@
-﻿body { background-color: #e9f2f9; }
+﻿body { background-color: #faf5ff; }
 
-:root { --bg-primary: #5F3E78; --bg-secondary: #6911AD; }
+:root {
+    --bg-primary: #5F3E78;
+    --bg-secondary: #6911AD;
+    --brand-gradient: linear-gradient(30deg, #3a004f, #ac5ad0);
+}
 
 header nav { background-color: var(--bg-primary) }
 .btn-custom-bg { background-color: var(--bg-secondary); color: #fff }
 .btn-custom-bg:hover { background-color: var(--bg-primary); color: #fff }
 
 .page-header { font-weight: bold; margin-bottom: 0; font-size: 1.6rem; text-transform: uppercase; }
+
+/*modal*/
+.brand-gradient { background: var(--brand-gradient) }
 
 /*main*/
 main { min-height: 86vh; }

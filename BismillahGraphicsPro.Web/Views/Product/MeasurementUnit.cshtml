@@ -3,47 +3,118 @@
     Layout = "_AdminLayout";
 }
 
-<div class="mx-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="page-header">Measurement Unit</h3>
+<div x-data="initData()" class="mx-3">
+    <h3 class="page-header mb-3">Measurement Unit</h3>
 
-        <a id="CreateClick" data-url="/MeasurementUnit/Create" class="btn-floating btn-custom-bg" title="Add New" data-toggle="modal">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-        </a>
-    </div>
-    
+    <form x-on:submit.prevent="insertData">
+        <div class="d-flex align-items-center">
+            <div class="form-group mr-3">
+                <label>Unit Name</label>
+                <input class="form-control" x-model="formData.MeasurementUnitName" type="text" required>
+            </div>
+            <div class="pt-3">
+                <button type="submit" class="btn btn-md brand-gradient text-white m-0">Create <i class="fas fa-check ml-1"></i></button>
+            </div>
+        </div>
+    </form>
+
     <div class="card card-body">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>
-                <strong>Unit Name</strong>
-            </th>
-            <th class="text-center" style="width: 100px">
-                <strong> Edit</strong>
-            </th>
-            <th class="text-center" style="width: 100px">
-                <strong>Delete</strong>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Inch</td>
-            <td class="text-center">
-                <a class="edit fas fa-edit" href="/MeasurementUnit/Edit/1"></a>
-            </td>
-            <td class="text-center">
-                <a style="color: #ff0000" class="delete fas fa-trash-alt" href="/MeasurementUnit/Delete/1"></a>
-            </td>
-        </tr>
-  
-        </tbody>
-    </table>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    <strong>Unit Name</strong>
+                </th>
+                <th class="text-center" style="width: 100px">
+                    <strong> Edit</strong>
+                </th>
+                <th class="text-center" style="width: 100px">
+                    <strong>Delete</strong>
+                </th>
+            </tr>
+            </thead>
+            <tbody x-init="getData()">
+            <template x-for="(unit, index) in measurementUnits" :key="unit.MeasurementUnitId">
+                <tr>
+                    <td x-show="!unit.isEditMode" x-text="unit.MeasurementUnitName"></td>
+                    <td x-show="unit.isEditMode">
+                        <input
+                            x-on:click.away="updateData(index)"
+                            x-on:keydown.enter="updateData(index)"
+                            x-on:keydown.window.escape="updateData(index)"
+                            x-model="unit.MeasurementUnitName"
+                            class="form-control"
+                            type="text">
+                    </td>
+                    <td class="text-center">
+                        <a x-show="!unit.isEditMode" x-on:click="unit.isEditMode=true" class="fas fa-edit"></a>
+                    </td>
+                    <td class="text-center">
+                        <a style="color: #ff0000" class="delete fas fa-trash-alt" href="/MeasurementUnit/Delete/1"></a>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
     </div>
-
-    <!-- Insert Modal -->
-    <div class="modal fade" id="InsertModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
-    <!-- Update Modal -->
-    <div class="modal fade" id="UpdateModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
 </div>
+
+@section Scripts {
+    <script>
+        function initData() {
+            return {
+                loading: false,
+                measurementUnits: [],
+                isEditMode: false,
+                formData: {},
+
+                //get data
+                async getData() {
+                    const response = await fetch("/Product/GetMeasurementUnit");
+                    const responseData = await response.json();
+
+                    console.log(responseData)
+
+                    this.measurementUnits.push(
+                        { MeasurementUnitName: "kg", MeasurementUnitId: "1" },
+                        { MeasurementUnitName: "gm", MeasurementUnitId: "2" },
+                        { MeasurementUnitName: "mm", MeasurementUnitId: "3" },
+                        { MeasurementUnitName: "inh", MeasurementUnitId: "4" },
+                    );
+                },
+
+                //insert data
+                async insertData() {
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(this.formData)
+                    }
+
+                    const response = await fetch("/Product/PostMeasurementUnit", options);
+                    const responseData = await response.json();
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                },
+
+                //update data
+                async updateData(index) {
+                    const updatedData = this.measurementUnits[index]
+
+                    const options = {
+                        method: 'PUT',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(updatedData)
+                    }
+
+                    const response = await fetch("/Product/UpdateMeasurementUnit", options);
+                    const responseData = await response.json();
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+
+                    updatedData.isEditMode = !responseData.IsSuccess;
+                }
+            }
+        }
+    </script>
+}
