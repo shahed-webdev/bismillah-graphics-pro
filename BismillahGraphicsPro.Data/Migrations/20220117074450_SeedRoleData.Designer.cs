@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BismillahGraphicsPro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220117043521_AccountLogAddColumnTableId")]
-    partial class AccountLogAddColumnTableId
+    [Migration("20220117074450_SeedRoleData")]
+    partial class SeedRoleData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,6 +61,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountDepositId"), 1L, 1);
+
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
@@ -80,6 +82,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
                     b.HasKey("AccountDepositId");
+
+                    b.HasIndex("AccountId");
 
                     b.ToTable("AccountDeposit", (string)null);
                 });
@@ -152,6 +156,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountWithdrawId"), 1L, 1);
+
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
@@ -171,6 +177,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("date");
 
                     b.HasKey("AccountWithdrawId");
+
+                    b.HasIndex("AccountId");
 
                     b.ToTable("AccountWithdraw", (string)null);
                 });
@@ -1606,13 +1614,14 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountDeposit", b =>
                 {
-                    b.HasOne("BismillahGraphicsPro.Data.Account", "AccountDepositNavigation")
-                        .WithOne("AccountDeposit")
-                        .HasForeignKey("BismillahGraphicsPro.Data.AccountDeposit", "AccountDepositId")
+                    b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
+                        .WithMany("AccountDeposits")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_AccountDeposit_Account");
 
-                    b.Navigation("AccountDepositNavigation");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountLog", b =>
@@ -1644,13 +1653,14 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountWithdraw", b =>
                 {
-                    b.HasOne("BismillahGraphicsPro.Data.Account", "AccountWithdrawNavigation")
-                        .WithOne("AccountWithdraw")
-                        .HasForeignKey("BismillahGraphicsPro.Data.AccountWithdraw", "AccountWithdrawId")
+                    b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
+                        .WithMany("AccountWithdraws")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_AccountWithdraw_Account");
 
-                    b.Navigation("AccountWithdrawNavigation");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Expanse", b =>
@@ -2112,13 +2122,11 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Account", b =>
                 {
-                    b.Navigation("AccountDeposit")
-                        .IsRequired();
+                    b.Navigation("AccountDeposits");
 
                     b.Navigation("AccountLogs");
 
-                    b.Navigation("AccountWithdraw")
-                        .IsRequired();
+                    b.Navigation("AccountWithdraws");
 
                     b.Navigation("Expanses");
 

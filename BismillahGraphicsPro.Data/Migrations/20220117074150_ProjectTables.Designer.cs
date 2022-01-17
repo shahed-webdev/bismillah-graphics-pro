@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BismillahGraphicsPro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220113094754_ProjectTables")]
+    [Migration("20220117074150_ProjectTables")]
     partial class ProjectTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,6 +61,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountDepositId"), 1L, 1);
+
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
@@ -80,6 +82,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
                     b.HasKey("AccountDepositId");
+
+                    b.HasIndex("AccountId");
 
                     b.ToTable("AccountDeposit", (string)null);
                 });
@@ -122,7 +126,16 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("RegistrationId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
@@ -143,6 +156,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountWithdrawId"), 1L, 1);
+
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
@@ -162,6 +177,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("date");
 
                     b.HasKey("AccountWithdrawId");
+
+                    b.HasIndex("AccountId");
 
                     b.ToTable("AccountWithdraw", (string)null);
                 });
@@ -204,8 +221,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<byte[]>("InstitutionLogo")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<bool?>("IsActive")
-                        .IsRequired()
+                    b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("((1))");
@@ -1350,13 +1366,14 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountDeposit", b =>
                 {
-                    b.HasOne("BismillahGraphicsPro.Data.Account", "AccountDepositNavigation")
-                        .WithOne("AccountDeposit")
-                        .HasForeignKey("BismillahGraphicsPro.Data.AccountDeposit", "AccountDepositId")
+                    b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
+                        .WithMany("AccountDeposits")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_AccountDeposit_Account");
 
-                    b.Navigation("AccountDepositNavigation");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountLog", b =>
@@ -1388,13 +1405,14 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountWithdraw", b =>
                 {
-                    b.HasOne("BismillahGraphicsPro.Data.Account", "AccountWithdrawNavigation")
-                        .WithOne("AccountWithdraw")
-                        .HasForeignKey("BismillahGraphicsPro.Data.AccountWithdraw", "AccountWithdrawId")
+                    b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
+                        .WithMany("AccountWithdraws")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_AccountWithdraw_Account");
 
-                    b.Navigation("AccountWithdrawNavigation");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Expanse", b =>
@@ -1856,13 +1874,11 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Account", b =>
                 {
-                    b.Navigation("AccountDeposit")
-                        .IsRequired();
+                    b.Navigation("AccountDeposits");
 
                     b.Navigation("AccountLogs");
 
-                    b.Navigation("AccountWithdraw")
-                        .IsRequired();
+                    b.Navigation("AccountWithdraws");
 
                     b.Navigation("Expanses");
 

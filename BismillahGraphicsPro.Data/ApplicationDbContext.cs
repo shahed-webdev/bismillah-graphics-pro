@@ -65,8 +65,6 @@ namespace BismillahGraphicsPro.Data
             {
                 entity.ToTable("AccountDeposit");
 
-                entity.Property(e => e.AccountDepositId).ValueGeneratedOnAdd();
-
                 entity.Property(e => e.DepositAmount).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.DepositDate).HasColumnType("date");
@@ -78,9 +76,9 @@ namespace BismillahGraphicsPro.Data
                     .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
                 entity.HasOne(d => d.Account)
-                    .WithOne(p => p.AccountDeposit)
-                    .HasForeignKey<AccountDeposit>(d => d.AccountId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .WithMany(p => p.AccountDeposits)
+                    .HasForeignKey(d => d.AccountId)
+                    .OnDelete(DeleteBehavior.ClientNoAction)
                     .HasConstraintName("FK_AccountDeposit_Account");
             });
 
@@ -137,8 +135,6 @@ namespace BismillahGraphicsPro.Data
             {
                 entity.ToTable("AccountWithdraw");
 
-                entity.Property(e => e.AccountWithdrawId).ValueGeneratedOnAdd();
-
                 entity.Property(e => e.Description).HasMaxLength(1024);
 
                 entity.Property(e => e.InsertDateBdTime)
@@ -150,9 +146,9 @@ namespace BismillahGraphicsPro.Data
                 entity.Property(e => e.WithdrawDate).HasColumnType("date");
 
                 entity.HasOne(d => d.Account)
-                    .WithOne(p => p.AccountWithdraw)
-                    .HasForeignKey<AccountWithdraw>(d => d.AccountId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .WithMany(p => p.AccountWithdraws)
+                    .HasForeignKey(d => d.AccountId)
+                    .OnDelete(DeleteBehavior.ClientNoAction)
                     .HasConstraintName("FK_AccountWithdraw_Account");
             });
 

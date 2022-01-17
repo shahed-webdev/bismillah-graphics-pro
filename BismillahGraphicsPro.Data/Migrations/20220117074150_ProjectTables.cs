@@ -263,7 +263,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                 name: "AccountDeposit",
                 columns: table => new
                 {
-                    AccountDepositId = table.Column<int>(type: "int", nullable: false),
+                    AccountDepositId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     DepositAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
@@ -275,7 +276,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     table.PrimaryKey("PK_AccountDeposit", x => x.AccountDepositId);
                     table.ForeignKey(
                         name: "FK_AccountDeposit_Account",
-                        column: x => x.AccountDepositId,
+                        column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "AccountId");
                 });
@@ -284,7 +285,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                 name: "AccountWithdraw",
                 columns: table => new
                 {
-                    AccountWithdrawId = table.Column<int>(type: "int", nullable: false),
+                    AccountWithdrawId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     WithdrawAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
@@ -296,7 +298,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     table.PrimaryKey("PK_AccountWithdraw", x => x.AccountWithdrawId);
                     table.ForeignKey(
                         name: "FK_AccountWithdraw_Account",
-                        column: x => x.AccountWithdrawId,
+                        column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "AccountId");
                 });
@@ -376,7 +378,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                     IsAdded = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((1))"),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Details = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    TableName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TableId = table.Column<int>(type: "int", nullable: false),
                     LogDate = table.Column<DateTime>(type: "date", nullable: false),
                     InsertDateBdTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(dateadd(hour,(6),getutcdate()))")
                 },
@@ -745,6 +749,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccountDeposit_AccountId",
+                table: "AccountDeposit",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AccountLog_AccountId",
                 table: "AccountLog",
                 column: "AccountId");
@@ -758,6 +767,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                 name: "IX_AccountLog_RegistrationId",
                 table: "AccountLog",
                 column: "RegistrationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountWithdraw_AccountId",
+                table: "AccountWithdraw",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Expanse_AccountId",

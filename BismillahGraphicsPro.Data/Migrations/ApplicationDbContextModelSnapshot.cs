@@ -81,8 +81,7 @@ namespace BismillahGraphicsPro.Data.Migrations
 
                     b.HasKey("AccountDepositId");
 
-                    b.HasIndex("AccountId")
-                        .IsUnique();
+                    b.HasIndex("AccountId");
 
                     b.ToTable("AccountDeposit", (string)null);
                 });
@@ -177,8 +176,7 @@ namespace BismillahGraphicsPro.Data.Migrations
 
                     b.HasKey("AccountWithdrawId");
 
-                    b.HasIndex("AccountId")
-                        .IsUnique();
+                    b.HasIndex("AccountId");
 
                     b.ToTable("AccountWithdraw", (string)null);
                 });
@@ -1615,8 +1613,9 @@ namespace BismillahGraphicsPro.Data.Migrations
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountDeposit", b =>
                 {
                     b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
-                        .WithOne("AccountDeposit")
-                        .HasForeignKey("BismillahGraphicsPro.Data.AccountDeposit", "AccountId")
+                        .WithMany("AccountDeposits")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_AccountDeposit_Account");
 
@@ -1653,8 +1652,9 @@ namespace BismillahGraphicsPro.Data.Migrations
             modelBuilder.Entity("BismillahGraphicsPro.Data.AccountWithdraw", b =>
                 {
                     b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
-                        .WithOne("AccountWithdraw")
-                        .HasForeignKey("BismillahGraphicsPro.Data.AccountWithdraw", "AccountId")
+                        .WithMany("AccountWithdraws")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_AccountWithdraw_Account");
 
@@ -2120,13 +2120,11 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Account", b =>
                 {
-                    b.Navigation("AccountDeposit")
-                        .IsRequired();
+                    b.Navigation("AccountDeposits");
 
                     b.Navigation("AccountLogs");
 
-                    b.Navigation("AccountWithdraw")
-                        .IsRequired();
+                    b.Navigation("AccountWithdraws");
 
                     b.Navigation("Expanses");
 
