@@ -12,6 +12,6 @@ namespace BismillahGraphicsPro.Data
         public DateTime DepositDate { get; set; }
         public DateTime InsertDateBdTime { get; set; }
 
-        public virtual Account AccountDepositNavigation { get; set; } = null!;
+        public virtual Account Account { get; set; } = null!;
     }
 }

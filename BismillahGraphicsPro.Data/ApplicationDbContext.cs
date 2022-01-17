@@ -77,9 +77,9 @@ namespace BismillahGraphicsPro.Data
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
-                entity.HasOne(d => d.AccountDepositNavigation)
+                entity.HasOne(d => d.Account)
                     .WithOne(p => p.AccountDeposit)
-                    .HasForeignKey<AccountDeposit>(d => d.AccountDepositId)
+                    .HasForeignKey<AccountDeposit>(d => d.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AccountDeposit_Account");
             });
@@ -149,9 +149,9 @@ namespace BismillahGraphicsPro.Data
 
                 entity.Property(e => e.WithdrawDate).HasColumnType("date");
 
-                entity.HasOne(d => d.AccountWithdrawNavigation)
+                entity.HasOne(d => d.Account)
                     .WithOne(p => p.AccountWithdraw)
-                    .HasForeignKey<AccountWithdraw>(d => d.AccountWithdrawId)
+                    .HasForeignKey<AccountWithdraw>(d => d.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AccountWithdraw_Account");
             });

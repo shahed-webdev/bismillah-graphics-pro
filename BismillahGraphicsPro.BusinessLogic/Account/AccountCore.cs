@@ -172,16 +172,16 @@ public class AccountCore: Core,IAccountCore
             {
                 var accountLog = new AccountLogAddModel
                 {
-                    AccountId = model.AccountId,
+                    AccountId = withdrawResponse.Data.AccountId,
                     BranchId = _db.Registration.BranchIdByUserName(userName),
                     RegistrationId = _db.Registration.RegistrationIdByUserName(userName),
                     IsAdded = false,
-                    Amount = model.WithdrawAmount,
-                    Details = model.Description,
+                    Amount = withdrawResponse.Data.WithdrawAmount,
+                    Details = withdrawResponse.Data.Description,
                     Type = AccountLogType.Withdraw,
                     TableName = AccountLogTableName.AccountWithdraw,
-                    TableId = model.AccountWithdrawId,
-                    LogDate = model.WithdrawDate
+                    TableId = withdrawResponse.Data.AccountWithdrawId,
+                    LogDate = withdrawResponse.Data.WithdrawDate
                 };
 
                 _db.AccountLog.Add(accountLog);

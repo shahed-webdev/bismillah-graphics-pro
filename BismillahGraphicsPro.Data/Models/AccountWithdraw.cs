@@ -12,6 +12,6 @@ namespace BismillahGraphicsPro.Data
         public DateTime WithdrawDate { get; set; }
         public DateTime InsertDateBdTime { get; set; }
 
-        public virtual Account AccountWithdrawNavigation { get; set; } = null!;
+        public virtual Account Account { get; set; } = null!;
     }
 }
