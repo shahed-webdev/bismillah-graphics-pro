@@ -48,7 +48,7 @@
                     </td>
                     <td class="text-center">
                         <a x-show="!unit.isEditMode" x-on:click="unit.isEditMode=true" class="fas fa-edit"></a>
-                        <a x-show="unit.isEditMode" x-on:click="updateData(index)" class="text-primary">Update</a>
+                        <button type="button" :disabled="loading" x-show="unit.isEditMode" x-on:click="updateData(index)" class="btn btn-link text-primary">Update</button>
                     </td>
                     <td class="text-center">
                         <a x-on:click="deleteData(unit.MeasurementUnitId)" style="color: #ff0000" class="fas fa-trash-alt"></a>
@@ -61,9 +61,9 @@
     
     
     <!--loading screen-->
-    <div x-show="loading">
-        <partial name="loadingSvg"/>
-    </div>
+    @* <div x-show="loading"> *@
+    @*     <partial name="loadingSvg"/> *@
+    @* </div> *@
 </div>
 
 

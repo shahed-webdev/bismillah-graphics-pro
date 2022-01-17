@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Account";
+    ViewData["Title"] = "Withdraw";
     Layout = "_AdminLayout";
 }
 
 <div x-data="initData()" class="mx-3">
-    <h3 class="page-header my-4">Account</h3>
+    <h3 class="page-header my-4">Withdraw</h3>
 
     <form x-on:submit.prevent="insertData">
         <div class="d-flex align-items-center">
@@ -136,33 +136,6 @@
                     }
                 },
 
-                //update data
-                async updateData(index) {
-                    try {
-                        const updatedData = this.data[index];
-
-                        const options = {
-                            method: 'PUT',
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(updatedData)
-                        }
-
-                        this.loading = true;
-
-                        const response = await fetch("/Account/UpdateAccount", options);
-                        const responseData = await response.json();
-
-                        this.loading = false;
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-
-                        updatedData.isEditMode = !responseData.IsSuccess;
-
-                    } catch (error) {
-                        console.log(error)
-                        this.loading = false;
-                    }
-                },
 
                 //delete data
                 async deleteData(id) {
