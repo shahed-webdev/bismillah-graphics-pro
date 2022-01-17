@@ -1,5 +1,6 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
 using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
@@ -56,11 +57,35 @@ namespace BismillahGraphicsPro.Web.Controllers
             return View();
         }
 
-        //deposit view
-        public IActionResult Deposit()
+        //get account
+        public IActionResult GetWithdraw()
         {
-            return View();
+            var response = _account.List(User.Identity.Name);
+            return Json(response);
         }
 
+        //deposit view
+        public IActionResult Deposit(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Index");
+
+            var model = _account.Get(id.GetValueOrDefault());
+            return View(model.Data);
+        }
+
+        //get deposit data-table
+        public IActionResult GetDepositData(DataRequest request)
+        {
+            var response = _account.DepositList(request);
+            return Json(response);
+        }
+
+        //post deposit account
+        [HttpPost]
+        public IActionResult PostDeposit([FromBody] AccountDepositViewModel model)
+        {
+            var response = _account.Deposit(User.Identity.Name,model);
+            return Json(response);
+        }
     }
 }

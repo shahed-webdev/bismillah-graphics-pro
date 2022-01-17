@@ -1,95 +1,147 @@
-﻿@{
+﻿@model AccountViewModel
+
+@{
     ViewData["Title"] = "Withdraw";
     Layout = "_AdminLayout";
 }
 
 <div x-data="initData()" class="mx-3">
-    <h3 class="page-header my-4">Deposit</h3>
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <div>
+            <h4 class="page-header">Deposit <small>@Model.AccountName</small></h4>
+            <a href="/account"><i class="fal fa-long-arrow-left mr-1"></i>Back to Account</a>
+        </div>
+
+        <h5 class="font-weight-bold">Balance ৳@Model.Balance</h5>
+    </div>
 
     <form x-on:submit.prevent="insertData">
-        <div class="d-flex align-items-center">
-            <div class="form-group mr-3">
-                <label>Account Name</label>
-                <input class="form-control" x-model="formData.accountName" type="text" required>
+        <div class="row">
+            <div class="col-xl-3">
+                <div class="form-group">
+                    <label for="inputDepositAmount">Amount</label>
+                    <input type="number" step="0.01" min="0" x-model="formData.DepositAmount" class="form-control" required>
+                </div>
             </div>
-            <div class="pt-3">
-                <button type="submit" class="btn btn-md btn-custom-bg text-white m-0">Create <i class="fas fa-check ml-1"></i></button>
+            <div class="col-xl-3">
+                <div class="form-group">
+                    <label for="inputDescription">Description</label>
+                    <input id="inputDescription" type="text" x-model="formData.Description" class="form-control">
+                </div>
+            </div>
+            <div class="col-xl-3">
+                <div class="form-group">
+                    <label>Deposit Date</label>
+                    <input x-model="formData.DepositDate" type="text" class="form-control datepicker" required>
+                </div>
+            </div>
+            <div class="col-xl-3">
+                <div class="form-group pt-4">
+                    <input type="submit" value="Deposit" class="btn btn-custom-bg btn-md"/>
+                </div>
             </div>
         </div>
     </form>
 
     <div class="card card-body">
-        <table class="table">
+        <table id="table-data" class="table">
             <thead>
             <tr>
                 <th>
-                    <strong>Account Name</strong>
+                    <strong>Amount</strong>
                 </th>
-                <th class="text-right">
-                    <strong>Balance</strong>
+                <th>
+                    <strong>Description</strong>
                 </th>
-                <th class="text-center">
-                    <strong>Withdraw</strong>
-                </th>
-                <th class="text-center">
-                    <strong>Deposit</strong>
-                </th>
-                <th class="text-center">
-                    <strong> Edit</strong>
+                <th>
+                    <strong>Date</strong>
                 </th>
                 <th class="text-center">
                     <strong>Delete</strong>
                 </th>
             </tr>
             </thead>
-            <tbody x-init="getData()">
-            <template x-for="(unit, index) in data" :key="unit.AccountId">
-                <tr>
-                    <td x-show="!unit.isEditMode" x-text="unit.AccountName"></td>
-                    <td x-show="unit.isEditMode">
-                        <div class="d-flex align-items-center">
-                            <input x-on:click.away="unit.isEditMode = false"
-                                   x-on:keydown.enter="updateData(index)"
-                                   x-on:keydown.window.escape="unit.isEditMode = false"
-                                   x-model="unit.AccountName"
-                                   class="form-control flex-1 mr-3"
-                                   type="text">
-
-                            <button type="button" :disabled="loading" x-show="unit.isEditMode" x-on:click="updateData(index)" class="btn btn-link text-primary">Update</button>
-                        </div>
-                    </td>
-                    <td class="text-right">
-                        ৳<span x-text="unit.Balance"></span>
-                    </td>
-                    <td class="text-center">
-                        <a x-show="unit.Balance > 0" class="text-primary" :href="'/account/withdraw/' + unit.AccountId">Withdraw</a>
-                        <span x-show="unit.Balance <= 0">No balance</span>
-                    </td>
-                    <td class="text-center">
-                        <a class="text-primary" :href="'/account/deposit/' + unit.AccountId">Deposit</a>
-                    </td>
-                    <td class="text-center">
-                        <a x-show="!unit.isEditMode" x-on:click="unit.isEditMode=true" class="fas fa-edit"></a>
-                    </td>
-                    <td class="text-center">
-                        <a x-on:click="deleteData(unit.AccountId)" style="color: #ff0000" class="fas fa-trash-alt"></a>
-                    </td>
-                </tr>
-            </template>
-            </tbody>
+            <tbody id="tBody"></tbody>
         </table>
     </div>
 
 
     <!--loading screen-->
     <div x-show="loading">
-        <partial name="loadingSvg" />
+        <partial name="loadingSvg"/>
     </div>
 </div>
 
 
 @section Scripts {
     <script>
+        $(function() {
+            $('.datepicker').pickadate({
+                format: 'd, mmm yyyy',
+                editable: true
+            }).val(moment(new Date()).format("D, MMM YYYY"));
+
+            dataTable.getData();
+        });
+
+        //data table
+        const dataTable = {
+            table: null,
+            filter: null,
+            init: function() {
+                dataTable.table = $("#table-data").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Account/GetDepositData",
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = dataTable.filter;
+                        }
+                    },
+                    columns:
+                    [
+                        { data: "DepositAmount", "render": dataTable.addSign },
+                        { data: "Description" },
+                        {
+                            data: "DepositDateUtc",
+                            "render": function(data) { return moment(data).format('DD MMM YYYY') }
+                        },
+                        {
+                            data: "AccountDepositId",
+                            "render": function(data, type, row, meta) {
+                                return `<a id=${data} class="delete red-text fas fa-trash-alt"></a>`;
+                            }
+                        }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [3] },
+                        { 'sortable': false, 'targets': [3] },
+                        { 'className': "text-center", "targets": [3] }
+                        //{ 'className': "text-left", "targets": [1] }
+                    ]
+                });
+            },
+            operand: {
+                Equal: 0,
+                NotEqual: 1,
+                GreaterThan: 2,
+                LessThan: 3,
+                GreaterThanOrEqual: 4,
+                LessThanOrEqual: 5,
+                Contains: 6,
+                StartsWith: 7,
+                EndsWith: 8
+            },
+            getData: function() {
+                dataTable.filter = [];
+                dataTable.filter.push({ Field: "AccountId", Value: '@Model.AccountId', Operand: dataTable.operand.Equal });
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            addSign: function(data) { return `${data}/-` }
+        }
+
+        //alpine js code
         function initData() {
             return {
                 loading: false,
@@ -97,33 +149,25 @@
                 isEditMode: false,
                 formData: {},
 
-                //get data
-                async getData() {
-                    this.loading = true;
-
-                    const response = await fetch("/Account/GetAccount");
-                    const responseData = await response.json();
-
-                    this.data = responseData || [];
-                    this.loading = false;
-                },
-
                 //insert data
                 async insertData() {
                     this.loading = true;
 
                     try {
+                        this.formData.AccountId = @Model.AccountId
+//                        this.formData.DepositDateUtc = new Date();
+
                         const options = {
                             method: 'POST',
-                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                            body: `accountName=${this.formData.accountName}`
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(this.formData)
                         }
 
-                        const response = await fetch("/Account/AddAccount", options);
+                        const response = await fetch("/Account/PostDeposit", options);
                         const responseData = await response.json();
 
                         if (responseData.IsSuccess) {
-                            this.data.push(responseData.Data);
+                            dataTable.getData();
                             this.formData = {}
                         }
 
