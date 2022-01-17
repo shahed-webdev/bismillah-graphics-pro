@@ -63,7 +63,7 @@ public class AccountRepository: Repository, IAccountRepository
 
     public bool IsNull(int id)
     {
-        return Db.Accounts.Any(r => r.AccountId == id);
+        return !Db.Accounts.Any(r => r.AccountId == id);
     }
 
     public bool IsRelatedDataExist(int id)

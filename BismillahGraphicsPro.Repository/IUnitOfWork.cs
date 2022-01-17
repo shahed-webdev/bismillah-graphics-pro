@@ -7,6 +7,8 @@ namespace BismillahGraphicsPro.Repository
         IAccountRepository Account { get; }
         IAccountLogRepository AccountLog { get; }
         IBranchRepository Branch { get; }
+        IExpenseRepository Expense { get; }
+        IExpanseCategoryRepository ExpanseCategory { get; }
         IMeasurementUnitRepository MeasurementUnit { get; }
         IRegistrationRepository Registration { get; }
 
