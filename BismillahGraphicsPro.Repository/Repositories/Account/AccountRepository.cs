@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 
 namespace BismillahGraphicsPro.Repository;
 
@@ -92,5 +93,57 @@ public class AccountRepository: Repository, IAccountRepository
                 label = m.AccountName
             }).ToList();
     }
+    public void BalanceAdd(int id, decimal amount)
+    {
+        var account = Db.Accounts.Find(id);
+        if (account == null) return;
+        account.Balance += amount;
+        Db.Accounts.Update(account);
+    }
 
+    public void BalanceSubtract(int id, decimal amount)
+    {
+        var account = Db.Accounts.Find(id);
+        if (account == null) return;
+        account.Balance -= amount;
+        Db.Accounts.Update(account);
+    }
+
+    public DbResponse<AccountDepositViewModel> Deposit(AccountDepositViewModel model)
+    {
+        var accountDeposit = _mapper.Map<AccountDeposit>(model);
+        Db.AccountDeposits.Add(accountDeposit);
+        Db.SaveChanges();
+        model.AccountDepositId = accountDeposit.AccountDepositId;
+
+        return new DbResponse<AccountDepositViewModel>(true, $"{model.DepositAmount} Amount Deposited Successfully", model);
+
+    }
+
+    public DataResult<AccountDepositViewModel> DepositList(DataRequest request)
+    {
+        return Db.AccountDeposits
+            .ProjectTo<AccountDepositViewModel>(_mapper.ConfigurationProvider)
+            .OrderBy(a => a.DepositDate)
+            .ToDataResult(request);
+    }
+
+    public DbResponse<AccountWithdrawViewModel> Withdraw(AccountWithdrawViewModel model)
+    {
+        var accountWithdraw = _mapper.Map<AccountWithdraw>(model);
+        Db.AccountWithdraws.Add(accountWithdraw);
+        Db.SaveChanges();
+        model.AccountWithdrawId = accountWithdraw.AccountWithdrawId;
+
+        return new DbResponse<AccountWithdrawViewModel>(true, $"{model.WithdrawAmount} Amount Deposited Successfully", model);
+
+    }
+
+    public DataResult<AccountWithdrawViewModel> WithdrawList(DataRequest request)
+    {
+        return Db.AccountWithdraws
+            .ProjectTo<AccountWithdrawViewModel>(_mapper.ConfigurationProvider)
+            .OrderBy(a => a.WithdrawDate)
+            .ToDataResult(request);
+    }
 }

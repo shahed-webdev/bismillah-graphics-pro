@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.Repository;
 using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 
 namespace BismillahGraphicsPro.BusinessLogic;
 
@@ -103,5 +105,99 @@ public class AccountCore: Core,IAccountCore
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return _db.Account.ListDdl(branchId);
+    }
+
+    public DbResponse<AccountDepositViewModel> Deposit(string userName, AccountDepositViewModel model)
+    {
+        try
+        {
+            if (model.DepositAmount < 0)
+                return new DbResponse<AccountDepositViewModel>(false, "Invalid Data");
+
+            if (_db.Account.IsNull(model.AccountId))
+                return new DbResponse<AccountDepositViewModel>(false, $"Account Not Found");
+
+            _db.Account.BalanceAdd(model.AccountId, model.DepositAmount);
+
+            var accountDepositResponse = _db.Account.Deposit(model);
+            //-----------Account log added-----------------------------
+            if (accountDepositResponse.IsSuccess)
+            {
+                var accountLog = new AccountLogAddModel
+                {
+                    AccountId = model.AccountId,
+                    BranchId = _db.Registration.BranchIdByUserName(userName),
+                    RegistrationId = _db.Registration.RegistrationIdByUserName(userName),
+                    IsAdded = true,
+                    Amount = model.DepositAmount,
+                    Details = model.Description,
+                    Type = AccountLogType.Deposit,
+                    TableName = AccountLogTableName.AccountDeposit,
+                    TableId = model.AccountDepositId,
+                    LogDate = model.DepositDate
+                };
+
+                _db.AccountLog.Add(accountLog);
+            }
+
+            return accountDepositResponse;
+
+        }
+        catch (Exception e)
+        {
+            return new DbResponse<AccountDepositViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}");
+        }
+    }
+
+    public DataResult<AccountDepositViewModel> DepositList(DataRequest request)
+    {
+        return _db.Account.DepositList(request);
+    }
+
+    public DbResponse<AccountWithdrawViewModel> Withdraw(string userName, AccountWithdrawViewModel model)
+    {
+        try
+        {
+            if (model.WithdrawAmount < 0)
+                return new DbResponse<AccountWithdrawViewModel>(false, "Invalid Data");
+
+            if (_db.Account.IsNull(model.AccountId))
+                return new DbResponse<AccountWithdrawViewModel>(false, $"Account Not Found");
+
+            _db.Account.BalanceSubtract(model.AccountId, model.WithdrawAmount);
+
+            var withdrawResponse = _db.Account.Withdraw(model);
+            //-----------Account log added-----------------------------
+            if (withdrawResponse.IsSuccess)
+            {
+                var accountLog = new AccountLogAddModel
+                {
+                    AccountId = model.AccountId,
+                    BranchId = _db.Registration.BranchIdByUserName(userName),
+                    RegistrationId = _db.Registration.RegistrationIdByUserName(userName),
+                    IsAdded = false,
+                    Amount = model.WithdrawAmount,
+                    Details = model.Description,
+                    Type = AccountLogType.Withdraw,
+                    TableName = AccountLogTableName.AccountWithdraw,
+                    TableId = model.AccountWithdrawId,
+                    LogDate = model.WithdrawDate
+                };
+
+                _db.AccountLog.Add(accountLog);
+            }
+
+            return withdrawResponse;
+
+        }
+        catch (Exception e)
+        {
+            return new DbResponse<AccountWithdrawViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}");
+        }
+    }
+
+    public DataResult<AccountWithdrawViewModel> WithdrawList(DataRequest request)
+    {
+        return _db.Account.WithdrawList(request);
     }
 }

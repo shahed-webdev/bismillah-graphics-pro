@@ -102,7 +102,17 @@ namespace BismillahGraphicsPro.Data
 
                 entity.Property(e => e.LogDate).HasColumnType("date");
 
-                entity.Property(e => e.Type).HasMaxLength(128);
+                entity.Property(e => e.Type)
+                    .HasMaxLength(128)
+                    .HasConversion<string>();
+
+                entity.Property(e => e.TableName)
+                    .HasMaxLength(50)
+                    .HasConversion<string>();
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(128)
+                    .HasConversion<string>();
 
                 entity.HasOne(d => d.Account)
                     .WithMany(p => p.AccountLogs)
