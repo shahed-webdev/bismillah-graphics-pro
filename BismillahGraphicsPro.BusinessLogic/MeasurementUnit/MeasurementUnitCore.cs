@@ -44,7 +44,7 @@ namespace BismillahGraphicsPro.BusinessLogic
                 if (string.IsNullOrEmpty(model.MeasurementUnitName))
                     return new DbResponse(false, "Invalid Data");
 
-                if (!_db.MeasurementUnit.IsNull(model.MeasurementUnitId))
+                if (_db.MeasurementUnit.IsNull(model.MeasurementUnitId))
                     return new DbResponse(false, "No Data Found");
 
                 if (_db.MeasurementUnit.IsExistName(model.BranchId,model.MeasurementUnitName, model.MeasurementUnitId))
