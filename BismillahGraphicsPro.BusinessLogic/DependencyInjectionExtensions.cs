@@ -10,6 +10,7 @@ namespace BismillahGraphicsPro.BusinessLogic
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAccountCore, AccountCore>();
+            services.AddTransient<IExpenseCore, ExpenseCore>();
             services.AddTransient<IRegistrationCore, RegistrationCore>();
             services.AddTransient<IMeasurementUnitCore, MeasurementUnitCore>();
 

@@ -16,6 +16,8 @@
     <Folder Include="Repositories\Branch\" />
     <Folder Include="Repositories\MeasurementUnit\" />
     <Folder Include="Repositories\AccountLog\" />
+    <Folder Include="Repositories\Expense\" />
+    <Folder Include="Repositories\ExpanseCategory\" />
   </ItemGroup>
 
 </Project>

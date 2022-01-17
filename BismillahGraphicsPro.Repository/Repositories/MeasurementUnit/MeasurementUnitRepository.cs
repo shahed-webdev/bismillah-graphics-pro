@@ -58,7 +58,7 @@ public class MeasurementUnitRepository: Repository, IMeasurementUnitRepository
 
     public bool IsNull(int id)
     {
-        return Db.MeasurementUnits.Any(r => r.MeasurementUnitId == id);
+        return !Db.MeasurementUnits.Any(r => r.MeasurementUnitId == id);
     }
 
     public bool IsRelatedDataExist(int id)

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Account\" />
+    <Folder Include="Expense\" />
   </ItemGroup>
 
 </Project>
