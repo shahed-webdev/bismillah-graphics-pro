@@ -51,12 +51,6 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //withdraw view
-        public IActionResult Withdraw()
-        {
-            return View();
-        }
-
         //get account
         public IActionResult GetWithdraw()
         {
@@ -85,6 +79,31 @@ namespace BismillahGraphicsPro.Web.Controllers
         public IActionResult PostDeposit([FromBody] AccountDepositViewModel model)
         {
             var response = _account.Deposit(User.Identity.Name,model);
+            return Json(response);
+        }
+
+
+        //withdraw view
+        public IActionResult Withdraw(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Index");
+
+            var model = _account.Get(id.GetValueOrDefault());
+            return View(model.Data);
+        }
+
+        //get Withdraw data-table
+        public IActionResult GetWithdrawData(DataRequest request)
+        {
+            var response = _account.WithdrawList(request);
+            return Json(response);
+        }
+
+        //post Withdraw account
+        [HttpPost]
+        public IActionResult PostWithdraw([FromBody] AccountWithdrawViewModel model)
+        {
+            var response = _account.Withdraw(User.Identity.Name, model);
             return Json(response);
         }
     }

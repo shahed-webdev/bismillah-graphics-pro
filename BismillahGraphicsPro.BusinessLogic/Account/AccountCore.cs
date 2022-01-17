@@ -44,7 +44,7 @@ public class AccountCore: Core,IAccountCore
             if (string.IsNullOrEmpty(model.AccountName))
                 return new DbResponse(false, "Invalid Data");
 
-            if (!_db.Account.IsNull(model.AccountId))
+            if (_db.Account.IsNull(model.AccountId))
                 return new DbResponse(false, "No Data Found");
 
             if (_db.Account.IsExistName(model.BranchId, model.AccountName, model.AccountId))

@@ -1,7 +1,7 @@
 ﻿@model AccountViewModel
 
 @{
-    ViewData["Title"] = "Withdraw";
+    ViewData["Title"] = "Deposit";
     Layout = "_AdminLayout";
 }
 
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="col-xl-3">
-                <div class="form-group">
+                <div x-init="dateInit()" class="form-group">
                     <label>Deposit Date</label>
                     <input x-model="formData.DepositDate" type="text" class="form-control datepicker" required>
                 </div>
@@ -56,12 +56,8 @@
                 <th>
                     <strong>Date</strong>
                 </th>
-                <th class="text-center">
-                    <strong>Delete</strong>
-                </th>
             </tr>
             </thead>
-            <tbody id="tBody"></tbody>
         </table>
     </div>
 
@@ -76,11 +72,6 @@
 @section Scripts {
     <script>
         $(function() {
-            $('.datepicker').pickadate({
-                format: 'd, mmm yyyy',
-                editable: true
-            }).val(moment(new Date()).format("D, MMM YYYY"));
-
             dataTable.getData();
         });
 
@@ -104,20 +95,12 @@
                         { data: "DepositAmount", "render": dataTable.addSign },
                         { data: "Description" },
                         {
-                            data: "DepositDateUtc",
+                            data: "DepositDate",
                             "render": function(data) { return moment(data).format('DD MMM YYYY') }
-                        },
-                        {
-                            data: "AccountDepositId",
-                            "render": function(data, type, row, meta) {
-                                return `<a id=${data} class="delete red-text fas fa-trash-alt"></a>`;
-                            }
                         }
                     ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [3] },
-                        { 'sortable': false, 'targets': [3] },
-                        { 'className': "text-center", "targets": [3] }
+                        { 'className': "text-center", "targets": [2] }
                         //{ 'className': "text-left", "targets": [1] }
                     ]
                 });
@@ -139,36 +122,46 @@
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
             },
             addSign: function(data) { return `${data}/-` }
-        }
+        };
 
         //alpine js code
         function initData() {
             return {
                 loading: false,
                 data: [],
-                isEditMode: false,
                 formData: {},
+
+                //date function init
+                dateInit() {
+                    this.formData.DepositDate = moment(new Date()).format("D, MMM YYYY");
+
+                    $('.datepicker').pickadate({
+                        onSet: context => {
+                            this.formData.DepositDate = moment(context.select).format("D, MMM YYYY");
+                        }
+                    })
+                },
+
 
                 //insert data
                 async insertData() {
                     this.loading = true;
 
                     try {
-                        this.formData.AccountId = @Model.AccountId
-//                        this.formData.DepositDateUtc = new Date();
+                        this.formData.AccountId = @Model.AccountId;
 
                         const options = {
                             method: 'POST',
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(this.formData)
-                        }
+                        };
 
                         const response = await fetch("/Account/PostDeposit", options);
                         const responseData = await response.json();
 
                         if (responseData.IsSuccess) {
-                            dataTable.getData();
-                            this.formData = {}
+                            this.formData = {};
+                            location.href = "account";
                         }
 
                         $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
@@ -178,59 +171,8 @@
                         console.log(error);
                         this.loading = false;
                     }
-                },
-
-                //update data
-                async updateData(index) {
-                    try {
-                        const updatedData = this.data[index];
-
-                        const options = {
-                            method: 'PUT',
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(updatedData)
-                        }
-
-                        this.loading = true;
-
-                        const response = await fetch("/Account/UpdateAccount", options);
-                        const responseData = await response.json();
-
-                        this.loading = false;
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-
-                        updatedData.isEditMode = !responseData.IsSuccess;
-
-                    } catch (error) {
-                        console.log(error)
-                        this.loading = false;
-                    }
-                },
-
-                //delete data
-                async deleteData(id) {
-                    this.loading = true;
-
-                    try {
-                        const options = { method: 'DELETE' }
-
-                        const response = await fetch(`/Account/DeleteAccount/${id}`, options);
-                        const responseData = await response.json();
-
-                        if (responseData.IsSuccess)
-                            this.data = this.data.filter(item => item.AccountId !== id);
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-
-                        this.loading = false;
-
-                    } catch (error) {
-                        console.log(error)
-                        this.loading = false;
-                    }
                 }
-            }
+            };
         }
     </script>
 }
