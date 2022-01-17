@@ -125,11 +125,11 @@
 
                 //date function init
                 dateInit() {
-                    this.formData.DepositDate = moment(new Date()).format("D, MMM YYYY");
+                    this.formData.WithdrawDate = moment(new Date()).format("D, MMM YYYY");
 
                     $('.datepicker').pickadate({
                         onSet: context => {
-                            this.formData.DepositDate = moment(context.select).format("D, MMM YYYY");
+                            this.formData.WithdrawDate = moment(context.select).format("D, MMM YYYY");
                         }
                     })
                 },

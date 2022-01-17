@@ -43,36 +43,36 @@
             </tr>
             </thead>
             <tbody x-init="getData()">
-            <template x-for="(unit, index) in data" :key="unit.AccountId">
+            <template x-for="(item, index) in data" :key="item.AccountId">
                 <tr>
-                    <td x-show="!unit.isEditMode" x-text="unit.AccountName"></td>
-                    <td x-show="unit.isEditMode">
+                    <td x-show="!item.isEditMode" x-text="item.AccountName"></td>
+                    <td x-show="item.isEditMode">
                         <div class="d-flex align-items-center">
-                            <input x-on:click.away="unit.isEditMode = false"
+                            <input x-on:click.away="item.isEditMode = false"
                                    x-on:keydown.enter="updateData(index)"
-                                   x-on:keydown.window.escape="unit.isEditMode = false"
-                                   x-model="unit.AccountName"
+                                   x-on:keydown.window.escape="item.isEditMode = false"
+                                   x-model="item.AccountName"
                                    class="form-control flex-1 mr-3"
                                    type="text">
 
-                            <button type="button" :disabled="loading" x-show="unit.isEditMode" x-on:click="updateData(index)" class="btn btn-link text-primary">Update</button>
+                            <button type="button" :disabled="loading" x-show="item.isEditMode" x-on:click="updateData(index)" class="btn btn-link text-primary">Update</button>
                         </div>
                     </td>
                     <td class="text-right">
-                        ৳<span x-text="unit.Balance"></span>
+                        ৳<span x-text="item.Balance"></span>
                     </td>
                     <td class="text-center">
-                        <a x-show="unit.Balance > 0" class="text-primary" :href="'/account/withdraw/' + unit.AccountId">Withdraw</a>
-                        <span x-show="unit.Balance <= 0">No balance</span>
+                        <a x-show="item.Balance > 0" class="text-primary" :href="'/account/withdraw/' + item.AccountId">Withdraw</a>
+                        <span x-show="item.Balance <= 0">No balance</span>
                     </td>
                     <td class="text-center">
-                        <a class="text-primary" :href="'/account/deposit/' + unit.AccountId">Deposit</a>
+                        <a class="text-primary" :href="'/account/deposit/' + item.AccountId">Deposit</a>
                     </td>
                     <td class="text-center">
-                        <a x-show="!unit.isEditMode" x-on:click="unit.isEditMode=true" class="fas fa-edit"></a>
+                        <a x-show="!item.isEditMode" x-on:click="item.isEditMode=true" class="fas fa-edit"></a>
                     </td>
                     <td class="text-center">
-                        <a x-on:click="deleteData(unit.AccountId)" style="color: #ff0000" class="fas fa-trash-alt"></a>
+                        <a x-on:click="deleteData(item.AccountId)" style="color: #ff0000" class="fas fa-trash-alt"></a>
                     </td>
                 </tr>
             </template>
