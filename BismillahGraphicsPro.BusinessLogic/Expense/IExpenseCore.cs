@@ -4,10 +4,10 @@ namespace BismillahGraphicsPro.BusinessLogic;
 
 public interface IExpenseCore
 {
-    DbResponse<ExpanseCategoryCrudModel> CategoryAdd(string categoryName, string userName);
-    DbResponse CategoryEdit(ExpanseCategoryCrudModel model);
-    DbResponse CategoryDelete(int id);
-    DbResponse<ExpanseCategoryCrudModel> CategoryGet(int id);
-    List<ExpanseCategoryCrudModel> CategoryList(string userName);
-    List<DDL> CategoryDdl(string userName);
+    Task<DbResponse<ExpanseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName);
+    Task<DbResponse> CategoryEditAsync(ExpanseCategoryCrudModel model);
+    Task<DbResponse> CategoryDeleteAsync(int id);
+    Task<DbResponse<ExpanseCategoryCrudModel>> CategoryGetAsync(int id);
+    Task<List<ExpanseCategoryCrudModel>> CategoryListAsync(string userName);
+    Task<List<DDL>> CategoryDdlAsync(string userName);
 }
