@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BismillahGraphicsPro.Reposi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BismillahGraphicsPro.BusinessLogic", "BismillahGraphicsPro.BusinessLogic\BismillahGraphicsPro.BusinessLogic.csproj", "{F99F1D06-E9AB-477B-B42E-CCE50F074206}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BismillahGraphicsPro.ViewModel", "BismillahGraphicsPro.ViewModel\BismillahGraphicsPro.ViewModel.csproj", "{BA5C3B86-D9DD-4B49-8977-ED0180CF68C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BismillahGraphicsPro.ViewModel", "BismillahGraphicsPro.ViewModel\BismillahGraphicsPro.ViewModel.csproj", "{BA5C3B86-D9DD-4B49-8977-ED0180CF68C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JqueryDataTables", "JqueryDataTables\JqueryDataTables.csproj", "{4AD787D3-EEA5-4826-81BE-4ECDB2F4AE93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{BA5C3B86-D9DD-4B49-8977-ED0180CF68C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA5C3B86-D9DD-4B49-8977-ED0180CF68C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA5C3B86-D9DD-4B49-8977-ED0180CF68C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AD787D3-EEA5-4826-81BE-4ECDB2F4AE93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AD787D3-EEA5-4826-81BE-4ECDB2F4AE93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AD787D3-EEA5-4826-81BE-4ECDB2F4AE93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AD787D3-EEA5-4826-81BE-4ECDB2F4AE93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,9 @@ namespace BismillahGraphicsPro.Data
         public bool? IsAdded { get; set; }
         public decimal Amount { get; set; }
         public string? Details { get; set; }
-        public string? Type { get; set; }
+        public AccountLogType Type { get; set; }
+        public AccountLogTableName TableName { get; set; }
+        public int TableId { get; set; }
         public DateTime LogDate { get; set; }
         public DateTime InsertDateBdTime { get; set; }
 

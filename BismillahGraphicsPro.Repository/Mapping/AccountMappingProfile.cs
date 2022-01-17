@@ -10,5 +10,7 @@ public class AccountMappingProfile: Profile
     {
         CreateMap<Account, AccountAddModel>().ReverseMap();
         CreateMap<Account, AccountViewModel>().ReverseMap();
+        CreateMap<AccountDeposit, AccountDepositViewModel>().ReverseMap();
+        CreateMap<AccountWithdraw, AccountWithdrawViewModel>().ReverseMap();
     }
 }

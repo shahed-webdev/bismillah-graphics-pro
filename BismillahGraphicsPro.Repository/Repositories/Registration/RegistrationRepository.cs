@@ -15,6 +15,11 @@ namespace BismillahGraphicsPro.Repository
             return Db.Registrations.FirstOrDefault(r => r.UserName == userName)?.BranchId ?? 0;
         }
 
+        public int RegistrationIdByUserName(string userName)
+        {
+            return Db.Registrations.FirstOrDefault(r => r.UserName == userName)?.RegistrationId ?? 0;
+        }
+
         public UserType UserTypeByUserName(string userName)
         {
             return Db.Registrations.FirstOrDefault(r => r.UserName == userName)!.Type;

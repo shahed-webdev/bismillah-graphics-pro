@@ -9,11 +9,13 @@
   <ItemGroup>
     <ProjectReference Include="..\BismillahGraphicsPro.Data\BismillahGraphicsPro.Data.csproj" />
     <ProjectReference Include="..\BismillahGraphicsPro.ViewModel\BismillahGraphicsPro.ViewModel.csproj" />
+    <ProjectReference Include="..\JqueryDataTables\JqueryDataTables.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Repositories\Branch\" />
     <Folder Include="Repositories\MeasurementUnit\" />
+    <Folder Include="Repositories\AccountLog\" />
   </ItemGroup>
 
 </Project>
