@@ -43,7 +43,7 @@ public class ExpenseCore: Core, IExpenseCore
             if (string.IsNullOrEmpty(model.CategoryName))
                 return Task.FromResult(new DbResponse(false, "Invalid Data"));
 
-            if (!_db.ExpanseCategory.IsNull(model.ExpanseCategoryId))
+            if (_db.ExpanseCategory.IsNull(model.ExpanseCategoryId))
                 return Task.FromResult(new DbResponse(false, "No Data Found"));
 
             if (_db.ExpanseCategory.IsExistName(model.BranchId, model.CategoryName, model.ExpanseCategoryId))
@@ -63,14 +63,13 @@ public class ExpenseCore: Core, IExpenseCore
     {
         try
         {
-            if (!_db.ExpanseCategory.IsNull(id))
+            if (_db.ExpanseCategory.IsNull(id))
                 return Task.FromResult(new DbResponse(false, "No data Found"));
 
             if (_db.ExpanseCategory.IsRelatedDataExist(id))
                 return Task.FromResult(new DbResponse(false, "Failed, already exist in products"));
 
             return Task.FromResult(_db.ExpanseCategory.Delete(id));
-
         }
         catch (Exception e)
         {

@@ -1,0 +1,172 @@
+﻿
+@{
+    ViewData["Title"] = "Expense Category";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()" class="mx-3">
+    <h3 class="page-header my-4">Expense Category</h3>
+
+    <form x-on:submit.prevent="insertData">
+        <div class="d-flex align-items-center">
+            <div class="form-group mr-3">
+                <label>Category Name</label>
+                <input class="form-control" x-model="formData.CategoryName" type="text" required>
+            </div>
+            <div class="pt-3">
+                <button type="submit" class="btn btn-md btn-custom-bg text-white m-0">Create <i class="fas fa-check ml-1"></i></button>
+            </div>
+        </div>
+    </form>
+
+    <div class="card card-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    <strong>Category Name</strong>
+                </th>
+                <th class="text-center" style="width: 100px">
+                    <strong> Edit</strong>
+                </th>
+                <th class="text-center" style="width: 100px">
+                    <strong>Delete</strong>
+                </th>
+            </tr>
+            </thead>
+            <tbody x-init="getData()">
+            <template x-for="(item, index) in data" :key="item.ExpanseCategoryId">
+                <tr>
+                    <td x-show="!item.isEditMode" x-text="item.CategoryName"></td>
+                    <td x-show="item.isEditMode">
+                        <input
+                            x-on:click.away="item.isEditMode = false"
+                            x-on:keydown.enter="updateData(index)"
+                            x-on:keydown.window.escape="item.isEditMode = false"
+                            x-model="item.CategoryName"
+                            class="form-control"
+                            type="text">
+                    </td>
+                    <td class="text-center">
+                        <a x-show="!item.isEditMode" x-on:click="item.isEditMode=true" class="fas fa-edit"></a>
+                        <button type="button" :disabled="loading" x-show="item.isEditMode" x-on:click="updateData(index)" class="btn btn-link text-primary">Update</button>
+                    </td>
+                    <td class="text-center">
+                        <a x-on:click="deleteData(item.ExpanseCategoryId)" style="color: #ff0000" class="fas fa-trash-alt"></a>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+    </div>
+    
+    
+    <!--loading screen-->
+    <div x-show="loading">
+        <partial name="loadingSvg"/>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function initData() {
+            return {
+                loading: false,
+                data: [],
+                isEditMode: false,
+                formData: {},
+
+                //get data
+                async getData() {
+                    this.loading = true;
+
+                    const response = await fetch("/Expense/GetCategory");
+                    const responseData = await response.json();
+
+                    this.data = responseData || [];
+                    this.loading = false;
+                },
+
+                //insert data
+                async insertData() {
+                    this.loading = true;
+
+                    try {
+                        const options = {
+                            method: 'POST',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(this.formData)
+                        }
+
+                        const response = await fetch("/Expense/PostCategory", options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            this.data.push(responseData.Data);
+                            this.formData = {}
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                },
+
+                //update data
+                async updateData(index) {
+                    this.loading = true;
+
+                    try {
+                        const updatedData = this.data[index];
+
+                        const options = {
+                            method: 'PUT',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(updatedData)
+                        }
+
+                        const response = await fetch("/Expense/UpdateCategory", options);
+                        const responseData = await response.json();
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+
+                        updatedData.isEditMode = !responseData.IsSuccess;
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error)
+                        this.loading = false;
+                    }
+                },
+
+                //delete data
+                async deleteData(id) {
+                    this.loading = true;
+
+                    try {
+                        const options = { method: 'DELETE' }
+
+                        const response = await fetch(`/Expense/DeleteCategory/${id}`, options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess)
+                            this.data = this.data.filter(item => item.ExpanseCategoryId !== id);
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error)
+                        this.loading = false;
+                    }
+                }
+            }
+        }
+    </script>
+}
+
