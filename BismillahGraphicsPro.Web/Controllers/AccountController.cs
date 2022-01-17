@@ -12,6 +12,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             _account = account;
         }
 
+        //account view
         public IActionResult Index()
         {
             return View();
@@ -47,5 +48,19 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = _account.Delete(id);
             return Json(response);
         }
+
+
+        //withdraw view
+        public IActionResult Withdraw()
+        {
+            return View();
+        }
+
+        //deposit view
+        public IActionResult Deposit()
+        {
+            return View();
+        }
+
     }
 }
