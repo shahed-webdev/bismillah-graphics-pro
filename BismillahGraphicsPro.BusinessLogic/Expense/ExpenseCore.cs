@@ -10,13 +10,13 @@ public class ExpenseCore: Core, IExpenseCore
     {
     }
 
-    public DbResponse<ExpanseCategoryCrudModel> CategoryAdd(string categoryName, string userName)
+    public Task<DbResponse<ExpanseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName)
     {
         try
         {
 
             if (string.IsNullOrEmpty(categoryName))
-                return new DbResponse<ExpanseCategoryCrudModel>(false, "Invalid Data");
+                return Task.FromResult(new DbResponse<ExpanseCategoryCrudModel>(false, "Invalid Data"));
 
             var model = new ExpanseCategoryCrudModel
             {
@@ -25,84 +25,84 @@ public class ExpenseCore: Core, IExpenseCore
             };
 
             if (_db.ExpanseCategory.IsExistName(model.BranchId, model.CategoryName))
-                return new DbResponse<ExpanseCategoryCrudModel>(false, $" {model.CategoryName} already Exist");
+                return Task.FromResult(new DbResponse<ExpanseCategoryCrudModel>(false, $" {model.CategoryName} already Exist"));
 
-            return _db.ExpanseCategory.Add(model);
+            return Task.FromResult(_db.ExpanseCategory.Add(model));
 
         }
         catch (Exception e)
         {
-            return new DbResponse<ExpanseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}");
+            return Task.FromResult(new DbResponse<ExpanseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 
-    public DbResponse CategoryEdit(ExpanseCategoryCrudModel model)
+    public Task<DbResponse> CategoryEditAsync(ExpanseCategoryCrudModel model)
     {
         try
         {
             if (string.IsNullOrEmpty(model.CategoryName))
-                return new DbResponse(false, "Invalid Data");
+                return Task.FromResult(new DbResponse(false, "Invalid Data"));
 
             if (!_db.ExpanseCategory.IsNull(model.ExpanseCategoryId))
-                return new DbResponse(false, "No Data Found");
+                return Task.FromResult(new DbResponse(false, "No Data Found"));
 
             if (_db.ExpanseCategory.IsExistName(model.BranchId, model.CategoryName, model.ExpanseCategoryId))
-                return new DbResponse(false, $" {model.CategoryName} already Exist");
+                return Task.FromResult(new DbResponse(false, $" {model.CategoryName} already Exist"));
 
 
-            return _db.ExpanseCategory.Edit(model);
+            return Task.FromResult(_db.ExpanseCategory.Edit(model));
 
         }
         catch (Exception e)
         {
-            return new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}");
+            return Task.FromResult(new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 
-    public DbResponse CategoryDelete(int id)
+    public Task<DbResponse> CategoryDeleteAsync(int id)
     {
         try
         {
             if (!_db.ExpanseCategory.IsNull(id))
-                return new DbResponse(false, "No data Found");
+                return Task.FromResult(new DbResponse(false, "No data Found"));
 
             if (_db.ExpanseCategory.IsRelatedDataExist(id))
-                return new DbResponse(false, "Failed, already exist in products");
+                return Task.FromResult(new DbResponse(false, "Failed, already exist in products"));
 
-            return _db.ExpanseCategory.Delete(id);
+            return Task.FromResult(_db.ExpanseCategory.Delete(id));
 
         }
         catch (Exception e)
         {
-            return new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}");
+            return Task.FromResult(new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 
-    public DbResponse<ExpanseCategoryCrudModel> CategoryGet(int id)
+    public Task<DbResponse<ExpanseCategoryCrudModel>> CategoryGetAsync(int id)
     {
         try
         {
             if (_db.ExpanseCategory.IsNull(id))
-                return new DbResponse<ExpanseCategoryCrudModel>(false, "No data Found");
+                return Task.FromResult(new DbResponse<ExpanseCategoryCrudModel>(false, "No data Found"));
 
-            return _db.ExpanseCategory.Get(id);
+            return Task.FromResult(_db.ExpanseCategory.Get(id));
 
         }
         catch (Exception e)
         {
-            return new DbResponse<ExpanseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}");
+            return Task.FromResult(new DbResponse<ExpanseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 
-    public List<ExpanseCategoryCrudModel> CategoryList(string userName)
+    public Task<List<ExpanseCategoryCrudModel>> CategoryListAsync(string userName)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
-        return _db.ExpanseCategory.List(branchId);
+        return Task.FromResult(_db.ExpanseCategory.List(branchId));
     }
 
-    public List<DDL> CategoryDdl(string userName)
+    public Task<List<DDL>> CategoryDdlAsync(string userName)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
-        return _db.ExpanseCategory.ListDdl(branchId);
+        return Task.FromResult(_db.ExpanseCategory.ListDdl(branchId));
     }
 }

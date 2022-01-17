@@ -125,16 +125,16 @@ public class AccountCore: Core,IAccountCore
             {
                 var accountLog = new AccountLogAddModel
                 {
-                    AccountId = model.AccountId,
+                    AccountId = accountDepositResponse.Data.AccountId,
                     BranchId = _db.Registration.BranchIdByUserName(userName),
                     RegistrationId = _db.Registration.RegistrationIdByUserName(userName),
                     IsAdded = true,
-                    Amount = model.DepositAmount,
-                    Details = model.Description,
+                    Amount = accountDepositResponse.Data.DepositAmount,
+                    Details = accountDepositResponse.Data.Description,
                     Type = AccountLogType.Deposit,
                     TableName = AccountLogTableName.AccountDeposit,
-                    TableId = model.AccountDepositId,
-                    LogDate = model.DepositDate
+                    TableId = accountDepositResponse.Data.AccountDepositId,
+                    LogDate = accountDepositResponse.Data.DepositDate
                 };
 
                 _db.AccountLog.Add(accountLog);
