@@ -20,8 +20,8 @@ namespace BismillahGraphicsPro.Data
         public virtual DbSet<AccountLog> AccountLogs { get; set; } = null!;
         public virtual DbSet<AccountWithdraw> AccountWithdraws { get; set; } = null!;
         public virtual DbSet<Branch> Branches { get; set; } = null!;
-        public virtual DbSet<Expanse> Expanses { get; set; } = null!;
-        public virtual DbSet<ExpanseCategory> ExpanseCategories { get; set; } = null!;
+        public virtual DbSet<Expense> Expenses { get; set; } = null!;
+        public virtual DbSet<ExpenseCategory> ExpenseCategories { get; set; } = null!;
         public virtual DbSet<MeasurementUnit> MeasurementUnits { get; set; } = null!;
         public virtual DbSet<PageLink> PageLinks { get; set; } = null!;
         public virtual DbSet<PageLinkAssign> PageLinkAssigns { get; set; } = null!;
@@ -171,48 +171,48 @@ namespace BismillahGraphicsPro.Data
                     .HasDefaultValueSql("((1))");
             });
 
-            modelBuilder.Entity<Expanse>(entity =>
+            modelBuilder.Entity<Expense>(entity =>
             {
-                entity.ToTable("Expanse");
+                entity.ToTable("Expense");
 
-                entity.Property(e => e.ExpanseAmount).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.ExpenseAmount).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.ExpanseDate).HasColumnType("date");
+                entity.Property(e => e.ExpenseDate).HasColumnType("date");
 
-                entity.Property(e => e.ExpanseFor).HasMaxLength(256);
+                entity.Property(e => e.ExpenseFor).HasMaxLength(256);
 
                 entity.Property(e => e.InsertDateBdTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
                 entity.HasOne(d => d.Registration)
-                    .WithMany(p => p.Expanses)
+                    .WithMany(p => p.Expenses)
                     .HasForeignKey(d => d.RegistrationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Expanse_Registration");
+                    .HasConstraintName("FK_Expense_Registration");
 
                 entity.HasOne(d => d.Account)
-                    .WithMany(p => p.Expanses)
+                    .WithMany(p => p.Expenses)
                     .HasForeignKey(d => d.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Expanse_Account");
+                    .HasConstraintName("FK_Expense_Account");
 
                 entity.HasOne(d => d.Branch)
-                    .WithMany(p => p.Expanses)
+                    .WithMany(p => p.Expenses)
                     .HasForeignKey(d => d.BranchId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Expanse_Branch");
+                    .HasConstraintName("FK_Expense_Branch");
 
-                entity.HasOne(d => d.ExpanseCategory)
-                    .WithMany(p => p.Expanses)
-                    .HasForeignKey(d => d.ExpanseCategoryId)
+                entity.HasOne(d => d.ExpenseCategory)
+                    .WithMany(p => p.Expenses)
+                    .HasForeignKey(d => d.ExpenseCategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Expanse_ExpanseCategory");
+                    .HasConstraintName("FK_Expense_ExpenseCategory");
             });
 
-            modelBuilder.Entity<ExpanseCategory>(entity =>
+            modelBuilder.Entity<ExpenseCategory>(entity =>
             {
-                entity.ToTable("ExpanseCategory");
+                entity.ToTable("ExpenseCategory");
 
                 entity.Property(e => e.CategoryName).HasMaxLength(128);
 
@@ -221,10 +221,10 @@ namespace BismillahGraphicsPro.Data
                     .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
                 entity.HasOne(d => d.Branch)
-                    .WithMany(p => p.ExpanseCategories)
+                    .WithMany(p => p.ExpenseCategories)
                     .HasForeignKey(d => d.BranchId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ExpanseCategory_Branch");
+                    .HasConstraintName("FK_ExpenseCategory_Branch");
             });
 
             modelBuilder.Entity<MeasurementUnit>(entity =>

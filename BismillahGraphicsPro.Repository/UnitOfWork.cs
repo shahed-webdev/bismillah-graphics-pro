@@ -14,8 +14,9 @@ namespace BismillahGraphicsPro.Repository
             AccountLog = new AccountLogRepository(_db, mapper);
             Branch = new BranchRepository(_db, mapper);
             Expense = new ExpenseRepository(_db, mapper);
-            ExpanseCategory = new ExpanseCategoryRepository(_db,mapper);
+            ExpenseCategory = new ExpenseCategoryRepository(_db,mapper);
             MeasurementUnit = new MeasurementUnitRepository(_db, mapper);
+            Product = new ProductRepository(_db, mapper);
             ProductCategory = new ProductCategoryRepository(_db, mapper);
             Registration = new RegistrationRepository(_db, mapper);
 
@@ -25,7 +26,8 @@ namespace BismillahGraphicsPro.Repository
         public IAccountLogRepository AccountLog { get; }
         public IBranchRepository Branch { get; }
         public IExpenseRepository Expense { get; }
-        public IExpanseCategoryRepository ExpanseCategory { get; }
+        public IExpenseCategoryRepository ExpenseCategory { get; }
+        public IProductRepository Product { get; }
         public IProductCategoryRepository ProductCategory { get; }
         public IMeasurementUnitRepository MeasurementUnit { get; }
         public IRegistrationRepository Registration { get; }

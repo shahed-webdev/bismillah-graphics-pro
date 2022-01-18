@@ -16,7 +16,7 @@ namespace BismillahGraphicsPro.Data
                     { "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7",UserType.SubAdmin.ToString()},
                     { "31f91532-c149-4248-a844-f7601c24b740",UserType.BalanceSheet.ToString()},
                     { "ae25c232-3435-4239-901d-0e2d3e4069c9",UserType.Deposit.ToString()},
-                    { "446d16c5-000c-4099-b553-23696a5284ec",UserType.Expanse.ToString()},
+                    { "446d16c5-000c-4099-b553-23696a5284ec",UserType.Expense.ToString()},
                     { "b1280e80-8ec6-48fb-8580-6f2e57db8d58",UserType.ExpenseCategory.ToString()},
                     { "22b877e9-56c5-4281-92a7-d336cd4382a4",UserType.MeasurementUnit.ToString()},
                     { "3e0d4db7-80a0-49a9-8d8d-116cc5c9fc83",UserType.NetSummery.ToString()},

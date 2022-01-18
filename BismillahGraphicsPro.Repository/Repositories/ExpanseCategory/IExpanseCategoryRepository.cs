@@ -2,16 +2,16 @@
 
 namespace BismillahGraphicsPro.Repository;
 
-public interface IExpanseCategoryRepository
+public interface IExpenseCategoryRepository
 {
-    DbResponse<ExpanseCategoryCrudModel> Add(ExpanseCategoryCrudModel model);
-    DbResponse Edit(ExpanseCategoryCrudModel model);
+    DbResponse<ExpenseCategoryCrudModel> Add(ExpenseCategoryCrudModel model);
+    DbResponse Edit(ExpenseCategoryCrudModel model);
     DbResponse Delete(int id);
-    DbResponse<ExpanseCategoryCrudModel> Get(int id);
+    DbResponse<ExpenseCategoryCrudModel> Get(int id);
     bool IsExistName(int branchId, string name);
     bool IsExistName(int branchId, string name, int updateId);
     bool IsNull(int id);
     bool IsRelatedDataExist(int id);
-    List<ExpanseCategoryCrudModel> List(int branchId);
+    List<ExpenseCategoryCrudModel> List(int branchId);
     List<DDL> ListDdl(int branchId);
 }

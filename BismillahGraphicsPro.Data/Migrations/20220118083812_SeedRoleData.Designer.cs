@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BismillahGraphicsPro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220117074150_ProjectTables")]
-    partial class ProjectTables
+    [Migration("20220118083812_SeedRoleData")]
+    partial class SeedRoleData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -231,13 +231,13 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.ToTable("Branch", (string)null);
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.Expanse", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.Expense", b =>
                 {
-                    b.Property<int>("ExpanseId")
+                    b.Property<int>("ExpenseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpanseId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpenseId"), 1L, 1);
 
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
@@ -245,16 +245,16 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("ExpanseAmount")
+                    b.Property<decimal>("ExpenseAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ExpanseCategoryId")
+                    b.Property<int>("ExpenseCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ExpanseDate")
+                    b.Property<DateTime>("ExpenseDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("ExpanseFor")
+                    b.Property<string>("ExpenseFor")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -266,24 +266,26 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("RegistrationId")
                         .HasColumnType("int");
 
-                    b.HasKey("ExpanseId");
+                    b.HasKey("ExpenseId");
 
                     b.HasIndex("AccountId");
 
                     b.HasIndex("BranchId");
 
-                    b.HasIndex("ExpanseCategoryId");
+                    b.HasIndex("ExpenseCategoryId");
 
-                    b.ToTable("Expanse", (string)null);
+                    b.HasIndex("RegistrationId");
+
+                    b.ToTable("Expense", (string)null);
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpanseCategory", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpenseCategory", b =>
                 {
-                    b.Property<int>("ExpanseCategoryId")
+                    b.Property<int>("ExpenseCategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpanseCategoryId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpenseCategoryId"), 1L, 1);
 
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
@@ -298,11 +300,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
-                    b.HasKey("ExpanseCategoryId");
+                    b.HasKey("ExpenseCategoryId");
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("ExpanseCategory", (string)null);
+                    b.ToTable("ExpenseCategory", (string)null);
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.MeasurementUnit", b =>
@@ -769,6 +771,17 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasIndex("BranchId");
 
                     b.ToTable("Registration", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RegistrationId = 1,
+                            InsertDateBdTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Authority",
+                            Ps = "Admin_121",
+                            Type = "Authority",
+                            UserName = "Authority"
+                        });
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Selling", b =>
@@ -1180,6 +1193,218 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "25205E51-C7F6-43E5-927A-8074AF61B966",
+                            ConcurrencyStamp = "25205E51-C7F6-43E5-927A-8074AF61B966",
+                            Name = "Authority",
+                            NormalizedName = "AUTHORITY"
+                        },
+                        new
+                        {
+                            Id = "e202e807-4b4f-4c78-983a-2ad06e3f7012",
+                            ConcurrencyStamp = "e202e807-4b4f-4c78-983a-2ad06e3f7012",
+                            Name = "AccountCreate",
+                            NormalizedName = "ACCOUNTCREATE"
+                        },
+                        new
+                        {
+                            Id = "A7B695C1-E8D7-41A9-814F-28BB7EEF32F4",
+                            ConcurrencyStamp = "A7B695C1-E8D7-41A9-814F-28BB7EEF32F4",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7",
+                            ConcurrencyStamp = "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7",
+                            Name = "SubAdmin",
+                            NormalizedName = "SUBADMIN"
+                        },
+                        new
+                        {
+                            Id = "31f91532-c149-4248-a844-f7601c24b740",
+                            ConcurrencyStamp = "31f91532-c149-4248-a844-f7601c24b740",
+                            Name = "BalanceSheet",
+                            NormalizedName = "BALANCESHEET"
+                        },
+                        new
+                        {
+                            Id = "ae25c232-3435-4239-901d-0e2d3e4069c9",
+                            ConcurrencyStamp = "ae25c232-3435-4239-901d-0e2d3e4069c9",
+                            Name = "Deposit",
+                            NormalizedName = "DEPOSIT"
+                        },
+                        new
+                        {
+                            Id = "446d16c5-000c-4099-b553-23696a5284ec",
+                            ConcurrencyStamp = "446d16c5-000c-4099-b553-23696a5284ec",
+                            Name = "Expense",
+                            NormalizedName = "EXPENSE"
+                        },
+                        new
+                        {
+                            Id = "b1280e80-8ec6-48fb-8580-6f2e57db8d58",
+                            ConcurrencyStamp = "b1280e80-8ec6-48fb-8580-6f2e57db8d58",
+                            Name = "ExpenseCategory",
+                            NormalizedName = "EXPENSECATEGORY"
+                        },
+                        new
+                        {
+                            Id = "22b877e9-56c5-4281-92a7-d336cd4382a4",
+                            ConcurrencyStamp = "22b877e9-56c5-4281-92a7-d336cd4382a4",
+                            Name = "MeasurementUnit",
+                            NormalizedName = "MEASUREMENTUNIT"
+                        },
+                        new
+                        {
+                            Id = "3e0d4db7-80a0-49a9-8d8d-116cc5c9fc83",
+                            ConcurrencyStamp = "3e0d4db7-80a0-49a9-8d8d-116cc5c9fc83",
+                            Name = "NetSummery",
+                            NormalizedName = "NETSUMMERY"
+                        },
+                        new
+                        {
+                            Id = "897ea03e-f328-4a9e-91bc-247d9dcc6aa9",
+                            ConcurrencyStamp = "897ea03e-f328-4a9e-91bc-247d9dcc6aa9",
+                            Name = "PaymentSummery",
+                            NormalizedName = "PAYMENTSUMMERY"
+                        },
+                        new
+                        {
+                            Id = "5a52c2fc-6d6b-478f-9fce-ba46abaea1f2",
+                            ConcurrencyStamp = "5a52c2fc-6d6b-478f-9fce-ba46abaea1f2",
+                            Name = "Product",
+                            NormalizedName = "PRODUCT"
+                        },
+                        new
+                        {
+                            Id = "bbd6cebc-741d-4bfb-852b-204d5f623a86",
+                            ConcurrencyStamp = "bbd6cebc-741d-4bfb-852b-204d5f623a86",
+                            Name = "ProductCategory",
+                            NormalizedName = "PRODUCTCATEGORY"
+                        },
+                        new
+                        {
+                            Id = "a9c6f8da-3e48-47a9-b355-6107b297ae10",
+                            ConcurrencyStamp = "a9c6f8da-3e48-47a9-b355-6107b297ae10",
+                            Name = "ProductSummery",
+                            NormalizedName = "PRODUCTSUMMERY"
+                        },
+                        new
+                        {
+                            Id = "9d037f79-ec3e-481d-8e4f-acf86a3a2f5c",
+                            ConcurrencyStamp = "9d037f79-ec3e-481d-8e4f-acf86a3a2f5c",
+                            Name = "PurchaseRecord",
+                            NormalizedName = "PURCHASERECORD"
+                        },
+                        new
+                        {
+                            Id = "bc6a04f9-6984-4755-8573-016047310f8e",
+                            ConcurrencyStamp = "bc6a04f9-6984-4755-8573-016047310f8e",
+                            Name = "ReportDailyCash",
+                            NormalizedName = "REPORTDAILYCASH"
+                        },
+                        new
+                        {
+                            Id = "7210cd36-9476-4a49-ad86-f2bfb88c4e6d",
+                            ConcurrencyStamp = "7210cd36-9476-4a49-ad86-f2bfb88c4e6d",
+                            Name = "ReportExpense",
+                            NormalizedName = "REPORTEXPENSE"
+                        },
+                        new
+                        {
+                            Id = "93c4b0d6-0d82-410f-adb1-fb4aba413a8e",
+                            ConcurrencyStamp = "93c4b0d6-0d82-410f-adb1-fb4aba413a8e",
+                            Name = "ReportIncome",
+                            NormalizedName = "REPORTINCOME"
+                        },
+                        new
+                        {
+                            Id = "aceacd97-893e-464a-9f94-9e19d8984764",
+                            ConcurrencyStamp = "aceacd97-893e-464a-9f94-9e19d8984764",
+                            Name = "ReportSelling",
+                            NormalizedName = "REPORTSELLING"
+                        },
+                        new
+                        {
+                            Id = "5c8eda73-94a0-49e6-b4ad-63282d09e3a7",
+                            ConcurrencyStamp = "5c8eda73-94a0-49e6-b4ad-63282d09e3a7",
+                            Name = "ReportVendor",
+                            NormalizedName = "REPORTVENDOR"
+                        },
+                        new
+                        {
+                            Id = "27c3d924-cac0-4aae-8076-eb395964d547",
+                            ConcurrencyStamp = "27c3d924-cac0-4aae-8076-eb395964d547",
+                            Name = "SellingRecord",
+                            NormalizedName = "SELLINGRECORD"
+                        },
+                        new
+                        {
+                            Id = "5d0106d1-8900-4630-aec2-0b016f55d092",
+                            ConcurrencyStamp = "5d0106d1-8900-4630-aec2-0b016f55d092",
+                            Name = "Withdraw",
+                            NormalizedName = "WITHDRAW"
+                        },
+                        new
+                        {
+                            Id = "60482875-1078-4F65-BBBE-5C68836045A6",
+                            ConcurrencyStamp = "60482875-1078-4F65-BBBE-5C68836045A6",
+                            Name = "TransactionLogs",
+                            NormalizedName = "TRANSACTIONLOGS"
+                        },
+                        new
+                        {
+                            Id = "D68419DF-4B85-4704-89F7-AC889C750493",
+                            ConcurrencyStamp = "D68419DF-4B85-4704-89F7-AC889C750493",
+                            Name = "Selling",
+                            NormalizedName = "SELLING"
+                        },
+                        new
+                        {
+                            Id = "9EB47A31-EFC6-43D4-B204-538FC3F280F3",
+                            ConcurrencyStamp = "9EB47A31-EFC6-43D4-B204-538FC3F280F3",
+                            Name = "Sms",
+                            NormalizedName = "SMS"
+                        },
+                        new
+                        {
+                            Id = "D093C085-938C-4A7E-84B8-9CA5559850AE",
+                            ConcurrencyStamp = "D093C085-938C-4A7E-84B8-9CA5559850AE",
+                            Name = "SubAdminList",
+                            NormalizedName = "SUBADMINLIST"
+                        },
+                        new
+                        {
+                            Id = "54DAEA5E-86D7-4EBE-9191-A170B37CD883",
+                            ConcurrencyStamp = "54DAEA5E-86D7-4EBE-9191-A170B37CD883",
+                            Name = "SubAdminPageAccess",
+                            NormalizedName = "SUBADMINPAGEACCESS"
+                        },
+                        new
+                        {
+                            Id = "86DD9E91-0928-497A-B226-FA346F7EA656",
+                            ConcurrencyStamp = "86DD9E91-0928-497A-B226-FA346F7EA656",
+                            Name = "SubAdminSignUp",
+                            NormalizedName = "SUBADMINSIGNUP"
+                        },
+                        new
+                        {
+                            Id = "3DC9AC78-8A93-498A-8D04-D69C0294B4C4",
+                            ConcurrencyStamp = "3DC9AC78-8A93-498A-8D04-D69C0294B4C4",
+                            Name = "Supplier",
+                            NormalizedName = "SUPPLIER"
+                        },
+                        new
+                        {
+                            Id = "70453879-6A75-48B8-8ED2-8B86DEC40798",
+                            ConcurrencyStamp = "70453879-6A75-48B8-8ED2-8B86DEC40798",
+                            Name = "Vendor",
+                            NormalizedName = "VENDOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1270,6 +1495,24 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "A0456563-F978-4135-B563-97F23EA02FDA",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "A0456563-F978-4135-B563-97F23EA02FDA",
+                            Email = "Authority@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "AUTHORITY@GMAIL.COM",
+                            NormalizedUserName = "AUTHORITY",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDch3arYEB9dCAudNdsYEpVX7ryywa8f3ZIJSVUmEThAI50pLh9RyEu7NjGJccpOog==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "Authority"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -1332,6 +1575,13 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "A0456563-F978-4135-B563-97F23EA02FDA",
+                            RoleId = "25205E51-C7F6-43E5-927A-8074AF61B966"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1415,40 +1665,48 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.Expanse", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.Expense", b =>
                 {
                     b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
-                        .WithMany("Expanses")
+                        .WithMany("Expenses")
                         .HasForeignKey("AccountId")
                         .IsRequired()
-                        .HasConstraintName("FK_Expanse_Account");
+                        .HasConstraintName("FK_Expense_Account");
 
                     b.HasOne("BismillahGraphicsPro.Data.Branch", "Branch")
-                        .WithMany("Expanses")
+                        .WithMany("Expenses")
                         .HasForeignKey("BranchId")
                         .IsRequired()
-                        .HasConstraintName("FK_Expanse_Branch");
+                        .HasConstraintName("FK_Expense_Branch");
 
-                    b.HasOne("BismillahGraphicsPro.Data.ExpanseCategory", "ExpanseCategory")
-                        .WithMany("Expanses")
-                        .HasForeignKey("ExpanseCategoryId")
+                    b.HasOne("BismillahGraphicsPro.Data.ExpenseCategory", "ExpenseCategory")
+                        .WithMany("Expenses")
+                        .HasForeignKey("ExpenseCategoryId")
                         .IsRequired()
-                        .HasConstraintName("FK_Expanse_ExpanseCategory");
+                        .HasConstraintName("FK_Expense_ExpenseCategory");
+
+                    b.HasOne("BismillahGraphicsPro.Data.Registration", "Registration")
+                        .WithMany("Expenses")
+                        .HasForeignKey("RegistrationId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Expense_Registration");
 
                     b.Navigation("Account");
 
                     b.Navigation("Branch");
 
-                    b.Navigation("ExpanseCategory");
+                    b.Navigation("ExpenseCategory");
+
+                    b.Navigation("Registration");
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpanseCategory", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpenseCategory", b =>
                 {
                     b.HasOne("BismillahGraphicsPro.Data.Branch", "Branch")
-                        .WithMany("ExpanseCategories")
+                        .WithMany("ExpenseCategories")
                         .HasForeignKey("BranchId")
                         .IsRequired()
-                        .HasConstraintName("FK_ExpanseCategory_Branch");
+                        .HasConstraintName("FK_ExpenseCategory_Branch");
 
                     b.Navigation("Branch");
                 });
@@ -1880,7 +2138,7 @@ namespace BismillahGraphicsPro.Data.Migrations
 
                     b.Navigation("AccountWithdraws");
 
-                    b.Navigation("Expanses");
+                    b.Navigation("Expenses");
 
                     b.Navigation("PurchasePaymentReceipts");
 
@@ -1895,9 +2153,9 @@ namespace BismillahGraphicsPro.Data.Migrations
 
                     b.Navigation("Accounts");
 
-                    b.Navigation("ExpanseCategories");
+                    b.Navigation("ExpenseCategories");
 
-                    b.Navigation("Expanses");
+                    b.Navigation("Expenses");
 
                     b.Navigation("MeasurementUnits");
 
@@ -1930,9 +2188,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Navigation("Vendors");
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpanseCategory", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpenseCategory", b =>
                 {
-                    b.Navigation("Expanses");
+                    b.Navigation("Expenses");
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.MeasurementUnit", b =>
@@ -1979,6 +2237,8 @@ namespace BismillahGraphicsPro.Data.Migrations
             modelBuilder.Entity("BismillahGraphicsPro.Data.Registration", b =>
                 {
                     b.Navigation("AccountLogs");
+
+                    b.Navigation("Expenses");
 
                     b.Navigation("PageLinkAssigns");
 

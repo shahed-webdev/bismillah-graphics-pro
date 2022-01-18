@@ -9,10 +9,10 @@ public interface IExpenseCore
     Task<DataResult<ExpenseViewModel>> ListAsync(string userName, DataRequest request);
     Task<DbResponse> DeleteAsync(int id);
 
-    Task<DbResponse<ExpanseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName);
-    Task<DbResponse> CategoryEditAsync(ExpanseCategoryCrudModel model);
+    Task<DbResponse<ExpenseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName);
+    Task<DbResponse> CategoryEditAsync(ExpenseCategoryCrudModel model);
     Task<DbResponse> CategoryDeleteAsync(int id);
-    Task<DbResponse<ExpanseCategoryCrudModel>> CategoryGetAsync(int id);
-    Task<List<ExpanseCategoryCrudModel>> CategoryListAsync(string userName);
+    Task<DbResponse<ExpenseCategoryCrudModel>> CategoryGetAsync(int id);
+    Task<List<ExpenseCategoryCrudModel>> CategoryListAsync(string userName);
     Task<List<DDL>> CategoryDdlAsync(string userName);
 }

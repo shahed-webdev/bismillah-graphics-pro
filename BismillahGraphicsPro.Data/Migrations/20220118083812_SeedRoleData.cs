@@ -19,7 +19,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     { "31f91532-c149-4248-a844-f7601c24b740", "31f91532-c149-4248-a844-f7601c24b740", "BalanceSheet", "BALANCESHEET" },
                     { "3DC9AC78-8A93-498A-8D04-D69C0294B4C4", "3DC9AC78-8A93-498A-8D04-D69C0294B4C4", "Supplier", "SUPPLIER" },
                     { "3e0d4db7-80a0-49a9-8d8d-116cc5c9fc83", "3e0d4db7-80a0-49a9-8d8d-116cc5c9fc83", "NetSummery", "NETSUMMERY" },
-                    { "446d16c5-000c-4099-b553-23696a5284ec", "446d16c5-000c-4099-b553-23696a5284ec", "Expanse", "EXPANSE" },
+                    { "446d16c5-000c-4099-b553-23696a5284ec", "446d16c5-000c-4099-b553-23696a5284ec", "Expense", "EXPENSE" },
                     { "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7", "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7", "SubAdmin", "SUBADMIN" },
                     { "54DAEA5E-86D7-4EBE-9191-A170B37CD883", "54DAEA5E-86D7-4EBE-9191-A170B37CD883", "SubAdminPageAccess", "SUBADMINPAGEACCESS" },
                     { "5a52c2fc-6d6b-478f-9fce-ba46abaea1f2", "5a52c2fc-6d6b-478f-9fce-ba46abaea1f2", "Product", "PRODUCT" },

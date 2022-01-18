@@ -67,7 +67,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post Category
         [HttpPost]
-        public async Task<IActionResult> PostCategory([FromBody] ExpanseCategoryCrudModel model)
+        public async Task<IActionResult> PostCategory([FromBody] ExpenseCategoryCrudModel model)
         {
             var response = await _expenseCore.CategoryAddAsync(model.CategoryName, User.Identity.Name);
             return Json(response);
@@ -76,7 +76,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //Update Category
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromBody] ExpanseCategoryCrudModel model)
+        public async Task<IActionResult> UpdateCategory([FromBody] ExpenseCategoryCrudModel model)
         {
             var response = await _expenseCore.CategoryEditAsync(model);
             return Json(response);

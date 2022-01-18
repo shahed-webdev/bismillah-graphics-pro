@@ -8,7 +8,7 @@ namespace BismillahGraphicsPro.Data
         public Registration()
         {
             AccountLogs = new HashSet<AccountLog>();
-            Expanses = new HashSet<Expanse>();
+            Expenses = new HashSet<Expense>();
             PageLinkAssigns = new HashSet<PageLinkAssign>();
             PurchasePaymentReceipts = new HashSet<PurchasePaymentReceipt>();
             Purchases = new HashSet<Purchase>();
@@ -36,6 +36,6 @@ namespace BismillahGraphicsPro.Data
         public virtual ICollection<Purchase> Purchases { get; set; }
         public virtual ICollection<SellingPaymentReceipt> SellingPaymentReceipts { get; set; }
         public virtual ICollection<Selling> Sellings { get; set; }
-        public virtual ICollection<Expanse> Expanses { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
     }
 }

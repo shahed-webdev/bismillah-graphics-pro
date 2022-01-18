@@ -70,7 +70,7 @@ public class AccountRepository: Repository, IAccountRepository
     {
         return Db.AccountDeposits.Any(m => m.AccountId == id)
                || Db.AccountWithdraws.Any(m => m.AccountId == id)
-               || Db.Expanses.Any(m => m.AccountId == id)
+               || Db.Expenses.Any(m => m.AccountId == id)
                || Db.PurchasePaymentReceipts.Any(m => m.AccountId == id)
                || Db.SellingPaymentReceipts.Any(m => m.AccountId == id);
     }

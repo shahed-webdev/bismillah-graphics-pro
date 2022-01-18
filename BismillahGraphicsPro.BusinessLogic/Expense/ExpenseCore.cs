@@ -16,7 +16,7 @@ public class ExpenseCore : Core, IExpenseCore
     {
         try
         {
-            if (model.ExpanseAmount < 0)
+            if (model.ExpenseAmount < 0)
                 return Task.FromResult(new DbResponse<ExpenseViewModel>(false, "Invalid Data"));
 
             if (_db.Account.IsNull(model.AccountId))
@@ -27,7 +27,7 @@ public class ExpenseCore : Core, IExpenseCore
             model.BranchId = branchId;
             model.RegistrationId = registrationId;
 
-            _db.Account.BalanceSubtract(model.AccountId, model.ExpanseAmount);
+            _db.Account.BalanceSubtract(model.AccountId, model.ExpenseAmount);
 
             var expenseResponse = _db.Expense.Add(model);
             //-----------Account log added-----------------------------
@@ -39,12 +39,12 @@ public class ExpenseCore : Core, IExpenseCore
                     BranchId = branchId,
                     RegistrationId = registrationId,
                     IsAdded = false,
-                    Amount = expenseResponse.Data.ExpanseAmount,
-                    Details = expenseResponse.Data.ExpanseFor,
+                    Amount = expenseResponse.Data.ExpenseAmount,
+                    Details = expenseResponse.Data.ExpenseFor,
                     Type = AccountLogType.Expense,
-                    TableName = AccountLogTableName.Expanse,
-                    TableId = expenseResponse.Data.ExpanseId,
-                    LogDate = expenseResponse.Data.ExpanseDate
+                    TableName = AccountLogTableName.Expense,
+                    TableId = expenseResponse.Data.ExpenseId,
+                    LogDate = expenseResponse.Data.ExpenseDate
                 };
 
                 _db.AccountLog.Add(accountLog);
@@ -73,9 +73,9 @@ public class ExpenseCore : Core, IExpenseCore
             if (!expenseResponse.IsSuccess)
                 return Task.FromResult(new DbResponse(false, expenseResponse.Message));
 
-            _db.Account.BalanceAdd(expenseResponse.Data.AccountId, expenseResponse.Data.ExpanseAmount);
+            _db.Account.BalanceAdd(expenseResponse.Data.AccountId, expenseResponse.Data.ExpenseAmount);
 
-            _db.AccountLog.Delete(AccountLogTableName.Expanse, id);
+            _db.AccountLog.Delete(AccountLogTableName.Expense, id);
 
             return Task.FromResult(_db.Expense.Delete(id));
         }
@@ -85,47 +85,47 @@ public class ExpenseCore : Core, IExpenseCore
         }
     }
 
-    public Task<DbResponse<ExpanseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName)
+    public Task<DbResponse<ExpenseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName)
     {
         try
         {
             if (string.IsNullOrEmpty(categoryName))
-                return Task.FromResult(new DbResponse<ExpanseCategoryCrudModel>(false, "Invalid Data"));
+                return Task.FromResult(new DbResponse<ExpenseCategoryCrudModel>(false, "Invalid Data"));
 
-            var model = new ExpanseCategoryCrudModel
+            var model = new ExpenseCategoryCrudModel
             {
                 BranchId = _db.Registration.BranchIdByUserName(userName),
                 CategoryName = categoryName
             };
 
-            if (_db.ExpanseCategory.IsExistName(model.BranchId, model.CategoryName))
+            if (_db.ExpenseCategory.IsExistName(model.BranchId, model.CategoryName))
                 return Task.FromResult(
-                    new DbResponse<ExpanseCategoryCrudModel>(false, $" {model.CategoryName} already Exist"));
+                    new DbResponse<ExpenseCategoryCrudModel>(false, $" {model.CategoryName} already Exist"));
 
-            return Task.FromResult(_db.ExpanseCategory.Add(model));
+            return Task.FromResult(_db.ExpenseCategory.Add(model));
         }
         catch (Exception e)
         {
             return Task.FromResult(
-                new DbResponse<ExpanseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+                new DbResponse<ExpenseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 
-    public Task<DbResponse> CategoryEditAsync(ExpanseCategoryCrudModel model)
+    public Task<DbResponse> CategoryEditAsync(ExpenseCategoryCrudModel model)
     {
         try
         {
             if (string.IsNullOrEmpty(model.CategoryName))
                 return Task.FromResult(new DbResponse(false, "Invalid Data"));
 
-            if (_db.ExpanseCategory.IsNull(model.ExpanseCategoryId))
+            if (_db.ExpenseCategory.IsNull(model.ExpenseCategoryId))
                 return Task.FromResult(new DbResponse(false, "No Data Found"));
 
-            if (_db.ExpanseCategory.IsExistName(model.BranchId, model.CategoryName, model.ExpanseCategoryId))
+            if (_db.ExpenseCategory.IsExistName(model.BranchId, model.CategoryName, model.ExpenseCategoryId))
                 return Task.FromResult(new DbResponse(false, $" {model.CategoryName} already Exist"));
 
 
-            return Task.FromResult(_db.ExpanseCategory.Edit(model));
+            return Task.FromResult(_db.ExpenseCategory.Edit(model));
         }
         catch (Exception e)
         {
@@ -137,13 +137,13 @@ public class ExpenseCore : Core, IExpenseCore
     {
         try
         {
-            if (_db.ExpanseCategory.IsNull(id))
+            if (_db.ExpenseCategory.IsNull(id))
                 return Task.FromResult(new DbResponse(false, "No data Found"));
 
-            if (_db.ExpanseCategory.IsRelatedDataExist(id))
+            if (_db.ExpenseCategory.IsRelatedDataExist(id))
                 return Task.FromResult(new DbResponse(false, "Failed, already exist in products"));
 
-            return Task.FromResult(_db.ExpanseCategory.Delete(id));
+            return Task.FromResult(_db.ExpenseCategory.Delete(id));
         }
         catch (Exception e)
         {
@@ -151,31 +151,31 @@ public class ExpenseCore : Core, IExpenseCore
         }
     }
 
-    public Task<DbResponse<ExpanseCategoryCrudModel>> CategoryGetAsync(int id)
+    public Task<DbResponse<ExpenseCategoryCrudModel>> CategoryGetAsync(int id)
     {
         try
         {
-            if (_db.ExpanseCategory.IsNull(id))
-                return Task.FromResult(new DbResponse<ExpanseCategoryCrudModel>(false, "No data Found"));
+            if (_db.ExpenseCategory.IsNull(id))
+                return Task.FromResult(new DbResponse<ExpenseCategoryCrudModel>(false, "No data Found"));
 
-            return Task.FromResult(_db.ExpanseCategory.Get(id));
+            return Task.FromResult(_db.ExpenseCategory.Get(id));
         }
         catch (Exception e)
         {
             return Task.FromResult(
-                new DbResponse<ExpanseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+                new DbResponse<ExpenseCategoryCrudModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 
-    public Task<List<ExpanseCategoryCrudModel>> CategoryListAsync(string userName)
+    public Task<List<ExpenseCategoryCrudModel>> CategoryListAsync(string userName)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
-        return Task.FromResult(_db.ExpanseCategory.List(branchId));
+        return Task.FromResult(_db.ExpenseCategory.List(branchId));
     }
 
     public Task<List<DDL>> CategoryDdlAsync(string userName)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
-        return Task.FromResult(_db.ExpanseCategory.ListDdl(branchId));
+        return Task.FromResult(_db.ExpenseCategory.ListDdl(branchId));
     }
 }

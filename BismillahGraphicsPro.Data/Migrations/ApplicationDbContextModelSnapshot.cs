@@ -229,13 +229,13 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.ToTable("Branch", (string)null);
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.Expanse", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.Expense", b =>
                 {
-                    b.Property<int>("ExpanseId")
+                    b.Property<int>("ExpenseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpanseId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpenseId"), 1L, 1);
 
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
@@ -243,16 +243,16 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("ExpanseAmount")
+                    b.Property<decimal>("ExpenseAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ExpanseCategoryId")
+                    b.Property<int>("ExpenseCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ExpanseDate")
+                    b.Property<DateTime>("ExpenseDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("ExpanseFor")
+                    b.Property<string>("ExpenseFor")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -264,26 +264,26 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("RegistrationId")
                         .HasColumnType("int");
 
-                    b.HasKey("ExpanseId");
+                    b.HasKey("ExpenseId");
 
                     b.HasIndex("AccountId");
 
                     b.HasIndex("BranchId");
 
-                    b.HasIndex("ExpanseCategoryId");
+                    b.HasIndex("ExpenseCategoryId");
 
                     b.HasIndex("RegistrationId");
 
-                    b.ToTable("Expanse", (string)null);
+                    b.ToTable("Expense", (string)null);
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpanseCategory", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpenseCategory", b =>
                 {
-                    b.Property<int>("ExpanseCategoryId")
+                    b.Property<int>("ExpenseCategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpanseCategoryId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpenseCategoryId"), 1L, 1);
 
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
@@ -298,11 +298,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
-                    b.HasKey("ExpanseCategoryId");
+                    b.HasKey("ExpenseCategoryId");
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("ExpanseCategory", (string)null);
+                    b.ToTable("ExpenseCategory", (string)null);
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.MeasurementUnit", b =>
@@ -1239,8 +1239,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                         {
                             Id = "446d16c5-000c-4099-b553-23696a5284ec",
                             ConcurrencyStamp = "446d16c5-000c-4099-b553-23696a5284ec",
-                            Name = "Expanse",
-                            NormalizedName = "EXPANSE"
+                            Name = "Expense",
+                            NormalizedName = "EXPENSE"
                         },
                         new
                         {
@@ -1663,48 +1663,48 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.Expanse", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.Expense", b =>
                 {
                     b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
-                        .WithMany("Expanses")
+                        .WithMany("Expenses")
                         .HasForeignKey("AccountId")
                         .IsRequired()
-                        .HasConstraintName("FK_Expanse_Account");
+                        .HasConstraintName("FK_Expense_Account");
 
                     b.HasOne("BismillahGraphicsPro.Data.Branch", "Branch")
-                        .WithMany("Expanses")
+                        .WithMany("Expenses")
                         .HasForeignKey("BranchId")
                         .IsRequired()
-                        .HasConstraintName("FK_Expanse_Branch");
+                        .HasConstraintName("FK_Expense_Branch");
 
-                    b.HasOne("BismillahGraphicsPro.Data.ExpanseCategory", "ExpanseCategory")
-                        .WithMany("Expanses")
-                        .HasForeignKey("ExpanseCategoryId")
+                    b.HasOne("BismillahGraphicsPro.Data.ExpenseCategory", "ExpenseCategory")
+                        .WithMany("Expenses")
+                        .HasForeignKey("ExpenseCategoryId")
                         .IsRequired()
-                        .HasConstraintName("FK_Expanse_ExpanseCategory");
+                        .HasConstraintName("FK_Expense_ExpenseCategory");
 
                     b.HasOne("BismillahGraphicsPro.Data.Registration", "Registration")
-                        .WithMany("Expanses")
+                        .WithMany("Expenses")
                         .HasForeignKey("RegistrationId")
                         .IsRequired()
-                        .HasConstraintName("FK_Expanse_Registration");
+                        .HasConstraintName("FK_Expense_Registration");
 
                     b.Navigation("Account");
 
                     b.Navigation("Branch");
 
-                    b.Navigation("ExpanseCategory");
+                    b.Navigation("ExpenseCategory");
 
                     b.Navigation("Registration");
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpanseCategory", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpenseCategory", b =>
                 {
                     b.HasOne("BismillahGraphicsPro.Data.Branch", "Branch")
-                        .WithMany("ExpanseCategories")
+                        .WithMany("ExpenseCategories")
                         .HasForeignKey("BranchId")
                         .IsRequired()
-                        .HasConstraintName("FK_ExpanseCategory_Branch");
+                        .HasConstraintName("FK_ExpenseCategory_Branch");
 
                     b.Navigation("Branch");
                 });
@@ -2136,7 +2136,7 @@ namespace BismillahGraphicsPro.Data.Migrations
 
                     b.Navigation("AccountWithdraws");
 
-                    b.Navigation("Expanses");
+                    b.Navigation("Expenses");
 
                     b.Navigation("PurchasePaymentReceipts");
 
@@ -2151,9 +2151,9 @@ namespace BismillahGraphicsPro.Data.Migrations
 
                     b.Navigation("Accounts");
 
-                    b.Navigation("ExpanseCategories");
+                    b.Navigation("ExpenseCategories");
 
-                    b.Navigation("Expanses");
+                    b.Navigation("Expenses");
 
                     b.Navigation("MeasurementUnits");
 
@@ -2186,9 +2186,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Navigation("Vendors");
                 });
 
-            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpanseCategory", b =>
+            modelBuilder.Entity("BismillahGraphicsPro.Data.ExpenseCategory", b =>
                 {
-                    b.Navigation("Expanses");
+                    b.Navigation("Expenses");
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.MeasurementUnit", b =>
@@ -2236,7 +2236,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                 {
                     b.Navigation("AccountLogs");
 
-                    b.Navigation("Expanses");
+                    b.Navigation("Expenses");
 
                     b.Navigation("PageLinkAssigns");
 

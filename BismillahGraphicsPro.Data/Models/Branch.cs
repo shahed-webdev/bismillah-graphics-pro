@@ -9,8 +9,8 @@ namespace BismillahGraphicsPro.Data
         {
             AccountLogs = new HashSet<AccountLog>();
             Accounts = new HashSet<Account>();
-            ExpanseCategories = new HashSet<ExpanseCategory>();
-            Expanses = new HashSet<Expanse>();
+            ExpenseCategories = new HashSet<ExpenseCategory>();
+            Expenses = new HashSet<Expense>();
             MeasurementUnits = new HashSet<MeasurementUnit>();
             ProductCategories = new HashSet<ProductCategory>();
             Products = new HashSet<Product>();
@@ -40,8 +40,8 @@ namespace BismillahGraphicsPro.Data
 
         public virtual ICollection<AccountLog> AccountLogs { get; set; }
         public virtual ICollection<Account> Accounts { get; set; }
-        public virtual ICollection<ExpanseCategory> ExpanseCategories { get; set; }
-        public virtual ICollection<Expanse> Expanses { get; set; }
+        public virtual ICollection<ExpenseCategory> ExpenseCategories { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
         public virtual ICollection<MeasurementUnit> MeasurementUnits { get; set; }
         public virtual ICollection<ProductCategory> ProductCategories { get; set; }
         public virtual ICollection<Product> Products { get; set; }

@@ -35,7 +35,7 @@
             </tr>
             </thead>
             <tbody x-init="getData()">
-            <template x-for="(item, index) in data" :key="item.ExpanseCategoryId">
+            <template x-for="(item, index) in data" :key="item.ExpenseCategoryId">
                 <tr>
                     <td x-show="!item.isEditMode" x-text="item.CategoryName"></td>
                     <td x-show="item.isEditMode">
@@ -52,7 +52,7 @@
                         <button type="button" :disabled="loading" x-show="item.isEditMode" x-on:click="updateData(index)" class="btn btn-link text-primary">Update</button>
                     </td>
                     <td class="text-center">
-                        <a x-on:click="deleteData(item.ExpanseCategoryId)" style="color: #ff0000" class="fas fa-trash-alt"></a>
+                        <a x-on:click="deleteData(item.ExpenseCategoryId)" style="color: #ff0000" class="fas fa-trash-alt"></a>
                     </td>
                 </tr>
             </template>
@@ -154,7 +154,7 @@
                         const responseData = await response.json();
 
                         if (responseData.IsSuccess)
-                            this.data = this.data.filter(item => item.ExpanseCategoryId !== id);
+                            this.data = this.data.filter(item => item.ExpenseCategoryId !== id);
 
                         $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
 

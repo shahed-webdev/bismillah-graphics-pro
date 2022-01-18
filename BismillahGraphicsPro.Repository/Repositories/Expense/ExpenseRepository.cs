@@ -14,18 +14,18 @@ public class ExpenseRepository: Repository, IExpenseRepository
 
     public DbResponse<ExpenseViewModel> Add(ExpenseAddModel model)
     {
-        var expanse = _mapper.Map<Expanse>(model);
-        Db.Expanses.Add(expanse);
+        var Expense = _mapper.Map<Expense>(model);
+        Db.Expenses.Add(Expense);
         Db.SaveChanges();
         
-        var expenseView = _mapper.Map<ExpenseViewModel>(Db.Expanses.Find(expanse.ExpanseId));
+        var expenseView = _mapper.Map<ExpenseViewModel>(Db.Expenses.Find(Expense.ExpenseId));
 
-        return new DbResponse<ExpenseViewModel>(true, $"{model.ExpanseAmount} Added Successfully", expenseView);
+        return new DbResponse<ExpenseViewModel>(true, $"{model.ExpenseAmount} Added Successfully", expenseView);
 
     }
     public DbResponse<ExpenseViewModel> Get(int id)
     {
-        var expense = Db.Expanses.Where(r => r.ExpanseId == id)
+        var expense = Db.Expenses.Where(r => r.ExpenseId == id)
             .ProjectTo<ExpenseViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
         return expense == null ? new DbResponse<ExpenseViewModel>(false, "Data not found") 
@@ -33,24 +33,24 @@ public class ExpenseRepository: Repository, IExpenseRepository
     }
     public DataResult<ExpenseViewModel> List(DataRequest request, int branchId)
     {
-        return Db.Expanses
+        return Db.Expenses
             .Where(e=> e.BranchId == branchId)
             .ProjectTo<ExpenseViewModel>(_mapper.ConfigurationProvider)
-            .OrderByDescending(a => a.ExpanseDate)
+            .OrderByDescending(a => a.ExpenseDate)
             .ToDataResult(request);
     }
 
     public DbResponse Delete(int id)
     {
-        var expanse = Db.Expanses.Find(id);
-        if (expanse == null) return new DbResponse(false, "data Not Found");
+        var Expense = Db.Expenses.Find(id);
+        if (Expense == null) return new DbResponse(false, "data Not Found");
 
-        Db.Expanses.Remove(expanse);
+        Db.Expenses.Remove(Expense);
         Db.SaveChanges();
-        return new DbResponse(true, $"{expanse.ExpanseAmount} Deleted Successfully");
+        return new DbResponse(true, $"{Expense.ExpenseAmount} Deleted Successfully");
     }
     public bool IsNull(int id)
     {
-        return !Db.Expanses.Any(r => r.ExpanseId == id);
+        return !Db.Expenses.Any(r => r.ExpenseId == id);
     }
 }

@@ -15,7 +15,7 @@ public enum UserType
     Withdraw,
     BalanceSheet,
     TransactionLogs,
-    Expanse,
+    Expense,
     ExpenseCategory,
     MeasurementUnit,
     NetSummery,

@@ -66,10 +66,10 @@ namespace BismillahGraphicsPro.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExpanseCategory",
+                name: "ExpenseCategory",
                 columns: table => new
                 {
-                    ExpanseCategoryId = table.Column<int>(type: "int", nullable: false)
+                    ExpenseCategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BranchId = table.Column<int>(type: "int", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
@@ -77,9 +77,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExpanseCategory", x => x.ExpanseCategoryId);
+                    table.PrimaryKey("PK_ExpenseCategory", x => x.ExpenseCategoryId);
                     table.ForeignKey(
-                        name: "FK_ExpanseCategory_Branch",
+                        name: "FK_ExpenseCategory_Branch",
                         column: x => x.BranchId,
                         principalTable: "Branch",
                         principalColumn: "BranchId");
@@ -304,41 +304,6 @@ namespace BismillahGraphicsPro.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Expanse",
-                columns: table => new
-                {
-                    ExpanseId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BranchId = table.Column<int>(type: "int", nullable: false),
-                    RegistrationId = table.Column<int>(type: "int", nullable: false),
-                    ExpanseCategoryId = table.Column<int>(type: "int", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    ExpanseAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ExpanseFor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ExpanseDate = table.Column<DateTime>(type: "date", nullable: false),
-                    InsertDateBdTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(dateadd(hour,(6),getutcdate()))")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Expanse", x => x.ExpanseId);
-                    table.ForeignKey(
-                        name: "FK_Expanse_Account",
-                        column: x => x.AccountId,
-                        principalTable: "Account",
-                        principalColumn: "AccountId");
-                    table.ForeignKey(
-                        name: "FK_Expanse_Branch",
-                        column: x => x.BranchId,
-                        principalTable: "Branch",
-                        principalColumn: "BranchId");
-                    table.ForeignKey(
-                        name: "FK_Expanse_ExpanseCategory",
-                        column: x => x.ExpanseCategoryId,
-                        principalTable: "ExpanseCategory",
-                        principalColumn: "ExpanseCategoryId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Product",
                 columns: table => new
                 {
@@ -399,6 +364,46 @@ namespace BismillahGraphicsPro.Data.Migrations
                         principalColumn: "BranchId");
                     table.ForeignKey(
                         name: "FK_AccountLog_Registration",
+                        column: x => x.RegistrationId,
+                        principalTable: "Registration",
+                        principalColumn: "RegistrationId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Expense",
+                columns: table => new
+                {
+                    ExpenseId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BranchId = table.Column<int>(type: "int", nullable: false),
+                    RegistrationId = table.Column<int>(type: "int", nullable: false),
+                    ExpenseCategoryId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    ExpenseAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ExpenseFor = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ExpenseDate = table.Column<DateTime>(type: "date", nullable: false),
+                    InsertDateBdTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(dateadd(hour,(6),getutcdate()))")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Expense", x => x.ExpenseId);
+                    table.ForeignKey(
+                        name: "FK_Expense_Account",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "AccountId");
+                    table.ForeignKey(
+                        name: "FK_Expense_Branch",
+                        column: x => x.BranchId,
+                        principalTable: "Branch",
+                        principalColumn: "BranchId");
+                    table.ForeignKey(
+                        name: "FK_Expense_ExpenseCategory",
+                        column: x => x.ExpenseCategoryId,
+                        principalTable: "ExpenseCategory",
+                        principalColumn: "ExpenseCategoryId");
+                    table.ForeignKey(
+                        name: "FK_Expense_Registration",
                         column: x => x.RegistrationId,
                         principalTable: "Registration",
                         principalColumn: "RegistrationId");
@@ -774,23 +779,28 @@ namespace BismillahGraphicsPro.Data.Migrations
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Expanse_AccountId",
-                table: "Expanse",
+                name: "IX_Expense_AccountId",
+                table: "Expense",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Expanse_BranchId",
-                table: "Expanse",
+                name: "IX_Expense_BranchId",
+                table: "Expense",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Expanse_ExpanseCategoryId",
-                table: "Expanse",
-                column: "ExpanseCategoryId");
+                name: "IX_Expense_ExpenseCategoryId",
+                table: "Expense",
+                column: "ExpenseCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExpanseCategory_BranchId",
-                table: "ExpanseCategory",
+                name: "IX_Expense_RegistrationId",
+                table: "Expense",
+                column: "RegistrationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExpenseCategory_BranchId",
+                table: "ExpenseCategory",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
@@ -1006,7 +1016,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                 name: "AccountWithdraw");
 
             migrationBuilder.DropTable(
-                name: "Expanse");
+                name: "Expense");
 
             migrationBuilder.DropTable(
                 name: "PageLinkAssign");
@@ -1027,7 +1037,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                 name: "SmsSendRecord");
 
             migrationBuilder.DropTable(
-                name: "ExpanseCategory");
+                name: "ExpenseCategory");
 
             migrationBuilder.DropTable(
                 name: "PageLink");

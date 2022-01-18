@@ -10,7 +10,7 @@ namespace BismillahGraphicsPro.Data
             AccountLogs = new HashSet<AccountLog>();
             AccountDeposits = new HashSet<AccountDeposit>();
             AccountWithdraws = new HashSet<AccountWithdraw>();
-            Expanses = new HashSet<Expanse>();
+            Expenses = new HashSet<Expense>();
             PurchasePaymentReceipts = new HashSet<PurchasePaymentReceipt>();
             PurchasePaymentRecords = new HashSet<PurchasePaymentRecord>();
             SellingPaymentReceipts = new HashSet<SellingPaymentReceipt>();
@@ -26,7 +26,7 @@ namespace BismillahGraphicsPro.Data
         public virtual ICollection<AccountDeposit> AccountDeposits { get; set; }
         public virtual ICollection<AccountWithdraw> AccountWithdraws { get; set; }
         public virtual ICollection<AccountLog> AccountLogs { get; set; }
-        public virtual ICollection<Expanse> Expanses { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
         public virtual ICollection<PurchasePaymentReceipt> PurchasePaymentReceipts { get; set; }
         public virtual ICollection<PurchasePaymentRecord> PurchasePaymentRecords { get; set; }
         public virtual ICollection<SellingPaymentReceipt> SellingPaymentReceipts { get; set; }

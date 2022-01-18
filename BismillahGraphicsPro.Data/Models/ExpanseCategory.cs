@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace BismillahGraphicsPro.Data
 {
-    public partial class ExpanseCategory
+    public partial class ExpenseCategory
     {
-        public ExpanseCategory()
+        public ExpenseCategory()
         {
-            Expanses = new HashSet<Expanse>();
+            Expenses = new HashSet<Expense>();
         }
 
-        public int ExpanseCategoryId { get; set; }
+        public int ExpenseCategoryId { get; set; }
         public int BranchId { get; set; }
         public string CategoryName { get; set; } = null!;
         public DateTime InsertDateBdTime { get; set; }
 
         public virtual Branch Branch { get; set; } = null!;
-        public virtual ICollection<Expanse> Expanses { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
     }
 }

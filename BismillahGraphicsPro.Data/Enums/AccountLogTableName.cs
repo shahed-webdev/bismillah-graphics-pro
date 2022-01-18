@@ -4,7 +4,7 @@ public enum AccountLogTableName
 {
     AccountDeposit,
     AccountWithdraw,
-    Expanse,
+    Expense,
     PurchasePaymentRecord,
     SellingPaymentRecord
 }

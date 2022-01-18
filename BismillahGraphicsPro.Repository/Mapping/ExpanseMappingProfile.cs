@@ -4,15 +4,15 @@ using BismillahGraphicsPro.ViewModel;
 
 namespace BismillahGraphicsPro.Repository;
 
-public class ExpanseMappingProfile: Profile
+public class ExpenseMappingProfile: Profile
 {
-    public ExpanseMappingProfile()
+    public ExpenseMappingProfile()
     {
-        CreateMap<ExpanseCategory, ExpanseCategoryCrudModel>().ReverseMap();
-        CreateMap<Expanse, ExpenseAddModel>().ReverseMap();
-        CreateMap<Expanse,ExpenseViewModel>()
+        CreateMap<ExpenseCategory, ExpenseCategoryCrudModel>().ReverseMap();
+        CreateMap<Expense, ExpenseAddModel>().ReverseMap();
+        CreateMap<Expense,ExpenseViewModel>()
             .ForMember(d=> d.AccountName, opt=> opt.MapFrom(c=> c.Account.AccountName))
-            .ForMember(d=> d.CategoryName, opt=> opt.MapFrom(c=> c.ExpanseCategory.CategoryName))
+            .ForMember(d=> d.CategoryName, opt=> opt.MapFrom(c=> c.ExpenseCategory.CategoryName))
             .ForMember(d=> d.ExpenseByUserName, opt=> opt.MapFrom(c=> c.Registration.UserName))
             .ReverseMap();
 

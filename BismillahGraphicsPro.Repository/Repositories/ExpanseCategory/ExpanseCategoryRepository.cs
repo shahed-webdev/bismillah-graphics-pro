@@ -5,86 +5,86 @@ using BismillahGraphicsPro.ViewModel;
 
 namespace BismillahGraphicsPro.Repository;
 
-public class ExpanseCategoryRepository : Repository, IExpanseCategoryRepository
+public class ExpenseCategoryRepository : Repository, IExpenseCategoryRepository
 {
-    public ExpanseCategoryRepository(ApplicationDbContext db, IMapper mapper) : base(db, mapper)
+    public ExpenseCategoryRepository(ApplicationDbContext db, IMapper mapper) : base(db, mapper)
     {
     }
 
-    public DbResponse<ExpanseCategoryCrudModel> Add(ExpanseCategoryCrudModel model)
+    public DbResponse<ExpenseCategoryCrudModel> Add(ExpenseCategoryCrudModel model)
     {
-        var expanseCategory = _mapper.Map<ExpanseCategory>(model);
-        Db.ExpanseCategories.Add(expanseCategory);
+        var ExpenseCategory = _mapper.Map<ExpenseCategory>(model);
+        Db.ExpenseCategories.Add(ExpenseCategory);
         Db.SaveChanges();
-        model.ExpanseCategoryId = expanseCategory.ExpanseCategoryId;
+        model.ExpenseCategoryId = ExpenseCategory.ExpenseCategoryId;
 
-        return new DbResponse<ExpanseCategoryCrudModel>(true, $"{model.CategoryName} Added Successfully", model);
+        return new DbResponse<ExpenseCategoryCrudModel>(true, $"{model.CategoryName} Added Successfully", model);
     }
 
-    public DbResponse Edit(ExpanseCategoryCrudModel model)
+    public DbResponse Edit(ExpenseCategoryCrudModel model)
     {
-        var expanseCategory = Db.ExpanseCategories.Find(model.ExpanseCategoryId);
-        expanseCategory!.CategoryName = model.CategoryName;
-        Db.ExpanseCategories.Update(expanseCategory);
+        var ExpenseCategory = Db.ExpenseCategories.Find(model.ExpenseCategoryId);
+        ExpenseCategory!.CategoryName = model.CategoryName;
+        Db.ExpenseCategories.Update(ExpenseCategory);
         Db.SaveChanges();
-        return new DbResponse(true, $"{expanseCategory.CategoryName} Updated Successfully");
+        return new DbResponse(true, $"{ExpenseCategory.CategoryName} Updated Successfully");
     }
 
     public DbResponse Delete(int id)
     {
-        var expanseCategory = Db.ExpanseCategories.Find(id);
-        if (expanseCategory == null) return new DbResponse(false, "data Not Found");
+        var ExpenseCategory = Db.ExpenseCategories.Find(id);
+        if (ExpenseCategory == null) return new DbResponse(false, "data Not Found");
 
-        Db.ExpanseCategories.Remove(expanseCategory);
+        Db.ExpenseCategories.Remove(ExpenseCategory);
         Db.SaveChanges();
-        return new DbResponse(true, $"{expanseCategory.CategoryName} Deleted Successfully");
+        return new DbResponse(true, $"{ExpenseCategory.CategoryName} Deleted Successfully");
     }
 
-    public DbResponse<ExpanseCategoryCrudModel> Get(int id)
+    public DbResponse<ExpenseCategoryCrudModel> Get(int id)
     {
-        var measurementUnit = Db.ExpanseCategories.Where(r => r.ExpanseCategoryId == id)
-            .ProjectTo<ExpanseCategoryCrudModel>(_mapper.ConfigurationProvider)
+        var measurementUnit = Db.ExpenseCategories.Where(r => r.ExpenseCategoryId == id)
+            .ProjectTo<ExpenseCategoryCrudModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
-        return new DbResponse<ExpanseCategoryCrudModel>(true, $"{measurementUnit!.CategoryName} Get Successfully",
+        return new DbResponse<ExpenseCategoryCrudModel>(true, $"{measurementUnit!.CategoryName} Get Successfully",
             measurementUnit);
     }
 
     public bool IsExistName(int branchId, string name)
     {
-        return Db.ExpanseCategories.Any(r => r.BranchId == branchId && r.CategoryName == name);
+        return Db.ExpenseCategories.Any(r => r.BranchId == branchId && r.CategoryName == name);
     }
 
     public bool IsExistName(int branchId, string name, int updateId)
     {
-        return Db.ExpanseCategories.Any(r =>
-            r.BranchId == branchId && r.CategoryName == name && r.ExpanseCategoryId != updateId);
+        return Db.ExpenseCategories.Any(r =>
+            r.BranchId == branchId && r.CategoryName == name && r.ExpenseCategoryId != updateId);
     }
 
     public bool IsNull(int id)
     {
-        return !Db.ExpanseCategories.Any(r => r.ExpanseCategoryId == id);
+        return !Db.ExpenseCategories.Any(r => r.ExpenseCategoryId == id);
     }
 
     public bool IsRelatedDataExist(int id)
     {
-        return Db.Expanses.Any(m => m.ExpanseCategoryId == id);
+        return Db.Expenses.Any(m => m.ExpenseCategoryId == id);
     }
 
-    public List<ExpanseCategoryCrudModel> List(int branchId)
+    public List<ExpenseCategoryCrudModel> List(int branchId)
     {
-        return Db.ExpanseCategories.Where(m => m.BranchId == branchId)
-            .ProjectTo<ExpanseCategoryCrudModel>(_mapper.ConfigurationProvider)
+        return Db.ExpenseCategories.Where(m => m.BranchId == branchId)
+            .ProjectTo<ExpenseCategoryCrudModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.CategoryName)
             .ToList();
     }
 
     public List<DDL> ListDdl(int branchId)
     {
-        return Db.ExpanseCategories
+        return Db.ExpenseCategories
             .OrderBy(a => a.CategoryName)
             .Select(m => new DDL
             {
-                value = m.ExpanseCategoryId.ToString(),
+                value = m.ExpenseCategoryId.ToString(),
                 label = m.CategoryName
             }).ToList();
     }
