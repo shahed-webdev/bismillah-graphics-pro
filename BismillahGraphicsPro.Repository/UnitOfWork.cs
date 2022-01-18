@@ -14,13 +14,13 @@ namespace BismillahGraphicsPro.Repository
             AccountLog = new AccountLogRepository(_db, mapper);
             Branch = new BranchRepository(_db, mapper);
             Expense = new ExpenseRepository(_db, mapper);
-            ExpenseCategory = new ExpenseCategoryRepository(_db,mapper);
+            ExpenseCategory = new ExpenseCategoryRepository(_db, mapper);
             MeasurementUnit = new MeasurementUnitRepository(_db, mapper);
             Product = new ProductRepository(_db, mapper);
             ProductCategory = new ProductCategoryRepository(_db, mapper);
             Registration = new RegistrationRepository(_db, mapper);
             Supplier = new SupplierRepository(_db, mapper);
-
+            Vendor = new VendorRepository(_db, mapper);
         }
 
         public IAccountRepository Account { get; }
@@ -33,6 +33,7 @@ namespace BismillahGraphicsPro.Repository
         public IMeasurementUnitRepository MeasurementUnit { get; }
         public IRegistrationRepository Registration { get; }
         public ISupplierRepository Supplier { get; }
+        public IVendorRepository Vendor { get; }
 
 
         public int SaveChanges()
