@@ -13,7 +13,7 @@ namespace BismillahGraphicsPro.Repository
         IProductRepository Product { get; }
         IMeasurementUnitRepository MeasurementUnit { get; }
         IRegistrationRepository Registration { get; }
-
+        ISupplierRepository Supplier { get; }
         int SaveChanges();
     }
 }

@@ -38,10 +38,8 @@ public class ProductCore : Core, IProductCore
             if (string.IsNullOrEmpty(model.ProductName))
                 return Task.FromResult(new DbResponse(false, "Invalid Data"));
 
-            if (_db.ProductCategory.IsNull(model.ProductCategoryId))
-                return Task.FromResult(new DbResponse(false, "No Data Found"));
 
-            if (_db.ProductCategory.IsExistName(model.BranchId, model.ProductName, model.ProductCategoryId))
+            if (_db.Product.IsExistName(model.BranchId, model.ProductName, model.ProductId))
                 return Task.FromResult(new DbResponse(false, $" {model.ProductName} already Exist"));
 
 
