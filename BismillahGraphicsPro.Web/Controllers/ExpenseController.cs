@@ -20,6 +20,9 @@ namespace BismillahGraphicsPro.Web.Controllers
             _account = account;
         }
 
+
+        #region Expense
+
         //expense view
         public async Task<IActionResult> Index()
         {
@@ -59,7 +62,10 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+        #endregion
 
+
+        #region Category
 
         //**category view**//
         public IActionResult Category()
@@ -99,5 +105,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = await _expenseCore.CategoryDeleteAsync(id);
             return Json(response);
         }
+
+        #endregion
     }
 }

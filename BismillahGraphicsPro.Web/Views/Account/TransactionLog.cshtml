@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Withdraw";
+    Layout = "_AdminLayout";
+}
+
+<div class="mx-3">
+    <h1 class="page-header my-3">Transaction Log</h1>
+
+    <div class="card card-body">
+        <table id="data-table" class="table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Account</th>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Transaction By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+<script>
+    $(function() {
+        dataTable.getData();
+    });
+
+    //data table
+    const dataTable = {
+        table: null,
+        init: function() {
+            dataTable.table = $("#data-table").DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "/Account/GetTransactionLogData",
+                    type: "POST"
+                },
+                columns:
+                [
+                    { data: "Amount", "render": dataTable.addSign },
+                    { data: "AccountName" },
+                    { data: "Type" },
+                    { data: "Details" },
+                    { data: "LogByUserName" },
+                    {
+                        data: "LogDate", "render": function(data) { return moment(data).format('DD MMM YYYY') }
+                    }
+                ],
+                columnDefs: [
+                    { 'className': "text-center", "targets": [1,2,3,4,5] },
+                    { 'className': "text-right", "targets": [0] }
+                ]
+            });
+        },
+        operand: {
+            Equal: 0,
+            NotEqual: 1,
+            GreaterThan: 2,
+            LessThan: 3,
+            GreaterThanOrEqual: 4,
+            LessThanOrEqual: 5,
+            Contains: 6,
+            StartsWith: 7,
+            EndsWith: 8
+        },
+        getData: function() {
+            dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+        },
+        addSign: function(data) { return `${data}/-` }
+    };
+</script>
+}

@@ -106,5 +106,19 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = _account.Withdraw(User.Identity.Name, model);
             return Json(response);
         }
+
+
+        //TransactionLog view
+        public IActionResult TransactionLog()
+        {
+            return View();
+        }
+
+        //get transaction Log data-table
+        public async Task<IActionResult> GetTransactionLogData(DataRequest request)
+        {
+            var response = await _account.LogListAsync(User.Identity.Name,request);
+            return Json(response);
+        }
     }
 }
