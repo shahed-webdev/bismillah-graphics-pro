@@ -8,37 +8,47 @@
 <div x-data="initData()" class="mx-3">
     <h1 class="page-header my-3">Expense</h1>
     
-    <form>
+    <form x-on:submit.prevent="insertData()">
         <div class="row">
             <div class="col-sm-6 col-lg-4">
                 <div class="form-group">
                     <label>Category</label>
-                    @Html.DropDownList("CategoryId", ViewBag.categoryDropdown, "[ SELECT ]", new { @class = "form-control",required="" })
+                    <select x-model="formData.ExpenseCategoryId" class="form-control">
+                        <option>[ SELECT ]</option>
+                        <template x-for="category in categories" :key="category.value">
+                            <option :value="category.value" x-text="category.label"></option>
+                        </template>
+                    </select>
                 </div>
             </div>
 
             <div class="col-sm-6 col-lg-4">
                 <div class="form-group">
-                    <label>Expanse Amount</label>
-                    <input type="number" class="form-control" required>
+                    <label>Expense Amount</label>
+                    <input x-model.number="formData.ExpenseAmount" type="number" class="form-control" required>
                 </div>
             </div>
             <div class="col-sm-6 col-lg-4">
                 <div class="form-group">
-                    <label>Expanse For</label>
-                    <input type="text" class="form-control" required>
+                    <label>Expense For</label>
+                    <input x-model="formData.ExpenseFor" type="text" class="form-control" required>
                 </div>
             </div>
             <div class="col-sm-6 col-lg-4">
                 <div class="form-group">
                     <label>Payment Method</label>
-                    @Html.DropDownList("accountId", ViewBag.accountDropdown, "[ SELECT ]", new { @class = "form-control",required="" })
+                    <select x-model.number="formData.AccountId" class="form-control">
+                        <option>[ SELECT ]</option>
+                        <template x-for="account in accounts" :key="account.value">
+                            <option :value="account.value" x-text="account.label"></option>
+                        </template>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-6 col-lg-4">
-                <div class="form-group">
-                    <label>Expanse Date</label>
-                    <input type="text" class="form-control" required>
+                <div x-init="dateInit()" class="form-group">
+                    <label>Expense Date</label>
+                    <input x-model="formData.ExpenseDate" type="text" class="form-control datepicker" required>
                 </div>
             </div>
             <div class="pt-4">
@@ -47,23 +57,25 @@
         </div>
     </form>
     
-    <table id="data-table" class="table table-sm">
-        <thead>
-        <tr>
-            <th>Expanse Date</th>
-            <th>Expanse For</th>
-            <th>Payment Method</th>
-            <th>Expanse Amount</th>
-            <th style="width: 30px">Delete</th>
-        </tr>
-        </thead>
-    </table>
+    <div class="card card-body mt-4">
+        <table id="data-table" class="table table-sm">
+            <thead>
+            <tr>
+                <th>Expense Date</th>
+                <th>Expense For</th>
+                <th>Payment Method</th>
+                <th>Expense Amount</th>
+                <th style="max-width: 80px">Delete</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 
 @section Scripts {
     <script>
         $(function() {
-            dataTable.getData();
+            //dataTable.getData();
         });
 
         //data table
@@ -74,16 +86,16 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "/expanse/GetExpense",
+                        url: "/Expense/GetExpense",
                         type: "POST"
                     },
                     columns:
                     [
-                        { data: "ExpanseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                        { data: "ExpanseFor" },
-                        { data: "Expense_Payment_Method" },
-                        { data: "ExpanseAmount" ,"render": function(data) { return `${data}/-` }},
-                        { data: "ExpanseID", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/Expanses/Delete/${data}"></a>`; } }
+                        { data: "ExpenseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "ExpenseFor" },
+                        { data: "AccountName" },
+                        { data: "ExpenseAmount" ,"render": function(data) { return `${data}/-` }},
+                        { data: "ExpenseId", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/Expenses/Delete/${data}"></a>`; } }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [0, 3, 4] },
@@ -102,16 +114,21 @@
         function initData() {
             return {
                 loading: false,
-                data: [],
+
+                //bind dropdown list
+                categories : JSON.parse('@Html.Raw(Json.Serialize(ViewBag.categoryDropdown))'),
+                accounts : JSON.parse('@Html.Raw(Json.Serialize(ViewBag.accountDropdown))'),
+                
                 formData: {},
+
 
                 //date function init
                 dateInit() {
-                    this.formData.WithdrawDate = moment(new Date()).format("D, MMM YYYY");
+                    this.formData.ExpenseDate = moment(new Date()).format("D, MMM YYYY");
 
                     $('.datepicker').pickadate({
                         onSet: context => {
-                            this.formData.WithdrawDate = moment(context.select).format("D, MMM YYYY");
+                            this.formData.ExpenseDate = moment(context.select).format("D, MMM YYYY");
                         }
                     })
                 },
@@ -122,8 +139,7 @@
                     this.loading = true;
 
                     try {
-                        this.formData.AccountId = @Model.AccountId;
-                        const model = { ...this.formData, WithdrawDate: new Date(this.formData.WithdrawDate) };
+                        const model = { ...this.formData, ExpenseDate: new Date(this.formData.ExpenseDate) };
 
                         const options = {
                             method: 'POST',
@@ -131,12 +147,11 @@
                             body: JSON.stringify(model)
                         };
 
-                        const response = await fetch("/Account/PostWithdraw", options);
+                        const response = await fetch("/Expense/PostExpense", options);
                         const responseData = await response.json();
 
                         if (responseData.IsSuccess) {
                             this.formData = {};
-                            location.href = "account";
                         }
 
                         $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");

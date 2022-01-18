@@ -1,5 +1,6 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
 using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,29 +24,34 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> Index()
         {
             //category dropdown list
-            var category = await _expenseCore.CategoryDdlAsync(User.Identity.Name);
-            ViewBag.categoryDropdown = new SelectList(category, "value", "label");
+            ViewBag.categoryDropdown = await _expenseCore.CategoryDdlAsync(User.Identity.Name);
 
             //account dropdown list
-            var account = _account.ListDdl(User.Identity.Name);
-            ViewBag.accountDropdown = new SelectList(account, "value", "label");
+            ViewBag.accountDropdown = _account.ListDdl(User.Identity.Name);
 
 
             return View();
         }
 
 
-        //Get Expense
-        public async Task<IActionResult> GetExpense()
+        //get expense
+        public async Task<IActionResult> GetExpense(DataRequest request)
         {
-            //category dropdown list
-            var data = await _expenseCore.CategoryDdlAsync(User.Identity.Name);
-           
+            var data = await _expenseCore.ListAsync(User.Identity.Name, request);
             return Json(data);
         }
 
 
-        //category view
+        //post expense
+        [HttpPost]
+        public async Task<IActionResult> PostExpense([FromBody] ExpenseAddModel model)
+        {
+            var response = await _expenseCore.AddAsync(User.Identity.Name,model);
+            return Json(response);
+        }
+
+
+        //**category view**//
         public IActionResult Category()
         {
             return View();
