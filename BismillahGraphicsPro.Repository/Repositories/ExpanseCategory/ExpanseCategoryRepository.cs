@@ -5,7 +5,7 @@ using BismillahGraphicsPro.ViewModel;
 
 namespace BismillahGraphicsPro.Repository;
 
-public class ExpanseCategoryRepository:Repository, IExpanseCategoryRepository
+public class ExpanseCategoryRepository : Repository, IExpanseCategoryRepository
 {
     public ExpanseCategoryRepository(ApplicationDbContext db, IMapper mapper) : base(db, mapper)
     {
@@ -33,7 +33,9 @@ public class ExpanseCategoryRepository:Repository, IExpanseCategoryRepository
     public DbResponse Delete(int id)
     {
         var expanseCategory = Db.ExpanseCategories.Find(id);
-        Db.ExpanseCategories.Remove(expanseCategory!);
+        if (expanseCategory == null) return new DbResponse(false, "data Not Found");
+
+        Db.ExpanseCategories.Remove(expanseCategory);
         Db.SaveChanges();
         return new DbResponse(true, $"{expanseCategory.CategoryName} Deleted Successfully");
     }
@@ -43,7 +45,8 @@ public class ExpanseCategoryRepository:Repository, IExpanseCategoryRepository
         var measurementUnit = Db.ExpanseCategories.Where(r => r.ExpanseCategoryId == id)
             .ProjectTo<ExpanseCategoryCrudModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
-        return new DbResponse<ExpanseCategoryCrudModel>(true, $"{measurementUnit!.CategoryName} Get Successfully", measurementUnit);
+        return new DbResponse<ExpanseCategoryCrudModel>(true, $"{measurementUnit!.CategoryName} Get Successfully",
+            measurementUnit);
     }
 
     public bool IsExistName(int branchId, string name)
@@ -53,7 +56,8 @@ public class ExpanseCategoryRepository:Repository, IExpanseCategoryRepository
 
     public bool IsExistName(int branchId, string name, int updateId)
     {
-        return Db.ExpanseCategories.Any(r => r.BranchId == branchId && r.CategoryName == name && r.ExpanseCategoryId != updateId);
+        return Db.ExpanseCategories.Any(r =>
+            r.BranchId == branchId && r.CategoryName == name && r.ExpanseCategoryId != updateId);
     }
 
     public bool IsNull(int id)
