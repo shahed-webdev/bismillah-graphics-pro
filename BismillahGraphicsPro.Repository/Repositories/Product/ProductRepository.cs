@@ -2,51 +2,57 @@
 using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 
 namespace BismillahGraphicsPro.Repository;
 
-public class ProductRepository:Repository, IProductRepository
+public class ProductRepository : Repository, IProductRepository
 {
     public ProductRepository(ApplicationDbContext db, IMapper mapper) : base(db, mapper)
     {
     }
+
     public DbResponse<ProductViewModel> Add(ProductAddModel model)
     {
-        var Product = _mapper.Map<Product>(model);
-        Db.Products.Add(Product);
+        var product = _mapper.Map<Product>(model);
+        Db.Products.Add(product);
         Db.SaveChanges();
-        var ProductViewModel = _mapper.Map<ProductViewModel>(Product);
+        var productViewModel = _mapper.Map<ProductViewModel>(product);
 
-        return new DbResponse<ProductViewModel>(true, $"{model.ProductName} Created Successfully", ProductViewModel);
-
+        return new DbResponse<ProductViewModel>(true, $"{model.ProductName} Created Successfully", productViewModel);
     }
 
-    public DbResponse Edit(ProductViewModel model)
+    public DbResponse Edit(ProductEditModel model)
     {
-        var Product = Db.Products.Find(model.ProductId);
-        Product!.ProductName = model.ProductName;
-        Db.Products.Update(Product);
-        Db.SaveChanges();
-        return new DbResponse(true, $"{Product.ProductName} Updated Successfully");
+        var product = Db.Products.Find(model.ProductId);
+        if (product == null)
+            return new DbResponse(false, "Data not found");
 
+        product.ProductName = model.ProductName;
+        product.ProductCategoryId = model.ProductCategoryId;
+        product.ProductPrice = model.ProductPrice;
+        Db.Products.Update(product);
+        Db.SaveChanges();
+        return new DbResponse(true, $"{product.ProductName} Updated Successfully");
     }
 
     public DbResponse Delete(int id)
     {
-        var Product = Db.Products.Find(id);
-        Db.Products.Remove(Product!);
+        var product = Db.Products.Find(id);
+        if (product == null)
+            return new DbResponse(false, "Data not found");
+        Db.Products.Remove(product);
         Db.SaveChanges();
-        return new DbResponse(true, $"{Product.ProductName} Deleted Successfully");
-
+        return new DbResponse(true, $"{product.ProductName} Deleted Successfully");
     }
 
     public DbResponse<ProductViewModel> Get(int id)
     {
-        var Product = Db.Products.Where(r => r.ProductId == id)
+        var product = Db.Products.Where(r => r.ProductId == id)
             .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
-        return new DbResponse<ProductViewModel>(true, $"{Product!.ProductName} Get Successfully", Product);
-
+        return product == null ? new DbResponse<ProductViewModel>(false, "Data not found") 
+            : new DbResponse<ProductViewModel>(true, $"{product!.ProductName} Get Successfully", product);
     }
 
     public bool IsExistName(int branchId, string name)
@@ -70,11 +76,11 @@ public class ProductRepository:Repository, IProductRepository
                || Db.SellingLists.Any(m => m.ProductId == id);
     }
 
-    public List<ProductViewModel> List(int branchId)
+    public DataResult<ProductViewModel> List(int branchId, DataRequest request)
     {
         return Db.Products.Where(m => m.BranchId == branchId)
             .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.ProductName)
-            .ToList();
+            .ToDataResult(request);
     }
 }
