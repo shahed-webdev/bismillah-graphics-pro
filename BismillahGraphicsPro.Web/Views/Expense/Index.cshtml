@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "Expense";
+    Layout = "_AdminLayout";
+}
+
+
+
+<div x-data="initData()" class="mx-3">
+    <h1 class="page-header my-3">Expense</h1>
+    
+    <form>
+        <div class="row">
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Category</label>
+                    @Html.DropDownList("CategoryId", ViewBag.categoryDropdown, "[ SELECT ]", new { @class = "form-control",required="" })
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Expanse Amount</label>
+                    <input type="number" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Expanse For</label>
+                    <input type="text" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    @Html.DropDownList("accountId", ViewBag.accountDropdown, "[ SELECT ]", new { @class = "form-control",required="" })
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Expanse Date</label>
+                    <input type="text" class="form-control" required>
+                </div>
+            </div>
+            <div class="pt-4">
+                <button type="submit" class="btn btn-md btn-custom-bg waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
+            </div>
+        </div>
+    </form>
+    
+    <table id="data-table" class="table table-sm">
+        <thead>
+        <tr>
+            <th>Expanse Date</th>
+            <th>Expanse For</th>
+            <th>Payment Method</th>
+            <th>Expanse Amount</th>
+            <th style="width: 30px">Delete</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            dataTable.getData();
+        });
+
+        //data table
+        const dataTable = {
+            table: null,
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/expanse/GetExpense",
+                        type: "POST"
+                    },
+                    columns:
+                    [
+                        { data: "ExpanseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "ExpanseFor" },
+                        { data: "Expense_Payment_Method" },
+                        { data: "ExpanseAmount" ,"render": function(data) { return `${data}/-` }},
+                        { data: "ExpanseID", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/Expanses/Delete/${data}"></a>`; } }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [0, 3, 4] },
+                        { 'sortable': false, 'targets': [4] },
+                        { 'className': "text-left", "targets": [1] },
+                        { 'className': "text-right", "targets": [3] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
+        }
+
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                data: [],
+                formData: {},
+
+                //date function init
+                dateInit() {
+                    this.formData.WithdrawDate = moment(new Date()).format("D, MMM YYYY");
+
+                    $('.datepicker').pickadate({
+                        onSet: context => {
+                            this.formData.WithdrawDate = moment(context.select).format("D, MMM YYYY");
+                        }
+                    })
+                },
+
+
+                //insert data
+                async insertData() {
+                    this.loading = true;
+
+                    try {
+                        this.formData.AccountId = @Model.AccountId;
+                        const model = { ...this.formData, WithdrawDate: new Date(this.formData.WithdrawDate) };
+
+                        const options = {
+                            method: 'POST',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(model)
+                        };
+
+                        const response = await fetch("/Account/PostWithdraw", options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            this.formData = {};
+                            location.href = "account";
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                }
+            };
+        }
+    </script>
+}

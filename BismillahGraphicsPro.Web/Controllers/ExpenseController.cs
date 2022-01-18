@@ -1,24 +1,50 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
 using BismillahGraphicsPro.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class ExpenseController : Controller
     {
         private readonly IExpenseCore _expenseCore;
-        public ExpenseController(IExpenseCore expenseCore)
+        private readonly IAccountCore _account;
+
+        public ExpenseController(IExpenseCore expenseCore, IAccountCore account)
         {
             this._expenseCore = expenseCore;
+            _account = account;
         }
 
         //expense view
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            //category dropdown list
+            var category = await _expenseCore.CategoryDdlAsync(User.Identity.Name);
+            ViewBag.categoryDropdown = new SelectList(category, "value", "label");
+
+            //account dropdown list
+            var account = _account.ListDdl(User.Identity.Name);
+            ViewBag.accountDropdown = new SelectList(account, "value", "label");
+
+
             return View();
         }
 
-        
+
+        //Get Expense
+        public async Task<IActionResult> GetExpense()
+        {
+            //category dropdown list
+            var data = await _expenseCore.CategoryDdlAsync(User.Identity.Name);
+           
+            return Json(data);
+        }
+
+
         //category view
         public IActionResult Category()
         {
