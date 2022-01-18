@@ -1,0 +1,253 @@
+﻿@{
+    ViewData["Title"] = "Product";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()" class="mx-3">
+    <!---inset form-->
+    <div x-show="!isEditMode" x-transition>
+        <h1 class="page-header my-3">Products</h1>
+
+        <form x-on:submit.prevent="insertData()">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        <select x-model.number="formData.ProductCategoryId" class="form-control">
+                            <option>[ SELECT ]</option>
+                            <template x-for="category in categories" :key="category.value">
+                                <option :value="category.value" x-text="category.label"></option>
+                            </template>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input x-model="formData.ProductName" type="text" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Price</label>
+                        <input x-model.number="formData.ProductPrice" type="number" class="form-control" required>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button type="submit" class="btn btn-md btn-custom-bg waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
+                </div>
+            </div>
+        </form>
+
+        <div x-init="initDataTable()" class="card card-body mt-4">
+            <table id="data-table" class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+
+    <!---update form-->
+    <div x-show="isEditMode" x-transition class="col-lg-8 mx-auto">
+        <h1 class="page-header my-3">
+            Update: <small class="ml-2" x-text="product.ProductName"></small>
+        </h1>
+
+        <div class="card card-body">
+            <form x-on:submit.prevent="updateData()">
+                <div class="form-group">
+                    <label>Product Category</label>
+                    <select x-model.number="product.ProductCategoryId" class="form-control">
+                        <option>[ SELECT ]</option>
+                        <template x-for="category in categories" :key="category.value">
+                            <option :selected="+category.value===product.ProductCategoryId" :value="category.value" x-text="category.label"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input x-model="product.ProductName" type="text" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Price</label>
+                    <input x-model.number="product.ProductPrice" type="number" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Product Stock</label>
+                    <input x-model.number="product.Stock" type="number" class="form-control" required>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-md btn-custom-bg">Update <i class="fas fa-check ml-1"></i></button>
+                    <button x-on:click="onCancelEdit" type="button" class="btn btn-md btn-outline-danger">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    //data table
+    const dataTable = {
+        table: null,
+        init: function() {
+            dataTable.table = $("#data-table").DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "/Product/GetProducts",
+                    type: "POST"
+                },
+                columns:
+                [
+                    { data: "ProductCategoryName" },
+                    { data: "ProductName" },
+                    { data: "ProductPrice", "render": function(data) { return `${data}/-` } },
+                    { data: "Stock", "render": function(data) { return `${data}` } },
+                    { data: "ProductId", "render": function(data) { return `<a x-on:click="onEditCLick(${data})" class="fas fa-edit"></a>`; } },
+                    { data: "ProductId", "render": function(data) { return `<a x-on:click="deleteData(${data})" class="red-text fas fa-trash-alt"></a>`; } }
+                ],
+                columnDefs: [
+                    { 'searchable': false, 'targets': [4, 5] },
+                    { 'sortable': false, 'targets': [4, 5] },
+                    { 'className': "text-center", "targets": [3, 4, 5] },
+                    { 'className': "text-right", "targets": [2] }
+                ]
+            });
+        },
+        getData: function() {
+            dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+        }
+    }
+
+    //alpine js code
+    function initData() {
+        return {
+            initDataTable : dataTable.getData,
+            loading: false,
+            formData: {},
+
+            isEditMode:false,
+            product: {}, //product set for update
+
+            //bind dropdown list
+            categories: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.productCategory))'),
+
+            //insert data
+            async insertData() {
+                this.loading = true;
+
+                try {
+                    const model = { ...this.formData };
+
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(model)
+                    };
+
+                    const response = await fetch("/Product/PostProduct", options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        this.formData = {};
+                        dataTable.getData();
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                    this.loading = false;
+
+                } catch (error) {
+                    console.log(error);
+                    this.loading = false;
+                }
+            },
+
+
+            //on Edit CLick
+            async onEditCLick(id) {
+                const response = await fetch(`/Product/GetProduct/${id}`);
+                const responseData = await response.json();
+                console.log(responseData.Data)
+
+                this.product = responseData.Data;
+                this.isEditMode = responseData.IsSuccess;
+            },
+
+
+            //on Cancel Edit CLick
+            async onCancelEdit() {
+                this.isEditMode = false;
+            },
+
+
+            //insert data
+            async updateData() {
+                this.loading = true;
+
+                try {
+                    const model = { ...this.product };
+
+                    const options = {
+                        method: 'PUT',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(model)
+                    };
+
+                    const response = await fetch("/Product/UpdateProduct", options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        this.isEditMode = false;
+                        dataTable.getData();
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                    this.loading = false;
+
+                } catch (error) {
+                    console.log(error);
+                    this.loading = false;
+                }
+            },
+
+
+
+            //delete Data
+            async deleteData(id) {
+                this.loading = true;
+
+                try {
+                    const options = { method: 'DELETE' };
+
+                    const response = await fetch(`/Product/DeleteProduct/${id}`, options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        dataTable.getData();
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                    this.loading = false;
+
+                } catch (error) {
+                    console.log(error);
+                    this.loading = false;
+                }
+            }
+        };
+    }
+</script>
+}

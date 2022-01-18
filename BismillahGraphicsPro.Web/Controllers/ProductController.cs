@@ -1,5 +1,6 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
 using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
@@ -96,6 +97,59 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var response = await _productCore.CategoryDeleteAsync(id);
+            return Json(response);
+        }
+
+        #endregion
+
+
+        #region Product
+
+        //view product
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.productCategory = await _productCore.CategoryDdlAsync(User.Identity.Name);
+
+            return View();
+        }
+
+        //get all products
+        public async Task<IActionResult> GetProducts(DataRequest request)
+        {
+            var data = await _productCore.ListAsync(User.Identity.Name, request);
+            return Json(data);
+        }
+
+        //get product by {id}
+        public async Task<IActionResult> GetProduct(int id)
+        {
+            var response = await _productCore.GetAsync(id);
+            return Json(response);
+        }
+
+
+        //post product
+        [HttpPost]
+        public async Task<IActionResult> PostProduct([FromBody] ProductAddModel model)
+        {
+            var response = await _productCore.AddAsync(User.Identity.Name, model);
+            return Json(response);
+        }
+
+
+        //Update Product
+        [HttpPut]
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductEditModel model)
+        {
+            var response = await _productCore.EditAsync(model);
+            return Json(response);
+        }
+
+        //delete Product
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var response = await _productCore.DeleteAsync(id);
             return Json(response);
         }
 
