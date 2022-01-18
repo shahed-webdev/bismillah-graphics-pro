@@ -51,6 +51,16 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
+        //delete expense
+        [HttpDelete]
+        public async Task <IActionResult> DeleteExpense(int id)
+        {
+            var response = await _expenseCore.DeleteAsync(id);
+            return Json(response);
+        }
+
+
+
         //**category view**//
         public IActionResult Category()
         {

@@ -65,7 +65,7 @@
                 <th>Expense For</th>
                 <th>Payment Method</th>
                 <th>Expense Amount</th>
-                <th style="max-width: 80px">Delete</th>
+                <th>Delete</th>
             </tr>
             </thead>
         </table>
@@ -75,7 +75,7 @@
 @section Scripts {
     <script>
         $(function() {
-            //dataTable.getData();
+            dataTable.getData();
         });
 
         //data table
@@ -94,13 +94,13 @@
                         { data: "ExpenseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
                         { data: "ExpenseFor" },
                         { data: "AccountName" },
-                        { data: "ExpenseAmount" ,"render": function(data) { return `${data}/-` }},
-                        { data: "ExpenseId", "render": function(data) { return `<a style="color:#ff0000" class="delete fas fa-trash-alt" href="/Expenses/Delete/${data}"></a>`; } }
+                        { data: "ExpenseAmount", "render": function(data) { return `${data}/-` } },
+                        { data: "ExpenseId", "render": function(data) { return `<a x-on:click="deleteData(${data})" style="color:#ff0000" class="fas fa-trash-alt"></a>`; } }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [0, 3, 4] },
                         { 'sortable': false, 'targets': [4] },
-                        { 'className': "text-left", "targets": [1] },
+                        { 'className': "text-center", "targets": [4] },
                         { 'className': "text-right", "targets": [3] }
                     ]
                 });
@@ -116,11 +116,10 @@
                 loading: false,
 
                 //bind dropdown list
-                categories : JSON.parse('@Html.Raw(Json.Serialize(ViewBag.categoryDropdown))'),
-                accounts : JSON.parse('@Html.Raw(Json.Serialize(ViewBag.accountDropdown))'),
-                
-                formData: {},
+                categories: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.categoryDropdown))'),
+                accounts: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.accountDropdown))'),
 
+                formData: {},
 
                 //date function init
                 dateInit() {
@@ -132,7 +131,6 @@
                         }
                     })
                 },
-
 
                 //insert data
                 async insertData() {
@@ -152,6 +150,31 @@
 
                         if (responseData.IsSuccess) {
                             this.formData = {};
+                            dataTable.getData();
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                },
+                
+                
+                //delete Data
+                async deleteData(id) {
+                    this.loading = true;
+
+                    try {
+                        const options = {method: 'DELETE'};
+
+                        const response = await fetch(`/Expense/DeleteExpense/${id}`, options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            dataTable.getData();
                         }
 
                         $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");

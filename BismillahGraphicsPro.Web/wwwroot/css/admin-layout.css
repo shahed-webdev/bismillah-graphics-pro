@@ -19,7 +19,8 @@ header nav { background-color: var(--bg-primary) }
 main { min-height: 86vh; }
 
 /*data table*/
-.table td, .table th {vertical-align: middle;}
+table.table thead th { font-weight: bold; }
+table.table td, table.table th { vertical-align: middle; }
 
 /*footer*/
 footer { background-color: var(--bg-primary) }
