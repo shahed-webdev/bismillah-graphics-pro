@@ -75,7 +75,7 @@ public class ExpenseCore : Core, IExpenseCore
 
             _db.Account.BalanceAdd(expenseResponse.Data.AccountId, expenseResponse.Data.ExpanseAmount);
 
-            _db.AccountLog.delete(AccountLogTableName.Expanse, id);
+            _db.AccountLog.Delete(AccountLogTableName.Expanse, id);
 
             return Task.FromResult(_db.Expense.Delete(id));
         }

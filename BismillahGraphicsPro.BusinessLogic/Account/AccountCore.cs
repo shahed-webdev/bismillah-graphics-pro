@@ -107,6 +107,12 @@ public class AccountCore: Core,IAccountCore
         return _db.Account.ListDdl(branchId);
     }
 
+    public Task<DataResult<AccountLogViewModel>> LogListAsync(string userName, DataRequest request)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return Task.FromResult(_db.AccountLog.List(request, branchId));
+    }
+
     public DbResponse<AccountDepositViewModel> Deposit(string userName, AccountDepositViewModel model)
     {
         try
