@@ -16,4 +16,12 @@ public class AccountLogRepository: Repository, IAccountLogRepository
         Db.AccountLogs.Add(accountLog);
         Db.SaveChanges();
     }
+
+    public void delete(AccountLogTableName tableName, int tableId)
+    {
+        var accountLog = Db.AccountLogs.FirstOrDefault(x => x.TableName == tableName && x.TableId == tableId);
+        if (accountLog == null) return;
+        Db.AccountLogs.Remove(accountLog);
+        Db.SaveChanges();
+    }
 }

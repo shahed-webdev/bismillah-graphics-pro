@@ -17,6 +17,7 @@ namespace BismillahGraphicsPro.Data
 
         public virtual Account Account { get; set; } = null!;
         public virtual Branch Branch { get; set; } = null!;
-        public virtual ExpanseCategory ExpanseCategory { get; set; } = null!;
+        public virtual ExpanseCategory ExpanseCategory { get; set; } = null!; 
+        public virtual Registration Registration { get; set; } = null!;
     }
 }

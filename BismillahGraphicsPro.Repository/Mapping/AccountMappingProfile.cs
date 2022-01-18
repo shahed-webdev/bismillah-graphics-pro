@@ -12,5 +12,6 @@ public class AccountMappingProfile: Profile
         CreateMap<Account, AccountViewModel>().ReverseMap();
         CreateMap<AccountDeposit, AccountDepositViewModel>().ReverseMap();
         CreateMap<AccountWithdraw, AccountWithdrawViewModel>().ReverseMap();
+        CreateMap<AccountLog, AccountLogAddModel>().ReverseMap();
     }
 }

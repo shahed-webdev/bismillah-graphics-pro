@@ -108,10 +108,6 @@ namespace BismillahGraphicsPro.Data
                     .HasMaxLength(50)
                     .HasConversion<string>();
 
-                entity.Property(e => e.Type)
-                    .HasMaxLength(128)
-                    .HasConversion<string>();
-
                 entity.HasOne(d => d.Account)
                     .WithMany(p => p.AccountLogs)
                     .HasForeignKey(d => d.AccountId)
@@ -188,6 +184,12 @@ namespace BismillahGraphicsPro.Data
                 entity.Property(e => e.InsertDateBdTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
+
+                entity.HasOne(d => d.Registration)
+                    .WithMany(p => p.Expanses)
+                    .HasForeignKey(d => d.RegistrationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Expanse_Registration");
 
                 entity.HasOne(d => d.Account)
                     .WithMany(p => p.Expanses)
