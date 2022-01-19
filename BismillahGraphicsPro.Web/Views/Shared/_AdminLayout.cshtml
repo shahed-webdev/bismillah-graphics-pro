@@ -23,7 +23,7 @@
     <link href="~/css/print-page.css?v=1.0.0" rel="stylesheet" />
     <!-- others style-->
     @await RenderSectionAsync("Styles", false)
-    
+
     <!--alpine js-->
     <script defer src="https://unpkg.com/alpinejs@3.8.0/dist/cdn.min.js"></script>
 </head>
@@ -34,21 +34,7 @@
                 <div class="print-header">
                     <a class="sidedrawer-toggle d-md-none js-show-sidedrawer d-print-none"><i class="fas fa-bars"></i></a>
                     <a class="sidedrawer-toggle d-none d-md-inline-block js-hide-sidedrawer d-print-none"><i class="fas fa-bars"></i></a>
-                    <a href="/Home/Index" class="navbar-brand ml-1 pb-0">Bismillah Graphic.</a>
-                    <div class="text-white pb-1">
-                        <span>
-                            <i class="fas fa-map-marker-alt"></i>
-                           address
-                        </span>
-                        <span class="mx-2">
-                            <i class="fas fa-phone"></i>
-                            01819099940
-                        </span>
-                        <span>
-                            <i class="fas fa-globe"></i>
-                           mail
-                        </span>
-                    </div>
+                    @await Component.InvokeAsync("BranchInfo")
                 </div>
             </div>
         </nav>
@@ -91,7 +77,7 @@
     <script src="~/js/notify.min.js"></script>
     <!--moment js-->
     <script src="~/js/moment.js"></script>
-    
+
     <!--sidebar-->
     <script src="https://cdn.muicss.com/mui-latest/js/mui.min.js"></script>
     <script src="~/js/sidedrawer-links.js"></script>
