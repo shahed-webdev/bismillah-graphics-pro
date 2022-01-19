@@ -18,7 +18,8 @@ public class ProductCore : Core, IProductCore
             if (string.IsNullOrEmpty(model.ProductName))
                 return Task.FromResult(new DbResponse<ProductViewModel>(false, "Invalid Data"));
 
-
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            model.BranchId = branchId;
             if (_db.Product.IsExistName(model.BranchId, model.ProductName))
                 return Task.FromResult(new DbResponse<ProductViewModel>(false, $" {model.ProductName} already Exist"));
 
