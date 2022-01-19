@@ -189,7 +189,7 @@
             },
 
 
-            //insert data
+            //update data
             async updateData() {
                 this.loading = true;
 
@@ -205,10 +205,9 @@
                     const response = await fetch("/Product/UpdateProduct", options);
                     const responseData = await response.json();
 
-                    if (responseData.IsSuccess) {
-                        this.isEditMode = false;
+                    if (responseData.IsSuccess) 
                         dataTable.getData();
-                    }
+                    
 
                     $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
                     this.loading = false;

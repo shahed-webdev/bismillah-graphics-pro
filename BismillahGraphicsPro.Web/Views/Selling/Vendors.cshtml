@@ -1,0 +1,270 @@
+﻿@{
+    ViewData["Title"] = "Vendors";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()" class="mx-3">
+    <h1 class="page-header my-3">Vendors</h1>
+
+    <form x-on:submit.prevent="insertData()">
+        <div class="row">
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" x-model="formData.VendorCompanyName" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input x-model="formData.VendorName" type="text" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input x-model="formData.VendorPhone" type="text" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>SMS Mobile Number</label>
+                    <input x-model="formData.SmsNumber" pattern="^(88)?((011)|(015)|(016)|(017)|(018)|(019)|(013)|(014))\d{8,8}$" type="text" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="form-group">
+                    <label>Address</label>
+                    <input x-model="formData.VendorAddress" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="pt-4">
+                <button type="submit" class="btn btn-md btn-custom-bg waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
+            </div>
+        </div>
+    </form>
+
+    <div class="card card-body mt-4">
+        <table id="data-table" class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Address/Phone</th>
+                    <th>SMS Mobile No.</th>
+                    <th>Total Amount</th>
+                    <th>Discount</th>
+                    <th>Paid</th>
+                    <th>Due</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+
+    <!---update  Modal -->
+    <div id="modalUpdate" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content form-elegant">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 dark-grey-text font-weight-bold">
+                        <small class="ml-2" x-text="vendor.VendorName"></small>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body mx-4">
+                    <form x-on:submit.prevent="updateData()">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" x-model="vendor.VendorCompanyName" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input x-model="vendor.VendorName" type="text" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input x-model="vendor.VendorPhone" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>SMS Mobile Number</label>
+                            <input x-model="vendor.SmsNumber" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input x-model="vendor.VendorAddress" type="text" class="form-control">
+                        </div>
+                        <div class="text-center my-4">
+                            <button type="submit" class="btn brand-gradient btn-block btn-rounded z-depth-1a text-white">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            dataTable.getData();
+        });
+
+
+        //data table
+        const dataTable = {
+            table: null,
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Selling/GetVendorData",
+                        type: "POST"
+                    },
+                    columns:
+                    [
+                        {
+                            data: "VendorCompanyName",
+                            "render": function(data, type, row) {
+                                return `<p class="font-weight-bold mb-0">${data}</p><span>${row.VendorName}</span>`
+                            }
+                        },
+                        {
+                            data: "VendorAddress",
+                            "render": function(data, type, row) {
+                                return `<p class="mb-0 text-dark">${data}</p><small>${row.VendorPhone}</small>`
+                            }
+                        },
+                        { data: "SmsNumber" },
+                        { data: "TotalAmount", "render": function(data) { return `৳${data}` } },
+                        { data: "TotalDiscount", "render": function(data) { return `৳${data}` } },
+                        { data: "VendorPaid", "render": function(data) { return `৳${data}` } },
+                        { data: "VendorDue", "render": function(data) { return `৳${data}` } },
+                        { data: "VendorId", "render": function(data) { return `<a x-on:click="onEditCLick(${data})" class="fas fa-edit"></a>`; } },
+                        { data: "VendorId", "render": function(data) { return `<a x-on:click="deleteData(${data})" class="red-text fas fa-trash-alt"></a>`; } }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [7,8] },
+                        { 'sortable': false, 'targets': [7,8] },
+                        { 'className': "text-center", "targets": [2,7,8] },
+                        { 'className': "text-right", "targets": [3,4,5,6] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
+        }
+
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                formData: {},
+                vendor: {},
+
+                //insert data
+                async insertData() {
+                    this.loading = true;
+
+                    try {
+                        const model = { ...this.formData };
+
+                        const options = {
+                            method: 'POST',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(model)
+                        };
+
+                        const response = await fetch("/Selling/PostVendor", options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            this.formData = {};
+                            dataTable.getData();
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                },
+
+                //on edit CLick
+                async onEditCLick(id) {
+                    const response = await fetch(`/selling/GetVendorById/${id}`);
+                    const responseData = await response.json();
+
+                    this.vendor = responseData.Data;
+                    $("#modalUpdate").modal("show");
+                },
+
+                //update data
+                async updateData() {
+                    this.loading = true;
+
+                    try {
+                        const model = { ...this.vendor };
+
+                        const options = {
+                            method: 'PUT',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(model)
+                        };
+
+                        const response = await fetch("/Selling/UpdateVendor", options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess)
+                            dataTable.getData();
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                        if (responseData.IsSuccess)
+                            $("#modalUpdate").modal("hide");
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                },
+
+                //delete data
+                async deleteData(id) {
+                    this.loading = true;
+
+                    try {
+                        const options = { method: 'DELETE' };
+
+                        const response = await fetch(`/Selling/DeleteVendor/${id}`, options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            dataTable.getData();
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                }
+            };
+        }
+    </script>
+}
+
