@@ -1,10 +1,12 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
+    [Authorize (Roles = "Admin")]
     public class ProductController : Controller
     {
         private readonly IMeasurementUnitCore _measurementUnit;
