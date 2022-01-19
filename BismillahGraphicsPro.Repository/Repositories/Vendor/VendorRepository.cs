@@ -30,7 +30,7 @@ public class VendorRepository : Repository, IVendorRepository
         var Vendor = Db.Vendors.Find(model.VendorId);
         if (Vendor == null) return new DbResponse(false, "data Not Found");
 
-        Vendor.SmsNumber = model.VendorName;
+        Vendor.SmsNumber = model.SmsNumber;
         Vendor.VendorName = model.VendorName;
         Vendor.VendorCompanyName = model.VendorCompanyName;
         Vendor.VendorAddress = model.VendorAddress;

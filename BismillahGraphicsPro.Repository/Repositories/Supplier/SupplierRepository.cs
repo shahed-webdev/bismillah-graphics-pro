@@ -31,7 +31,7 @@ public class SupplierRepository : Repository, ISupplierRepository
         if (supplier == null) return new DbResponse(false, "data Not Found");
 
         supplier.SmsNumber = model.SupplierName;
-        supplier.SupplierName = model.SupplierName;
+        supplier.SupplierName = model.SmsNumber;
         supplier.SupplierCompanyName = model.SupplierCompanyName;
         supplier.SupplierAddress = model.SupplierAddress;
         supplier.SupplierPhone = model.SupplierPhone;
