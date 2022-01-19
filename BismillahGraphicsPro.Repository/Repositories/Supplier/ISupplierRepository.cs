@@ -14,4 +14,5 @@ public interface ISupplierRepository
     bool IsNull(int id);
     bool IsRelatedDataExist(int id);
     DataResult<SupplierViewModel> List(int branchId, DataRequest request);
+    Task<List<SupplierViewModel>> SearchAsync(int branchId, string key);
 }

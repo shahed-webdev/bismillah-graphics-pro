@@ -10,4 +10,5 @@ public interface ISupplierCore
     Task<DbResponse> DeleteAsync(int id);
     Task<DbResponse<SupplierViewModel>> GetAsync(int id);
     Task<DataResult<SupplierViewModel>> ListAsync(string userName, DataRequest request);
+    Task<List<SupplierViewModel>> SearchAsync(string userName, string key);
 }

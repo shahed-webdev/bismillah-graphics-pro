@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
+using Microsoft.EntityFrameworkCore;
 
 namespace BismillahGraphicsPro.Repository;
 
@@ -51,7 +52,8 @@ public class ProductRepository : Repository, IProductRepository
         var product = Db.Products.Where(r => r.ProductId == id)
             .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
-        return product == null ? new DbResponse<ProductViewModel>(false, "Data not found") 
+        return product == null
+            ? new DbResponse<ProductViewModel>(false, "Data not found")
             : new DbResponse<ProductViewModel>(true, $"{product!.ProductName} Get Successfully", product);
     }
 
@@ -82,5 +84,14 @@ public class ProductRepository : Repository, IProductRepository
             .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.ProductName)
             .ToDataResult(request);
+    }
+
+    public Task<List<ProductViewModel>> SearchAsync(int branchId, string key)
+    {
+        return Db.Products.Where(p =>p.BranchId == branchId && p.ProductName.Contains(key))
+            .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
+            .OrderBy(a => a.ProductName)
+            .Take(5)
+            .ToListAsync();
     }
 }

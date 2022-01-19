@@ -86,6 +86,12 @@ public class ProductCore : Core, IProductCore
         return Task.FromResult(_db.Product.List(branchId, request));
     }
 
+    public Task<List<ProductViewModel>> SearchAsync(string userName, string key)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return  _db.Product.SearchAsync(branchId, key);
+    }
+
     public Task<DbResponse<ProductCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName)
     {
         try

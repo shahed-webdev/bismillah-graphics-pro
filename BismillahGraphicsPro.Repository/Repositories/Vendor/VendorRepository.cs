@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
+using Microsoft.EntityFrameworkCore;
 
 namespace BismillahGraphicsPro.Repository;
 
@@ -88,5 +89,14 @@ public class VendorRepository : Repository, IVendorRepository
             .ProjectTo<VendorViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.VendorName)
             .ToDataResult(request);
+    }
+
+    public Task<List<VendorViewModel>> SearchAsync(int branchId, string key)
+    {
+        return Db.Vendors.Where(v => v.BranchId == branchId && v.VendorName.Contains(key) || v.VendorPhone.Contains(key) || v.VendorCompanyName.Contains(key))
+            .ProjectTo<VendorViewModel>(_mapper.ConfigurationProvider)
+            .OrderBy(a => a.VendorName)
+            .Take(5)
+            .ToListAsync();
     }
 }
