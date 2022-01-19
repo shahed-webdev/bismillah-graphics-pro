@@ -83,4 +83,9 @@ public class SupplierCore:Core, ISupplierCore
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return Task.FromResult(_db.Supplier.List(branchId, request));
     }
+    public Task<List<SupplierViewModel>> SearchAsync(string userName, string key)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return _db.Supplier.SearchAsync(branchId, key);
+    }
 }

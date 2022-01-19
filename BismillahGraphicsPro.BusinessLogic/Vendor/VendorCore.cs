@@ -83,4 +83,10 @@ public class VendorCore:Core, IVendorCore
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return Task.FromResult(_db.Vendor.List(branchId, request));
     }
+
+    public Task<List<VendorViewModel>> SearchAsync(string userName, string key)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return _db.Vendor.SearchAsync(branchId, key);
+    }
 }
