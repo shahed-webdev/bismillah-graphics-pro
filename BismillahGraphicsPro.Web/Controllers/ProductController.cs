@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
-    [Authorize (Roles = "Admin")]
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IMeasurementUnitCore _measurementUnit;
@@ -17,6 +17,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             _measurementUnit = measurementUnit;
             _productCore = productCore;
         }
+
 
         #region Measurement unit
 

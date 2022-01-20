@@ -1,0 +1,192 @@
+﻿@{
+    ViewData["Title"] = "Purchase";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()" x-init="getDropdownData" class="mx-3">
+    <h1 class="page-header my-3">Purchase</h1>
+
+    <form x-on:submit.prevent="insertData()">
+        <div class="row">
+            <div class="col-sm-6 col-lg-4">
+                <div x-init="findProduct" class="form-group">
+                    <label>Find Product</label>
+                    <input x-ref="findProduct" type="text" placeholder="Find product" class="form-control" required>
+                </div>
+            </div>
+            <div class="pt-4">
+                <button type="submit" class="btn btn-md btn-custom-bg waves-effect waves-light">Find</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="card card-body mt-4">
+        <table id="data-table" class="table table-sm">
+            <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>M.Unit</th>
+                    <th>Unit Price</th>
+                    <th>Line Total</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="(product,index) in products" :key="product.ProductId">
+                    <tr>
+                        <td x-text="index+1"></td>
+                        <td x-text="product.ProductName"></td>
+                        <td>
+                            <input x-model="product.PurchaseQuantity" type="number" step="0.01" min="0" class="form-control" required>
+                        </td>
+                        <td>
+                            <select x-model="product.PurchaseQuantity" class="form-control" required>
+                                <option>[ SELECT ]</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input x-model="product.PurchaseUnitPrice" type="number" step="0.01" min="0" class="form-control" required>
+                        </td>
+                        <td x-model="LineTotal"></td>
+                        <td>remove</td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+
+    @*  <div class="form-group">
+        <label>Payment Method</label>
+        <select x-model.number="formData.AccountId" class="form-control">
+        <option>[ SELECT ]</option>
+        <template x-for="account in accounts" :key="account.value">
+        <option :value="account.value" x-text="account.label"></option>
+        </template>
+        </select>
+        </div>*@
+</div>
+
+@section Scripts {
+<script>
+    //alpine js code
+    function initData() {
+        return {
+            loading: false,
+            products: [],
+
+            //dropdown list
+            accounts: [],
+            measurementUnits: [],
+
+            //get dropdown data
+            async getDropdownData() {
+                //get account
+                const accountResponse = await fetch("/common/getAccount");
+                const account = await accountResponse.json();
+                this.accounts = account.data;
+
+                //get measurement
+                const measurementResponse = await fetch("/common/GetMeasurementUnit");
+                const measurement = await measurementResponse.json();
+                this.measurementUnits = measurement.data;
+            },
+
+
+            //form data
+            formData: {},
+
+            //date function init
+            dateInit() {
+                this.formData.ExpenseDate = moment(new Date()).format("D, MMM YYYY");
+
+                $('.datepicker').pickadate({
+                    onSet: context => {
+                        this.formData.ExpenseDate = moment(context.select).format("D, MMM YYYY");
+                    }
+                })
+            },
+
+            //find product
+            findProduct() {
+                $(this.$refs.findProduct).typeahead({
+                    minLength: 1,
+                    displayText: item => {
+                        return item.ProductName;
+                    },
+                    afterSelect: function(item) {
+                        this.$element[0].value = item.ProductName;
+                    },
+                    source: (request, result) => {
+                        $.ajax({
+                            url: `/common/findProduct`,
+                            data: { prefix: request },
+                            success: response => result(response),
+                            error: err => console.log(err)
+                        });
+                    },
+                    updater: item => {
+                        console.log(item)
+                        this.products.push(item)
+                        return item;
+                    }
+                })
+            },
+
+            //insert data
+            async insertData() {
+                this.loading = true;
+
+                try {
+                    const model = { ...this.formData, ExpenseDate: new Date(this.formData.ExpenseDate) };
+
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(model)
+                    };
+
+                    const response = await fetch("/Expense/PostExpense", options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        this.formData = {};
+                        dataTable.getData();
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                    this.loading = false;
+
+                } catch (error) {
+                    console.log(error);
+                    this.loading = false;
+                }
+            },
+
+            //delete Data
+            async deleteData(id) {
+                this.loading = true;
+
+                try {
+                    const options = { method: 'DELETE' };
+
+                    const response = await fetch(`/Expense/DeleteExpense/${id}`, options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        dataTable.getData();
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                    this.loading = false;
+
+                } catch (error) {
+                    console.log(error);
+                    this.loading = false;
+                }
+            }
+        };
+    }
+</script>
+}
