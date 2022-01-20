@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 
 namespace BismillahGraphicsPro.Repository;
 
@@ -73,5 +75,25 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         Db.SaveChanges();
 
         return new DbResponse<int>(true, $"Purchase Successfully", purchase.PurchaseId);
+    }
+
+    public DbResponse<PurchaseReceiptViewModel> Get(int id)
+    {
+        var purchase = Db.Purchases.Where(r => r.PurchaseId == id)
+            .ProjectTo<PurchaseReceiptViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefault();
+
+        return purchase == null
+            ? new DbResponse<PurchaseReceiptViewModel>(false, "data Not Found")
+            : new DbResponse<PurchaseReceiptViewModel>(true, $"{purchase!.PurchaseSn} Get Successfully",
+                purchase);
+    }
+
+    public DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request)
+    {
+        return Db.Suppliers.Where(m => m.BranchId == branchId)
+            .ProjectTo<PurchaseRecordViewModel>(_mapper.ConfigurationProvider)
+            .OrderByDescending(a => a.PurchaseSn)
+            .ToDataResult(request);
     }
 }
