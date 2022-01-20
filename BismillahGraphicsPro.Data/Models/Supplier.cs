@@ -21,7 +21,7 @@ namespace BismillahGraphicsPro.Data
         public decimal TotalAmount { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal SupplierPaid { get; set; }
-        public decimal? SupplierDue { get; set; }
+        public decimal SupplierDue { get; set; }
         public DateTime InsertDateBdTime { get; set; }
 
         public virtual Branch Branch { get; set; } = null!;

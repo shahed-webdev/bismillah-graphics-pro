@@ -98,4 +98,17 @@ public class SupplierRepository : Repository, ISupplierRepository
             .Take(5)
             .ToListAsync();
     }
+
+    public void UpdatePaidDue(int id,decimal totalAmount, decimal discount, decimal paid)
+    {
+        var supplier = Db.Suppliers.Find(id);
+        if (supplier == null) return;
+
+        supplier.TotalAmount += totalAmount;
+        supplier.TotalDiscount += discount;
+        supplier.SupplierPaid += paid;
+
+        Db.Suppliers.Update(supplier);
+        Db.SaveChanges();
+    }
 }

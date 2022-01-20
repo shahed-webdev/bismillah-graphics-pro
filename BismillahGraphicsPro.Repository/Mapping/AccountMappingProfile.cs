@@ -16,6 +16,7 @@ public class AccountMappingProfile: Profile
         CreateMap<AccountLog, AccountLogViewModel>()
             .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName))
             .ForMember(d => d.LogByUserName, opt => opt.MapFrom(c => c.Registration.UserName))
+            .ForMember(d => d.Type, opt => opt.MapFrom(c => c.Type.ToString()))
             .ReverseMap();
     }
 }

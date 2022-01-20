@@ -94,4 +94,22 @@ public class ProductRepository : Repository, IProductRepository
             .Take(5)
             .ToListAsync();
     }
+
+    public void AddStock(int productId, decimal stock)
+    {
+        var product = Db.Products.Find(productId);
+        if (product == null) return;
+        product.Stock += stock;
+        Db.Products.Update(product);
+        Db.SaveChanges();
+    }
+
+    public void SubtractStock(int productId, decimal stock)
+    {
+        var product = Db.Products.Find(productId);
+        if (product == null) return;
+        product.Stock -= stock;
+        Db.Products.Update(product);
+        Db.SaveChanges();
+    }
 }

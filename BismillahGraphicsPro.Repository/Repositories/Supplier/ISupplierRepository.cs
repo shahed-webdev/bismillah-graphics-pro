@@ -15,4 +15,5 @@ public interface ISupplierRepository
     bool IsRelatedDataExist(int id);
     DataResult<SupplierViewModel> List(int branchId, DataRequest request);
     Task<List<SupplierViewModel>> SearchAsync(int branchId, string key);
+    void UpdatePaidDue(int id, decimal totalAmount, decimal discount, decimal paid);
 }

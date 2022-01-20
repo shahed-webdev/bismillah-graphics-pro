@@ -12,7 +12,7 @@ public class AccountLogViewModel
     public bool? IsAdded { get; set; }
     public decimal Amount { get; set; }
     public string? Details { get; set; }
-    public AccountLogType Type { get; set; }
+    public string Type { get; set; }
     public DateTime LogDate { get; set; }
     public DateTime InsertDateBdTime { get; set; }
 }

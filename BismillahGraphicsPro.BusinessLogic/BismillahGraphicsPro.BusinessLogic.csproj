@@ -13,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Account\" />
     <Folder Include="Expense\" />
+    <Folder Include="Purchase\" />
     <Folder Include="Supplier\" />
     <Folder Include="Product\" />
   </ItemGroup>

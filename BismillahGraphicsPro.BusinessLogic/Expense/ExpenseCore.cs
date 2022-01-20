@@ -27,12 +27,13 @@ public class ExpenseCore : Core, IExpenseCore
             model.BranchId = branchId;
             model.RegistrationId = registrationId;
 
-            _db.Account.BalanceSubtract(model.AccountId, model.ExpenseAmount);
-
             var expenseResponse = _db.Expense.Add(model);
-            //-----------Account log added-----------------------------
+            
+            //-----------Account and Account log added-----------------------------
             if (expenseResponse.IsSuccess)
             {
+                _db.Account.BalanceSubtract(model.AccountId, model.ExpenseAmount);
+
                 var accountLog = new AccountLogAddModel
                 {
                     AccountId = expenseResponse.Data.AccountId,

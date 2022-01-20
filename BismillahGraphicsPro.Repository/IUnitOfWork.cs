@@ -11,6 +11,7 @@ namespace BismillahGraphicsPro.Repository
         IExpenseCategoryRepository ExpenseCategory { get; }
         IProductCategoryRepository ProductCategory { get; }
         IProductRepository Product { get; }
+        IPurchaseRepository Purchase { get; }
         IMeasurementUnitRepository MeasurementUnit { get; }
         IRegistrationRepository Registration { get; }
         ISupplierRepository Supplier { get; }

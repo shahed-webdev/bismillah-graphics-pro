@@ -99,6 +99,7 @@ public class AccountRepository: Repository, IAccountRepository
         if (account == null) return;
         account.Balance += amount;
         Db.Accounts.Update(account);
+        Db.SaveChanges();
     }
 
     public void BalanceSubtract(int id, decimal amount)
@@ -107,6 +108,7 @@ public class AccountRepository: Repository, IAccountRepository
         if (account == null) return;
         account.Balance -= amount;
         Db.Accounts.Update(account);
+        Db.SaveChanges();
     }
 
     public DbResponse<AccountDepositViewModel> Deposit(AccountDepositViewModel model)
