@@ -1,0 +1,307 @@
+﻿@model PurchaseReceiptViewModel
+@{
+    ViewData["Title"] = "Receipt";
+    Layout = "_AdminLayout";
+}
+
+@section Styles{
+    <link href="~/CSS/selling-receipt.css" rel="stylesheet" />
+    <style>
+        .invice-title {
+            width: 150px;
+        }
+    </style>
+}
+
+<section class="my-4 d-print-none">
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (Model.PurchaseDueAmount > 0)
+            {
+                <a class="btn btn-success btn-rounded" href="/Supplier/PayDueSingle/@Model.PurchaseId"><i class="fas fa-money-bill-alt mr-1"></i>Pay Due</a>
+            }
+            else
+            {
+                <button disabled="" class="btn btn-success btn-rounded"><i class="fas fa-money-bill-alt mr-1"></i>No Due</button>
+            }
+           
+            <a class="btn btn-discord btn-rounded" href="/Supplier/PurchaseRecord"><i class="fas fa-shopping-bag mr-1"></i>Purchase Record</a>
+        </div>
+        <div>
+            <a class="btn btn-elegant btn-rounded" href="/Supplier/Purchase"><i class="fas fa-shopping-cart mr-1"></i>Purchase</a>
+            <button class="btn btn-default btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
+        </div>
+    </div>
+</section>
+
+
+<div id="main-page">
+    <div class="row my-2 receipt-info align-items-center">
+        <div class="col">
+            <span>RECEIPT# @Model.PurchaseSn</span>
+        </div>
+        <div class="col">
+            <div class="invice-title">PURCHASE BILL</div>
+        </div>
+        <div class="col text-right">
+            <span>Date: @Model.PurchaseDate.ToString("d MMM yyyy")</span>
+        </div>
+    </div>
+
+    <div class="row mb-1" id="vendor-area">
+        <div class="col-7">
+            <h5><strong>@Model.Supplier.SupplierCompanyName</strong></h5>
+            <h5><strong>@Model.Supplier.SupplierName</strong></h5>
+        </div>
+        <div class="col text-right">
+            @if (!string.IsNullOrEmpty(Model.Supplier.SupplierAddress))
+            {
+                <h5><strong>@Model.Supplier.SupplierAddress</strong></h5>
+            }
+            <h5><strong>@Model.Supplier.SupplierPhone</strong></h5>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="text-center"><strong>No.</strong></th>
+                <th><strong>Product Name</strong></th>
+                <th class="text-center"><strong>Quantity</strong></th>
+                <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
+                <th class="text-right"><strong>Line&nbsp;Total</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var index = 0;
+                foreach (var item in Model.PurchaseLists)
+                {
+                    index++;
+                    <tr>
+                        <td class="text-center">@index</td>
+                        <td>@item.ProductName</td>
+                        <td class="text-center">
+                            @item.PurchaseQuantity
+                            @item.MeasurementUnitName
+                        </td>
+                        <td class="text-right">@item.PurchaseUnitPrice/-</td>
+                        <td class="text-right">@item.PurchasePrice/-</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="4">
+                    <span id="amount-word"></span>
+                </td>
+                <td colspan="2">
+                    <div class="text-right">
+                        <h5>Total: <strong>@Model.PurchaseTotalPrice/-</strong></h5>
+                        @{
+                            var discount = Model.PurchaseDiscountAmount;
+
+                            if (discount > 0)
+                            {
+                                <h5>Discount: <strong>@Model.PurchaseDiscountAmount/-</strong></h5>
+                            }
+                        }
+
+                        <h5>Paid: <strong> @Model.PurchasePaidAmount/-</strong></h5>
+                        <h5>Due: <strong>@Model.PurchaseDueAmount/-</strong></h5>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4 class="mt-3">@Model.Description</h4>
+
+    <div class="d-flex justify-content-between align-items-center d-print-none mt-3">
+        <button id="btnBlockReadySendSMS" @(Model.Supplier.SmsNumber =="" ? "disabled='disabled'" : "") data-number="@Model.Supplier.SmsNumber" class="btn btn-outline-primary"><i class="fas fa-paper-plane mr-1"></i>Send Product Received SMS</button>
+        <div class="text-center">
+            <h5 id="smsBalance" class="font-weight-bold"></h5>
+            <em class="m-0 text-muted">SMS Number: @(Model.Supplier.SmsNumber=="" ? "N/A" : Model.Supplier.SmsNumber)</em>
+        </div>
+        <button id="btnSendPaymentSMS" @(Model.Supplier.SmsNumber=="" ? "disabled='disabled'" : "") data-number="@Model.Supplier.SmsNumber" class="btn btn-outline-danger"><i class="fas fa-paper-plane mr-1"></i>Send Payment Status</button>
+    </div>
+
+    <div class="d-print-none">
+        @{
+            var paymentRecord = Model.PurchasePaymentRecords;
+
+            if (paymentRecord.Count > 0)
+            {
+                <h5 class="mt-4">PAYMENT RECORD</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th><strong>Paid Date</strong></th>
+                            <th><strong>Paid Amount</strong></th>
+                            <th><strong>Payment Method</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        @foreach (var item in paymentRecord)
+                        {
+                            <tr>
+                                <td>@item.PurchasePaidDate.ToString("d MMM yyyy")</td>
+                                <td class="text-right">@item.PurchasePaidAmount/-</td>
+                                <td class="text-center">
+                                    <strong>@item.AccountName</strong>
+                                    <em class="text-dark">@item.Description</em>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+        }
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function() {
+            $("#amount-word").text(`Taka (in words): ${number2text(@Model.PurchaseTotalPrice)}`);
+
+            getSMSBalance();
+        });
+
+        //amount in word
+        function number2text(value) {
+            const fraction = Math.round((value % 1) * 100);
+            var fullText = "";
+
+            if (fraction > 0) {
+                fullText = `AND ${convertNumber(fraction)} PAISA`;
+            }
+
+            return convertNumber(value) + " TK " + fullText + " ONLY";
+        }
+
+        function convertNumber(number) {
+            if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
+
+            var coreAmount = Math.floor(number / 10000000);
+            number -= coreAmount * 10000000;
+
+            var lakhAmount = Math.floor(number / 100000);
+            number -= lakhAmount * 100000;
+
+            var thousandAmount = Math.floor(number / 1000);
+            number -= thousandAmount * 1000;
+
+            var hundredAmount = Math.floor(number / 100);
+            number = number % 100;
+
+            var tn = Math.floor(number / 10);
+            var one = Math.floor(number % 10);
+            var res = "";
+
+            if (coreAmount > 0) {
+                res += (convertNumber(coreAmount) + " CRORE");
+            }
+            if (lakhAmount > 0) {
+                res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
+            }
+            if (thousandAmount > 0) {
+                res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
+            }
+
+            if (hundredAmount) {
+                res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
+            }
+
+
+            var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
+            var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
+
+            if (tn > 0 || one > 0) {
+                if (!(res === "")) {
+                    res += " AND ";
+                }
+
+                if (tn < 2) {
+                    res += ones[tn * 10 + one];
+                } else {
+                    res += tens[tn];
+                    if (one > 0) {
+                        res += (`-${ones[one]}`);
+                    }
+                }
+            }
+
+            if (res === "") {
+                res = "zero";
+            }
+            return res;
+        }
+
+
+        //SMS balance
+        function getSMSBalance() {
+            const balance = document.getElementById('smsBalance');
+            balance.textContent = "loading.."
+            $.ajax({
+                url: '/SMS/SmsBalance',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    balance.textContent = `Remaining SMS: ${response}`;
+                },
+                error: error => console.log(error)
+            });
+        }
+
+        //send SMS
+        const btnBlockReadySendSMS = document.getElementById('btnBlockReadySendSMS');
+        const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
+
+        //sms product received
+        btnBlockReadySendSMS.addEventListener('click', function() {
+            const number = this.getAttribute('data-number');
+            if (!number) return;
+
+            const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.PurchaseTotalPrice Thanks Bismillah Graphic. Zirabo MD:HAZRAT ALI, 01712-676781`;
+            const model = { PhoneNumber: number, TextSMS: text };
+
+            send(model);
+        });
+
+        //sms payment status
+        btnSendPaymentSMS.addEventListener('click', function() {
+            const number = this.getAttribute('data-number');
+            if (!number) return;
+
+            const paidAmount = @Model.PurchasePaidAmount;
+            const dueAmount = @Model.PurchaseDueAmount;
+
+            const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
+            const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
+
+            const text = `Dear Valued Supplier, The Order Amount Tk: @Model.PurchaseTotalPrice.${paid}${due}Thanks Bismillah Graphic. 01712-676781`;
+            const model = { PhoneNumber: number, TextSMS: text };
+
+            send(model);
+        });
+
+        //send to server
+        function send(model) {
+            $.ajax({
+                url: '/SMS/SingleSMS',
+                type: "POST",
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    location.href = "/purchase";
+                },
+                error: error => console.log(error)
+            });
+        }
+    </script>
+}
+

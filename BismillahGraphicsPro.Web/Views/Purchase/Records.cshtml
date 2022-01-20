@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Purchase";
+    Layout = "_AdminLayout";
+}
+
+<<div class="card card-body mt-4">
+    <table id="data-table" class="table table-sm">
+        <thead>
+        <tr>
+            <th>Invoice</th>
+            <th>Supplier</th>
+            <th>Amount</th>
+            <th>Paid</th>
+            <th>Due</th>
+            <th>Date</th>
+            <th>Update</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(function() {
+            dataTable.getData();
+        });
+
+        //data table
+        const dataTable = {
+            table: null,
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Purchase/GetRecordsData",
+                        type: "POST"
+                    },
+                    columns:
+                    [
+                        { data: "PurchaseSn", "render": function(data) { return `<a>${data}<a/>` } },
+                        { data: "SupplierCompanyName"},
+                        { data: "PurchaseTotalPrice" },
+                        { data: "PurchasePaidAmount" },
+                        { data: "PurchaseDueAmount" },
+                        { data: "PurchaseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "PurchaseId", "render": function(data) { return `<a>Update<a/>` } }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [0, 5, 6] },
+                        { 'sortable': false, 'targets': [6] },
+                        { 'className': "text-center", "targets": [0,5,6] },
+                        { 'className': "text-right", "targets": [2,3,4] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
+        }
+    </script>
+}

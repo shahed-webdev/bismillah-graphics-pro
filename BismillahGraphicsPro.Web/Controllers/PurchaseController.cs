@@ -88,6 +88,33 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+
+        //purchase receipt
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Records");
+
+            var model = await _purchaseCore.GetAsync(id.GetValueOrDefault());
+            return View(model.Data);
+        }
+
+
+
+        //purchase records view
+        public IActionResult Records()
+        {
+            return View();
+        }
+
+
+        //purchase records (data-table)
+        public async Task<IActionResult> GetRecordsData(DataRequest request)
+        {
+            var response = await _purchaseCore.ListAsync(User.Identity.Name, request);
+            return Json(response);
+        }
+
+
         #endregion
     }
 }
