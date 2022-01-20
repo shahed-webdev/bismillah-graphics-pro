@@ -6,5 +6,6 @@ public interface IPurchaseRepository
 {
     int GetPurchaseSn(int branchId);
     int GetReceiptSn(int branchId);
-    DbResponse<int> Add(int branchId, int registrationId, int purchaseSn,int receiptSn, PurchaseAddModel model);
+    DbResponse<int> Add(int branchId, int registrationId, int purchaseSn, int receiptSn, PurchaseAddModel model);
+    DbResponse<PurchaseReceiptViewModel> Get(int id);
 }

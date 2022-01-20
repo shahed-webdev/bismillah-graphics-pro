@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 
@@ -73,5 +74,17 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         Db.SaveChanges();
 
         return new DbResponse<int>(true, $"Purchase Successfully", purchase.PurchaseId);
+    }
+
+    public DbResponse<PurchaseReceiptViewModel> Get(int id)
+    {
+        var purchase = Db.Purchases.Where(r => r.PurchaseId == id)
+            .ProjectTo<PurchaseReceiptViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefault();
+
+        return purchase == null
+            ? new DbResponse<PurchaseReceiptViewModel>(false, "data Not Found")
+            : new DbResponse<PurchaseReceiptViewModel>(true, $"{purchase!.PurchaseSn} Get Successfully",
+                purchase);
     }
 }

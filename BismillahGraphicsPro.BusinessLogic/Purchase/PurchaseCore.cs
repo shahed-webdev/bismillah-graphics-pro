@@ -60,4 +60,17 @@ public class PurchaseCore: Core, IPurchaseCore
             return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
+    public Task<DbResponse<PurchaseReceiptViewModel>> GetAsync(int id)
+    {
+        try
+        {
+            return Task.FromResult(_db.Purchase.Get(id));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(
+                new DbResponse<PurchaseReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }
