@@ -8,9 +8,12 @@ namespace BismillahGraphicsPro.Web.Controllers
     public class PurchaseController : Controller
     {
         private readonly ISupplierCore _supplierCore;
-        public PurchaseController(ISupplierCore supplierCore)
+        private readonly IPurchaseCore _purchaseCore;
+
+        public PurchaseController(ISupplierCore supplierCore, IPurchaseCore purchaseCore, IMeasurementUnitCore measurementUnit)
         {
             _supplierCore = supplierCore;
+            _purchaseCore = purchaseCore;
         }
 
 
@@ -61,6 +64,25 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> DeleteSupplier(int id)
         {
             var response = await _supplierCore.DeleteAsync(id);
+            return Json(response);
+        }
+
+        #endregion
+
+
+        #region Purchase
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
+        //post purchase
+        [HttpPost]
+        public async Task<IActionResult> PostPurchase([FromBody] PurchaseAddModel model)
+        {
+            var response = await _purchaseCore.AddAsync(User.Identity.Name, model);
             return Json(response);
         }
 
