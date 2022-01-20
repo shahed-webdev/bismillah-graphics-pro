@@ -10,12 +10,14 @@ namespace BismillahGraphicsPro.Web.Controllers
         private readonly IMeasurementUnitCore _measurementUnit;
         private readonly IAccountCore _account;
         private readonly IProductCore _productCore;
+        private readonly ISupplierCore _supplierCore;
 
-        public CommonController(IMeasurementUnitCore measurementUnit, IAccountCore account, IProductCore productCore)
+        public CommonController(IMeasurementUnitCore measurementUnit, IAccountCore account, IProductCore productCore, ISupplierCore supplierCore)
         {
             _measurementUnit = measurementUnit;
             _account = account;
             _productCore = productCore;
+            _supplierCore = supplierCore;
         }
 
 
@@ -39,6 +41,15 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> FindProduct(string prefix)
         {
             var response = await _productCore.SearchAsync(User.Identity.Name, prefix);
+            return Json(response);
+        }
+
+
+
+        //find supplier autocomplete
+        public async Task<IActionResult> FindSupplier(string prefix)
+        {
+            var response = await _supplierCore.SearchAsync(User.Identity.Name, prefix);
             return Json(response);
         }
     }

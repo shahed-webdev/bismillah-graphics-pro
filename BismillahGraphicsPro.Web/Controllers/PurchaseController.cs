@@ -1,10 +1,12 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
+    [Authorize]
     public class PurchaseController : Controller
     {
         private readonly ISupplierCore _supplierCore;

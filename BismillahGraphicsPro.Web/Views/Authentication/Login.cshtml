@@ -1,12 +1,12 @@
 ﻿@model BismillahGraphicsPro.ViewModel.LoginViewModel
 @{
     ViewBag.Title = "Login";
-    var queryUrl = Context.Request.Query["ReturnUrl"].ToString();
-    var returnUrl = string.IsNullOrEmpty(queryUrl) ? "" : "?ReturnUrl=" + queryUrl;
 }
 
 @section Styles {
-    <link href="~/css/Login.css?v=1.0.0" rel="stylesheet" />
+    <style>
+        #left-menu { display: none !important}
+    </style>
 }
 
 <div class="container">

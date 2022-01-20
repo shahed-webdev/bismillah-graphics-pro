@@ -1,3 +1,205 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewBag.Title = "Home";
+}
+
+@section Styles{
+<style>
+    .navbar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .carousel-item img {
+        max-height: 400px;
+        object-fit: cover
+    }
+
+    .map-container-section {
+        overflow: hidden;
+        padding-bottom: 56.25%;
+        position: relative;
+        height: 0;
+    }
+
+        .map-container-section iframe {
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+        }
+</style>
+}
+
+<section id="home-section" class="container mt-5 pt-5">
+    <div id="carousel-home" class="carousel slide carousel-fade z-depth-1" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-home" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-home" data-slide-to="1"></li>
+            <li data-target="#carousel-home" data-slide-to="2"></li>
+            <li data-target="#carousel-home" data-slide-to="3"></li>
+            <li data-target="#carousel-home" data-slide-to="4"></li>
+            <li data-target="#carousel-home" data-slide-to="5"></li>
+            <li data-target="#carousel-home" data-slide-to="6"></li>
+            <li data-target="#carousel-home" data-slide-to="7"></li>
+        </ol>
+
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+                <img class="d-block w-100 rounded" src="/images/slider/1.jpg" alt="slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100 rounded" src="/images/slider/2.jpg" alt="slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100 rounded" src="/images/slider/3.jpg" alt="slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100 rounded" src="/images/slider/4.jpg" alt="slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100 rounded" src="/images/works/flexo-block.png" alt="slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100 rounded" src="/images/works/flexo-ink.png" alt="slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100 rounded" src="/images/works/graments-accessories.png" alt="slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100 rounded" src="/images/works/pp-woven-bag.png" alt="slide">
+            </div>
+        </div>
+
+        <a class="carousel-control-prev" href="#carousel-home" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carousel-home" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</section>
+
+
+<section id="about-section" class="py-5 wow fadeIn">
+    <div class="container my-5">
+        <section class="dark-grey-text text-center">
+            <h2 class="font-weight-bold mb-4 pb-2">What We Make</h2>
+
+            <p class="lead mx-auto mb-5">
+                Flexo Block, Nylo Block, Block Tape, Flexo Ink, Flexo Thiner,
+                Manufacture & Supply. All Graphics Design Solutions.
+            </p>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-body mb-4">
+                        <div class="view overlay">
+                            <img src="/images/works/flexo-block.png" class="img-fluid" alt="">
+                            <a><div class="mask rgba-white-slight"></div></a>
+                        </div>
+
+                        <div class="px-3 mx-1 mt-2">
+                            <h4 class="font-weight-bold mt-1 mb-1">Flexo Block</h4>
+                            <p class="text-muted">Flexo Block, Nylo Block</p>
+                        </div>
+                    </div>
+
+                    <div class="card card-body mb-4">
+                        <div class="view overlay">
+                            <img src="/images/works/graments-accessories.png" class="img-fluid" alt="">
+                            <a><div class="mask rgba-white-slight"></div></a>
+                        </div>
+
+                        <div class="px-3 mx-1 mt-1">
+                            <h4 class="font-weight-bold mt-1 mb-1">Garments Accessories</h4>
+                            <p class="text-muted">100% All Kinds Of We Manufacture & Supply</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-body mb-4">
+                        <div class="view overlay">
+                            <img src="/images/works/pp-woven-bag.png" class="img-fluid" alt="">
+                            <a><div class="mask rgba-white-slight"></div></a>
+                        </div>
+
+                        <div class="px-3 pt-3 mx-1 mt-1 pb-0">
+                            <h4 class="font-weight-bold mt-1 mb-3">PP Woven Bag & Poly Bag</h4>
+                            <p class="text-muted">PP Woven Bag, Non-Woven Bag, Poly Bag, Cartoon Block</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-body mb-4">
+                <div class="view overlay">
+                    <img src="/images/works/flexo-ink.png" class="img-fluid" alt="">
+                    <a><div class="mask rgba-white-slight"></div></a>
+                </div>
+
+                <div class="px-3 mx-1">
+                    <h4 class="font-weight-bold mt-1 mb-1">Block Tape, Flexo Inks, Flexo Thinner</h4>
+                    <p class="text-muted">Block Tape, Flexo Inks, Flexo Thinner</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+<section id="contact-section" class="py-4 wow fadeIn">
+    <div class="container my-5 py-5 text-center dark-grey-text">
+        <h2 class="font-weight-bold mb-5 pb-2">Contact With Us</h2>
+
+        <div class="row text-center">
+            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                <i class="fas fa-map-marker-alt fa-2x text-secondary"></i>
+                <p class="font-weight-bold my-3">Address</p>
+                <p class="text-muted">
+                    Zirabo Bus stand,(Opposite of NRB Bank)
+                    Ashulia, Savar, Dhaka
+                </p>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                <i class="fas fa-phone fa-2x text-secondary"></i>
+                <p class="font-weight-bold my-3">Phone number</p>
+                <p class="text-muted">01978-516640</p>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                <i class="fas fa-envelope fa-2x text-secondary"></i>
+                <p class="font-weight-bold my-3">E-mail</p>
+                <p class="text-muted">barkantaj2002@gmail.com</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+<script>
+    $("#left-menu").on('click', 'a[href^="#"]', function(e) {
+        // target element id
+        const id = $(this).attr('href');
+    
+        // target element
+        const $id = $(id);
+        if ($id.length === 0) return;
+
+        // prevent standard hash navigation (avoid blinking in IE)
+        e.preventDefault();
+    
+        // top position relative to the document
+        const position = $id.offset().top;
+    console.log(position)
+
+        // animated top scrolling
+        $('body, html').animate({ scrollTop: position< 50 ?position-100:position });
+    });
+</script>
 }
