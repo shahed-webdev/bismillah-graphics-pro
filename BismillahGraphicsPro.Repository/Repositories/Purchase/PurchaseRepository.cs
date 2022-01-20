@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
+using Microsoft.EntityFrameworkCore;
 
 namespace BismillahGraphicsPro.Repository;
 
@@ -16,10 +17,10 @@ public class PurchaseRepository : Repository, IPurchaseRepository
     public int GetPurchaseSn(int branchId)
     {
         var sn = 0;
-        if (Db.Purchases.Any(p=> p.BranchId == branchId))
+        if (Db.Purchases.Any(p => p.BranchId == branchId))
         {
             sn = Db.Purchases
-                .Where(p=> p.BranchId == branchId)
+                .Where(p => p.BranchId == branchId)
                 .Max(s => s == null ? 0 : s.PurchaseSn);
         }
 
@@ -35,6 +36,7 @@ public class PurchaseRepository : Repository, IPurchaseRepository
                 .Where(p => p.BranchId == branchId)
                 .Max(s => s == null ? 0 : s.ReceiptSn);
         }
+
         return sn + 1;
     }
 
@@ -87,6 +89,60 @@ public class PurchaseRepository : Repository, IPurchaseRepository
             ? new DbResponse<PurchaseReceiptViewModel>(false, "data Not Found")
             : new DbResponse<PurchaseReceiptViewModel>(true, $"{purchase!.PurchaseSn} Get Successfully",
                 purchase);
+    }
+
+    public DbResponse Edit(PurchaseEditModel model)
+    {
+        var purchase = Db.Purchases
+            .Include(s => s.PurchaseLists)
+            .Include(s => s.Supplier)
+            .FirstOrDefault(s => s.PurchaseId == model.PurchaseId);
+
+        if (purchase == null) return new DbResponse(false, "data Not Found");
+        var due = (model.PurchaseTotalPrice - model.PurchaseDiscountAmount) - purchase.PurchasePaidAmount;
+
+        if (due < 0) return new DbResponse(false, "Due amount cannot be less than zero");
+
+        //Update Supplier
+        var oldDiscount = purchase.PurchaseDiscountAmount;
+        var newDiscount = model.PurchaseDiscountAmount;
+        var oldTotalPrice = purchase.PurchaseTotalPrice;
+        var newTotalPrice = model.PurchaseTotalPrice;
+
+        purchase.Supplier.TotalAmount += newDiscount - oldDiscount;
+        purchase.Supplier.TotalDiscount += newTotalPrice - oldTotalPrice;
+
+
+        purchase.PurchaseDiscountAmount = model.PurchaseDiscountAmount;
+        purchase.PurchaseTotalPrice = model.PurchaseTotalPrice;
+        purchase.Description = model.Description;
+
+
+        var newPurchaseList = model.PurchaseLists.Select(p => _mapper.Map<PurchaseList>(p)).ToList();
+        var oldPurchaseList = purchase.PurchaseLists;
+        purchase.PurchaseLists = newPurchaseList;
+
+
+        //product stock update
+        foreach (var list in oldPurchaseList)
+        {
+            var product = Db.Products.Find(list.ProductId);
+            if (product == null) continue;
+            product.Stock -= list.PurchaseQuantity;
+            Db.Products.Update(product);
+        }
+
+        foreach (var list in newPurchaseList)
+        {
+            var product = Db.Products.Find(list.ProductId);
+            if (product == null) continue;
+            product.Stock += list.PurchaseQuantity;
+            Db.Products.Update(product);
+        }
+
+        Db.Purchases.Update(purchase);
+        Db.SaveChanges();
+        return new DbResponse(true, $"{purchase.PurchaseSn} Updated Successfully");
     }
 
     public DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request)

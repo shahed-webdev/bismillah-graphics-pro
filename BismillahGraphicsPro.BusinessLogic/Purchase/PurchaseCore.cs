@@ -74,7 +74,20 @@ public class PurchaseCore: Core, IPurchaseCore
                 new DbResponse<PurchaseReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+    public Task<DbResponse> EditAsync(PurchaseEditModel model)
+    {
+        try
+        {
+            if (!model.PurchaseLists.Any())
+                return Task.FromResult(new DbResponse(false, "Invalid Data"));
 
+            return Task.FromResult(_db.Purchase.Edit(model));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
     public Task<DataResult<PurchaseRecordViewModel>> ListAsync(string userName, DataRequest request)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
