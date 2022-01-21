@@ -517,22 +517,22 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("date")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<decimal?>("PurchaseDiscountAmount")
+                    b.Property<decimal>("PurchaseDiscountAmount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(18,2)")
                         .HasDefaultValueSql("((0))");
 
-                    b.Property<decimal?>("PurchaseDiscountPercentage")
+                    b.Property<decimal>("PurchaseDiscountPercentage")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(38,16)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(case when [PurchaseTotalPrice]=(0) then (0) else round(([PurchaseDiscountAmount]*(100))/[PurchaseTotalPrice],(2)) end)", true);
 
-                    b.Property<decimal?>("PurchaseDueAmount")
+                    b.Property<decimal>("PurchaseDueAmount")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(20,2)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(round([PurchaseTotalPrice]-([PurchaseDiscountAmount]+[PurchasePaidAmount]),(2)))", true);
 
-                    b.Property<decimal?>("PurchasePaidAmount")
+                    b.Property<decimal>("PurchasePaidAmount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(18,2)")
                         .HasDefaultValueSql("((0))");
@@ -582,9 +582,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("PurchaseId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("PurchasePrice")
+                    b.Property<decimal>("PurchasePrice")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(37,4)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(round([PurchaseQuantity]*[PurchaseUnitPrice],(2)))", true);
 
                     b.Property<decimal>("PurchaseQuantity")
@@ -758,8 +758,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool?>("Validation")
-                        .IsRequired()
+                    b.Property<bool>("Validation")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("((1))");
@@ -778,7 +777,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                             Name = "Authority",
                             Ps = "Admin_121",
                             Type = "Authority",
-                            UserName = "Authority"
+                            UserName = "Authority",
+                            Validation = false
                         });
                 });
 
@@ -793,6 +793,10 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("InsertDateBdTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
@@ -804,22 +808,22 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<DateTime>("SellingDate")
                         .HasColumnType("date");
 
-                    b.Property<decimal?>("SellingDiscountAmount")
+                    b.Property<decimal>("SellingDiscountAmount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(18,2)")
                         .HasDefaultValueSql("((0))");
 
-                    b.Property<decimal?>("SellingDiscountPercentage")
+                    b.Property<decimal>("SellingDiscountPercentage")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(38,16)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(case when [SellingTotalPrice]=(0) then (0) else round(([SellingDiscountAmount]*(100))/[SellingTotalPrice],(2)) end)", true);
 
-                    b.Property<decimal?>("SellingDueAmount")
+                    b.Property<decimal>("SellingDueAmount")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(20,2)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(round([SellingTotalPrice]-([SellingDiscountAmount]+[SellingPaidAmount]),(2)))", true);
 
-                    b.Property<decimal?>("SellingPaidAmount")
+                    b.Property<decimal>("SellingPaidAmount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(18,2)")
                         .HasDefaultValueSql("((0))");
@@ -875,9 +879,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<int>("SellingId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("SellingPrice")
+                    b.Property<decimal>("SellingPrice")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(37,4)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(round([SellingQuantity]*[SellingUnitPrice],(2)))", true);
 
                     b.Property<decimal>("SellingQuantity")
@@ -985,10 +989,12 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Property<DateTime>("SellingPaidDate")
                         .HasColumnType("date");
 
-                    b.Property<int?>("SellingReceiptId")
+                    b.Property<int>("SellingReceiptId")
                         .HasColumnType("int");
 
                     b.HasKey("SellingPaymentRecordId");
+
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("BranchId");
 
@@ -1079,9 +1085,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<decimal?>("SupplierDue")
+                    b.Property<decimal>("SupplierDue")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(20,2)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(round([TotalAmount]-([TotalDiscount]+[SupplierPaid]),(2)))", true);
 
                     b.Property<string>("SupplierName")
@@ -1125,6 +1131,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
                     b.Property<string>("SmsNumber")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -1143,9 +1150,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<decimal?>("VendorDue")
+                    b.Property<decimal>("VendorDue")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("decimal(20,2)")
+                        .HasColumnType("decimal(18,2)")
                         .HasComputedColumnSql("(round([TotalAmount]-([TotalDiscount]+[VendorPaid]),(2)))", true);
 
                     b.Property<string>("VendorName")
@@ -2020,6 +2027,12 @@ namespace BismillahGraphicsPro.Data.Migrations
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.SellingPaymentRecord", b =>
                 {
+                    b.HasOne("BismillahGraphicsPro.Data.Account", "Account")
+                        .WithMany("SellingPaymentRecords")
+                        .HasForeignKey("AccountId")
+                        .IsRequired()
+                        .HasConstraintName("FK_SellingPaymentRecord_Account");
+
                     b.HasOne("BismillahGraphicsPro.Data.Branch", "Branch")
                         .WithMany("SellingPaymentRecords")
                         .HasForeignKey("BranchId")
@@ -2035,7 +2048,10 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasOne("BismillahGraphicsPro.Data.SellingPaymentReceipt", "SellingReceipt")
                         .WithMany("SellingPaymentRecords")
                         .HasForeignKey("SellingReceiptId")
+                        .IsRequired()
                         .HasConstraintName("FK_SellingPaymentRecord_SellingPaymentReceipt");
+
+                    b.Navigation("Account");
 
                     b.Navigation("Branch");
 
@@ -2143,6 +2159,8 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.Navigation("PurchasePaymentRecords");
 
                     b.Navigation("SellingPaymentReceipts");
+
+                    b.Navigation("SellingPaymentRecords");
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Branch", b =>

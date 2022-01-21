@@ -14,6 +14,7 @@ namespace BismillahGraphicsPro.Repository
         IPurchaseRepository Purchase { get; }
         IMeasurementUnitRepository MeasurementUnit { get; }
         IRegistrationRepository Registration { get; }
+        ISellingRepository Selling { get; }
         ISupplierRepository Supplier { get; }
         IVendorRepository Vendor { get; }
         int SaveChanges();

@@ -14,7 +14,7 @@ namespace BismillahGraphicsPro.Data
         public decimal SellingUnitPrice { get; set; }
         public double Length { get; set; }
         public double Width { get; set; }
-        public decimal? SellingPrice { get; set; }
+        public decimal SellingPrice { get; set; }
         public string? Details { get; set; }
 
         public virtual Branch Branch { get; set; } = null!;

@@ -360,11 +360,11 @@ namespace BismillahGraphicsPro.Data
                     .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.PurchaseDiscountPercentage)
-                    .HasColumnType("decimal(38, 16)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(case when [PurchaseTotalPrice]=(0) then (0) else round(([PurchaseDiscountAmount]*(100))/[PurchaseTotalPrice],(2)) end)", true);
 
                 entity.Property(e => e.PurchaseDueAmount)
-                    .HasColumnType("decimal(20, 2)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(round([PurchaseTotalPrice]-([PurchaseDiscountAmount]+[PurchasePaidAmount]),(2)))", true);
 
                 entity.Property(e => e.PurchasePaidAmount)
@@ -399,7 +399,7 @@ namespace BismillahGraphicsPro.Data
                 entity.Property(e => e.MeasurementUnitId).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.PurchasePrice)
-                    .HasColumnType("decimal(37, 4)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(round([PurchaseQuantity]*[PurchaseUnitPrice],(2)))", true);
 
                 entity.Property(e => e.PurchaseQuantity).HasColumnType("decimal(18, 2)");
@@ -565,13 +565,15 @@ namespace BismillahGraphicsPro.Data
                     .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.SellingDiscountPercentage)
-                    .HasColumnType("decimal(38, 16)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(case when [SellingTotalPrice]=(0) then (0) else round(([SellingDiscountAmount]*(100))/[SellingTotalPrice],(2)) end)", true);
 
                 entity.Property(e => e.SellingDueAmount)
-                    .HasColumnType("decimal(20, 2)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(round([SellingTotalPrice]-([SellingDiscountAmount]+[SellingPaidAmount]),(2)))", true);
-
+                
+                entity.Property(e => e.Description).HasMaxLength(500);
+                
                 entity.Property(e => e.SellingPaidAmount)
                     .HasColumnType("decimal(18, 2)")
                     .HasDefaultValueSql("((0))");
@@ -608,7 +610,7 @@ namespace BismillahGraphicsPro.Data
                 entity.Property(e => e.MeasurementUnitId).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.SellingPrice)
-                    .HasColumnType("decimal(37, 4)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(round([SellingQuantity]*[SellingUnitPrice],(2)))", true);
 
                 entity.Property(e => e.SellingQuantity).HasColumnType("decimal(18, 2)");
@@ -695,6 +697,12 @@ namespace BismillahGraphicsPro.Data
 
                 entity.Property(e => e.SellingPaidDate).HasColumnType("date");
 
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.SellingPaymentRecords)
+                    .HasForeignKey(d => d.AccountId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SellingPaymentRecord_Account");
+
                 entity.HasOne(d => d.Branch)
                     .WithMany(p => p.SellingPaymentRecords)
                     .HasForeignKey(d => d.BranchId)
@@ -710,6 +718,7 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.SellingReceipt)
                     .WithMany(p => p.SellingPaymentRecords)
                     .HasForeignKey(d => d.SellingReceiptId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SellingPaymentRecord_SellingPaymentReceipt");
             });
 
@@ -756,7 +765,7 @@ namespace BismillahGraphicsPro.Data
                 entity.Property(e => e.SupplierCompanyName).HasMaxLength(128);
 
                 entity.Property(e => e.SupplierDue)
-                    .HasColumnType("decimal(20, 2)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(round([TotalAmount]-([TotalDiscount]+[SupplierPaid]),(2)))", true);
 
                 entity.Property(e => e.SupplierName).HasMaxLength(128);
@@ -795,7 +804,7 @@ namespace BismillahGraphicsPro.Data
                 entity.Property(e => e.VendorCompanyName).HasMaxLength(128);
 
                 entity.Property(e => e.VendorDue)
-                    .HasColumnType("decimal(20, 2)")
+                    .HasColumnType("decimal(18, 2)")
                     .HasComputedColumnSql("(round([TotalAmount]-([TotalDiscount]+[VendorPaid]),(2)))", true);
 
                 entity.Property(e => e.VendorName).HasMaxLength(128);

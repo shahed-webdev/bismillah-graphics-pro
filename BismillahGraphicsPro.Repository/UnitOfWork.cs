@@ -20,6 +20,7 @@ namespace BismillahGraphicsPro.Repository
             ProductCategory = new ProductCategoryRepository(_db, mapper);
             Purchase = new PurchaseRepository(_db,mapper);
             Registration = new RegistrationRepository(_db, mapper);
+            Selling = new SellingRepository(_db, mapper);
             Supplier = new SupplierRepository(_db, mapper);
             Vendor = new VendorRepository(_db, mapper);
         }
@@ -34,6 +35,7 @@ namespace BismillahGraphicsPro.Repository
         public IProductCategoryRepository ProductCategory { get; }
         public IMeasurementUnitRepository MeasurementUnit { get; }
         public IRegistrationRepository Registration { get; }
+        public ISellingRepository Selling { get; }
         public ISupplierRepository Supplier { get; }
         public IVendorRepository Vendor { get; }
 

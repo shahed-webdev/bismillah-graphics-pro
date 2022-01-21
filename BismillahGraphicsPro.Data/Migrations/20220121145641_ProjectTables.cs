@@ -194,7 +194,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SupplierPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SupplierDue = table.Column<decimal>(type: "decimal(20,2)", nullable: true, computedColumnSql: "(round([TotalAmount]-([TotalDiscount]+[SupplierPaid]),(2)))", stored: true),
+                    SupplierDue = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([TotalAmount]-([TotalDiscount]+[SupplierPaid]),(2)))", stored: true),
                     InsertDateBdTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(dateadd(hour,(6),getutcdate()))")
                 },
                 constraints: table =>
@@ -218,11 +218,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                     VendorName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     VendorAddress = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     VendorPhone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    SmsNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SmsNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     VendorPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    VendorDue = table.Column<decimal>(type: "decimal(20,2)", nullable: true, computedColumnSql: "(round([TotalAmount]-([TotalDiscount]+[VendorPaid]),(2)))", stored: true),
+                    VendorDue = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([TotalAmount]-([TotalDiscount]+[VendorPaid]),(2)))", stored: true),
                     InsertDateBdTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(dateadd(hour,(6),getutcdate()))")
                 },
                 constraints: table =>
@@ -420,10 +420,10 @@ namespace BismillahGraphicsPro.Data.Migrations
                     SupplierId = table.Column<int>(type: "int", nullable: false),
                     PurchaseSn = table.Column<int>(type: "int", nullable: false),
                     PurchaseTotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PurchaseDiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValueSql: "((0))"),
-                    PurchaseDiscountPercentage = table.Column<decimal>(type: "decimal(38,16)", nullable: true, computedColumnSql: "(case when [PurchaseTotalPrice]=(0) then (0) else round(([PurchaseDiscountAmount]*(100))/[PurchaseTotalPrice],(2)) end)", stored: true),
-                    PurchasePaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValueSql: "((0))"),
-                    PurchaseDueAmount = table.Column<decimal>(type: "decimal(20,2)", nullable: true, computedColumnSql: "(round([PurchaseTotalPrice]-([PurchaseDiscountAmount]+[PurchasePaidAmount]),(2)))", stored: true),
+                    PurchaseDiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0))"),
+                    PurchaseDiscountPercentage = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(case when [PurchaseTotalPrice]=(0) then (0) else round(([PurchaseDiscountAmount]*(100))/[PurchaseTotalPrice],(2)) end)", stored: true),
+                    PurchasePaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0))"),
+                    PurchaseDueAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([PurchaseTotalPrice]-([PurchaseDiscountAmount]+[PurchasePaidAmount]),(2)))", stored: true),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     PurchaseDate = table.Column<DateTime>(type: "date", nullable: false, defaultValueSql: "(getdate())"),
                     InsertDateBdTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(dateadd(hour,(6),getutcdate()))")
@@ -500,10 +500,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                     VendorId = table.Column<int>(type: "int", nullable: false),
                     SellingSn = table.Column<int>(type: "int", nullable: false),
                     SellingTotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SellingDiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValueSql: "((0))"),
-                    SellingDiscountPercentage = table.Column<decimal>(type: "decimal(38,16)", nullable: true, computedColumnSql: "(case when [SellingTotalPrice]=(0) then (0) else round(([SellingDiscountAmount]*(100))/[SellingTotalPrice],(2)) end)", stored: true),
-                    SellingPaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValueSql: "((0))"),
-                    SellingDueAmount = table.Column<decimal>(type: "decimal(20,2)", nullable: true, computedColumnSql: "(round([SellingTotalPrice]-([SellingDiscountAmount]+[SellingPaidAmount]),(2)))", stored: true),
+                    SellingDiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0))"),
+                    SellingDiscountPercentage = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(case when [SellingTotalPrice]=(0) then (0) else round(([SellingDiscountAmount]*(100))/[SellingTotalPrice],(2)) end)", stored: true),
+                    SellingPaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValueSql: "((0))"),
+                    SellingDueAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([SellingTotalPrice]-([SellingDiscountAmount]+[SellingPaidAmount]),(2)))", stored: true),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     SellingDate = table.Column<DateTime>(type: "date", nullable: false),
                     InsertDateBdTime = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(dateadd(hour,(6),getutcdate()))")
                 },
@@ -604,7 +605,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     MeasurementUnitId = table.Column<int>(type: "int", nullable: false, defaultValueSql: "((1))"),
                     PurchaseQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PurchaseUnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PurchasePrice = table.Column<decimal>(type: "decimal(37,4)", nullable: true, computedColumnSql: "(round([PurchaseQuantity]*[PurchaseUnitPrice],(2)))", stored: true)
+                    PurchasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([PurchaseQuantity]*[PurchaseUnitPrice],(2)))", stored: true)
                 },
                 constraints: table =>
                 {
@@ -685,7 +686,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     SellingUnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Length = table.Column<double>(type: "float", nullable: false),
                     Width = table.Column<double>(type: "float", nullable: false),
-                    SellingPrice = table.Column<decimal>(type: "decimal(37,4)", nullable: true, computedColumnSql: "(round([SellingQuantity]*[SellingUnitPrice],(2)))", stored: true),
+                    SellingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([SellingQuantity]*[SellingUnitPrice],(2)))", stored: true),
                     Details = table.Column<string>(type: "nvarchar(201)", maxLength: 201, nullable: true, computedColumnSql: "((CONVERT([nvarchar](100),[Length])+'X')+CONVERT([nvarchar](100),[Width]))", stored: true)
                 },
                 constraints: table =>
@@ -721,7 +722,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BranchId = table.Column<int>(type: "int", nullable: false),
                     SellingId = table.Column<int>(type: "int", nullable: false),
-                    SellingReceiptId = table.Column<int>(type: "int", nullable: true),
+                    SellingReceiptId = table.Column<int>(type: "int", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     SellingPaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
@@ -731,6 +732,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SellingPaymentRecord", x => x.SellingPaymentRecordId);
+                    table.ForeignKey(
+                        name: "FK_SellingPaymentRecord_Account",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "AccountId");
                     table.ForeignKey(
                         name: "FK_SellingPaymentRecord_Branch",
                         column: x => x.BranchId,
@@ -972,6 +978,11 @@ namespace BismillahGraphicsPro.Data.Migrations
                 name: "IX_SellingPaymentReceipt_VendorId",
                 table: "SellingPaymentReceipt",
                 column: "VendorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SellingPaymentRecord_AccountId",
+                table: "SellingPaymentRecord",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SellingPaymentRecord_BranchId",

@@ -17,10 +17,11 @@ namespace BismillahGraphicsPro.Data
         public int VendorId { get; set; }
         public int SellingSn { get; set; }
         public decimal SellingTotalPrice { get; set; }
-        public decimal? SellingDiscountAmount { get; set; }
-        public decimal? SellingDiscountPercentage { get; set; }
-        public decimal? SellingPaidAmount { get; set; }
-        public decimal? SellingDueAmount { get; set; }
+        public decimal SellingDiscountAmount { get; set; }
+        public decimal SellingDiscountPercentage { get; set; }
+        public decimal SellingPaidAmount { get; set; }
+        public decimal SellingDueAmount { get; set; }
+        public string? Description { get; set; }
         public DateTime SellingDate { get; set; }
         public DateTime InsertDateBdTime { get; set; }
 

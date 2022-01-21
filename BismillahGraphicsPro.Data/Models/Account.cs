@@ -13,6 +13,7 @@ namespace BismillahGraphicsPro.Data
             Expenses = new HashSet<Expense>();
             PurchasePaymentReceipts = new HashSet<PurchasePaymentReceipt>();
             PurchasePaymentRecords = new HashSet<PurchasePaymentRecord>();
+            SellingPaymentRecords = new HashSet<SellingPaymentRecord>();
             SellingPaymentReceipts = new HashSet<SellingPaymentReceipt>();
         }
 
@@ -29,6 +30,7 @@ namespace BismillahGraphicsPro.Data
         public virtual ICollection<Expense> Expenses { get; set; }
         public virtual ICollection<PurchasePaymentReceipt> PurchasePaymentReceipts { get; set; }
         public virtual ICollection<PurchasePaymentRecord> PurchasePaymentRecords { get; set; }
+        public virtual ICollection<SellingPaymentRecord> SellingPaymentRecords { get; set; }
         public virtual ICollection<SellingPaymentReceipt> SellingPaymentReceipts { get; set; }
     }
 }

@@ -45,6 +45,7 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         var purchase = _mapper.Map<Purchase>(model);
 
         purchase.BranchId = branchId;
+        purchase.PurchaseLists.Select(c => { c.BranchId = branchId; return c; }).ToList();
         purchase.RegistrationId = registrationId;
         purchase.PurchaseSn = purchaseSn;
         if (purchase.PurchasePaidAmount > 0)

@@ -99,4 +99,17 @@ public class VendorRepository : Repository, IVendorRepository
             .Take(5)
             .ToListAsync();
     }
+
+    public void UpdatePaidDue(int id, decimal totalAmount, decimal discount, decimal paid)
+    {
+        var vendor = Db.Vendors.Find(id);
+        if (vendor == null) return;
+
+        vendor.TotalAmount += totalAmount;
+        vendor.TotalDiscount += discount;
+        vendor.VendorPaid += paid;
+
+        Db.Vendors.Update(vendor);
+        Db.SaveChanges();
+    }
 }

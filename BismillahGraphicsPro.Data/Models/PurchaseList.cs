@@ -12,7 +12,7 @@ namespace BismillahGraphicsPro.Data
         public int MeasurementUnitId { get; set; }
         public decimal PurchaseQuantity { get; set; }
         public decimal PurchaseUnitPrice { get; set; }
-        public decimal? PurchasePrice { get; set; }
+        public decimal PurchasePrice { get; set; }
 
         public virtual Branch Branch { get; set; } = null!;
         public virtual MeasurementUnit MeasurementUnit { get; set; } = null!;

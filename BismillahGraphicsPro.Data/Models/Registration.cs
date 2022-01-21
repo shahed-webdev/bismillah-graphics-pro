@@ -19,7 +19,7 @@ namespace BismillahGraphicsPro.Data
         public int RegistrationId { get; set; }
         public int? BranchId { get; set; }
         public string UserName { get; set; } = null!;
-        public bool? Validation { get; set; }
+        public bool Validation { get; set; }
         public UserType Type { get; set; }
         public string Name { get; set; } = null!;
         public string? Address { get; set; }

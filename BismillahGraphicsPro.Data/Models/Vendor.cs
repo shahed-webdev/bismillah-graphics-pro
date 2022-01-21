@@ -17,11 +17,11 @@ namespace BismillahGraphicsPro.Data
         public string? VendorName { get; set; }
         public string? VendorAddress { get; set; }
         public string? VendorPhone { get; set; }
-        public string? SmsNumber { get; set; }
+        public string SmsNumber { get; set; } = null!;
         public decimal TotalAmount { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal VendorPaid { get; set; }
-        public decimal? VendorDue { get; set; }
+        public decimal VendorDue { get; set; }
         public DateTime InsertDateBdTime { get; set; }
 
         public virtual Branch Branch { get; set; } = null!;
