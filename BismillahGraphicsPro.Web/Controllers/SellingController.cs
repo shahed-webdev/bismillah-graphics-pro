@@ -11,6 +11,7 @@ namespace BismillahGraphicsPro.Web.Controllers
     {
         private readonly IVendorCore _vendorCore;
         private readonly ISellingCore _sellingCore;
+
         public SellingController(IVendorCore vendorCore, ISellingCore sellingCore)
         {
             _vendorCore = vendorCore;
@@ -95,7 +96,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             if (!id.HasValue) return RedirectToAction("Records");
 
             var model = await _sellingCore.GetAsync(id.GetValueOrDefault());
-            return View(model.Data);
+            return View();
         }
 
 

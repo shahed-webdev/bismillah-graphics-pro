@@ -96,8 +96,8 @@
                     </h6>
                     <div class="form-group mt-2 mb-4">
                         <label>Payment Method</label>
-                        <select x-model.number="model.AccountId" class="form-control">
-                            <option>[ SELECT ]</option>
+                        <select x-model.number="model.AccountId" class="form-control" :required="model.SellingPaidAmount>0">
+                            <option value="">[ SELECT ]</option>
                             <template x-for="account in accounts" :key="account.value">
                                 <option :value="account.value" x-text="account.label"></option>
                             </template>

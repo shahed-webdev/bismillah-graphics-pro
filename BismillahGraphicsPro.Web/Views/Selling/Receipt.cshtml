@@ -1,6 +1,6 @@
-﻿@model PurchaseReceiptViewModel
+﻿@model SellingReceiptViewModel
 @{
-    ViewData["Title"] = "Purchase Receipt";
+    ViewData["Title"] = "Selling Receipt";
     Layout = "_AdminLayout";
 }
 
@@ -11,19 +11,19 @@
 <section class="my-4 d-print-none">
     <div class="d-flex justify-content-between">
         <div>
-            @if (Model.PurchaseDueAmount > 0)
+            @if (Model.SellingDueAmount > 0)
             {
-                <a class="btn btn-success btn-rounded" href="/purchase/payDue/@Model.PurchaseId"><i class="fas fa-money-bill-alt mr-1"></i>Pay Due</a>
+                <a class="btn btn-success btn-rounded" href="/Selling/payDue/@Model.SellingId"><i class="fas fa-money-bill-alt mr-1"></i>Pay Due</a>
             }
             else
             {
                 <button disabled="" class="btn btn-success btn-rounded"><i class="fas fa-money-bill-alt mr-1"></i>No Due</button>
             }
            
-            <a class="btn btn-discord btn-rounded" href="/purchase/records"><i class="fas fa-shopping-bag mr-1"></i>Purchase Record</a>
+            <a class="btn btn-discord btn-rounded" href="/Selling/records"><i class="fas fa-shopping-bag mr-1"></i>Selling Record</a>
         </div>
         <div>
-            <a class="btn btn-elegant btn-rounded" href="/purchase"><i class="fas fa-shopping-cart mr-1"></i>Purchase</a>
+            <a class="btn btn-elegant btn-rounded" href="/Selling"><i class="fas fa-shopping-cart mr-1"></i>Selling</a>
             <button class="btn btn-default btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
         </div>
     </div>
@@ -33,13 +33,13 @@
 <div id="main-page">
     <div class="row my-2 align-items-center">
         <div class="col">
-            <span>RECEIPT# @Model.PurchaseSn</span>
+            <span>RECEIPT# @Model.SellingSn</span>
         </div>
         <div class="col text-center">
-            <strong>PURCHASE BILL</strong>
+            <strong>Selling BILL</strong>
         </div>
         <div class="col text-right">
-            <span>Date: @Model.PurchaseDate.ToString("d MMM yyyy")</span>
+            <span>Date: @Model.SellingDate.ToString("d MMM yyyy")</span>
         </div>
     </div>
 
@@ -70,18 +70,18 @@
         <tbody>
             @{
                 var index = 0;
-                foreach (var item in Model.PurchaseLists)
+                foreach (var item in Model.SellingLists)
                 {
                     index++;
                     <tr>
                         <td class="text-center">@index</td>
                         <td>@item.ProductName</td>
                         <td class="text-center">
-                            @item.PurchaseQuantity
+                            @item.SellingQuantity
                             @item.MeasurementUnitName
                         </td>
-                        <td class="text-right">@item.PurchaseUnitPrice/-</td>
-                        <td class="text-right">@item.PurchasePrice/-</td>
+                        <td class="text-right">@item.SellingUnitPrice/-</td>
+                        <td class="text-right">@item.SellingPrice/-</td>
                     </tr>
                 }
             }
@@ -91,18 +91,18 @@
                 </td>
                 <td colspan="2">
                     <div class="text-right">
-                        <h5>Total: <strong>@Model.PurchaseTotalPrice/-</strong></h5>
+                        <h5>Total: <strong>@Model.SellingTotalPrice/-</strong></h5>
                         @{
-                            var discount = Model.PurchaseDiscountAmount;
+                            var discount = Model.SellingDiscountAmount;
 
                             if (discount > 0)
                             {
-                                <h5>Discount: <strong>@Model.PurchaseDiscountAmount/-</strong></h5>
+                                <h5>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h5>
                             }
                         }
 
-                        <h5>Paid: <strong> @Model.PurchasePaidAmount/-</strong></h5>
-                        <h5>Due: <strong>@Model.PurchaseDueAmount/-</strong></h5>
+                        <h5>Paid: <strong> @Model.SellingPaidAmount/-</strong></h5>
+                        <h5>Due: <strong>@Model.SellingDueAmount/-</strong></h5>
                     </div>
                 </td>
             </tr>
@@ -122,7 +122,7 @@
 
     <div class="d-print-none">
         @{
-            var paymentRecord = Model.PurchasePaymentRecords;
+            var paymentRecord = Model.SellingPaymentRecords;
 
             if (paymentRecord.Count > 0)
             {
@@ -141,8 +141,8 @@
                         @foreach (var item in paymentRecord)
                         {
                             <tr>
-                                <td>@item.PurchasePaidDate.ToString("d MMM yyyy")</td>
-                                <td class="text-right">@item.PurchasePaidAmount/-</td>
+                                <td>@item.SellingPaidDate.ToString("d MMM yyyy")</td>
+                                <td class="text-right">@item.SellingPaidAmount/-</td>
                                 <td class="text-center">
                                     <strong>@item.AccountName</strong>
                                     <em class="text-dark">@item.Description</em>
@@ -161,7 +161,7 @@
 @section scripts{
     <script>
         $(function() {
-            $("#amount-word").text(`Taka (in words): ${number2text(@Model.PurchaseTotalPrice)}`);
+            $("#amount-word").text(`Taka (in words): ${number2text(@Model.SellingTotalPrice)}`);
 
             //getSMSBalance();
         });
@@ -261,7 +261,7 @@
             const number = this.getAttribute('data-number');
             if (!number) return;
 
-            const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.PurchaseTotalPrice Thanks Bismillah Graphic. Zirabo MD:HAZRAT ALI, 01712-676781`;
+            const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.SellingTotalPrice Thanks Bismillah Graphic. Zirabo MD:HAZRAT ALI, 01712-676781`;
             const model = { PhoneNumber: number, TextSMS: text };
 
             send(model);
@@ -272,13 +272,13 @@
             const number = this.getAttribute('data-number');
             if (!number) return;
 
-            const paidAmount = @Model.PurchasePaidAmount;
-            const dueAmount = @Model.PurchaseDueAmount;
+            const paidAmount = @Model.SellingPaidAmount;
+            const dueAmount = @Model.SellingDueAmount;
 
             const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
             const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
 
-            const text = `Dear Valued Supplier, The Order Amount Tk: @Model.PurchaseTotalPrice.${paid}${due}Thanks Bismillah Graphic. 01712-676781`;
+            const text = `Dear Valued Supplier, The Order Amount Tk: @Model.SellingTotalPrice.${paid}${due}Thanks Bismillah Graphic. 01712-676781`;
             const model = { PhoneNumber: number, TextSMS: text };
 
             send(model);
@@ -292,7 +292,7 @@
                 data: JSON.stringify(model),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
-                    location.href = "/purchase";
+                    location.href = "/Selling";
                 },
                 error: error => console.log(error)
             });
