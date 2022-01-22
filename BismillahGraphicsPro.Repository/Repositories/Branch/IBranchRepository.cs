@@ -14,5 +14,5 @@ public interface IBranchRepository
     bool IsBranchActive(int branchId);
     void Activate(int branchId);
     void Deactivate(int branchId);
-    BranchDetailsModel? BranchDetails(int branchId);
+    DbResponse<BranchDetailsModel> Get(int branchId);
 }

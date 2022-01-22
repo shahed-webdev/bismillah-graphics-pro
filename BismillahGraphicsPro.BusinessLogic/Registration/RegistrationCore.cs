@@ -32,22 +32,36 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
         {
             try
             {
-                var branch = _db.Branch.BranchDetails(branchId);
-                if (branch == null) return new DbResponse(false, "Branch not found");
-                if (branch.IsActive)
+                var branchResponse = _db.Branch.Get(branchId);
+                if (!branchResponse.IsSuccess) return new DbResponse(false, "Branch not found");
+                if (branchResponse.Data.IsActive)
                 {
                     _db.Branch.Deactivate(branchId);
-                    return new DbResponse(true, $"{branch.BranchName} is deactivated");
+                    return new DbResponse(true, $"{branchResponse.Data.BranchName} is deactivated");
                 }
                 else
                 {
                     _db.Branch.Activate(branchId);
-                    return new DbResponse(true, $"{branch.BranchName} is Activated");
+                    return new DbResponse(true, $"{branchResponse.Data.BranchName} is Activated");
                 }
             }
             catch (Exception e)
             {
                 return new DbResponse(false, e.Message);
+            }
+        }
+
+        public Task<DbResponse<BranchDetailsModel>> GetAsync(string userName)
+        {
+            try
+            {
+                var branchId = _db.Registration.BranchIdByUserName(userName);
+                return Task.FromResult(_db.Branch.Get(branchId));
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(
+                    new DbResponse<BranchDetailsModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
             }
         }
 
