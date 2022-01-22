@@ -96,7 +96,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             if (!id.HasValue) return RedirectToAction("Records");
 
             var model = await _sellingCore.GetAsync(id.GetValueOrDefault());
-            return View();
+            return View(model.Data);
         }
 
 
