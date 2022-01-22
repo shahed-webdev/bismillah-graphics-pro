@@ -427,7 +427,7 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Purchase)
                     .WithMany(p => p.PurchaseLists)
                     .HasForeignKey(d => d.PurchaseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_PurchaseList_Purchase");
             });
 
@@ -638,7 +638,7 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Selling)
                     .WithMany(p => p.SellingLists)
                     .HasForeignKey(d => d.SellingId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_SellingList_Selling");
             });
 

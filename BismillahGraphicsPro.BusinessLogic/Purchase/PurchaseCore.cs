@@ -74,18 +74,18 @@ public class PurchaseCore: Core, IPurchaseCore
                 new DbResponse<PurchaseReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
-    public Task<DbResponse> EditAsync(PurchaseEditModel model)
+    public Task<DbResponse<int>> EditAsync(PurchaseEditModel model)
     {
         try
         {
             if (!model.PurchaseLists.Any())
-                return Task.FromResult(new DbResponse(false, "Invalid Data"));
+                return Task.FromResult(new DbResponse<int>(false, "Invalid Data"));
 
             return Task.FromResult(_db.Purchase.Edit(model));
         }
         catch (Exception e)
         {
-            return Task.FromResult(new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
     public Task<DataResult<PurchaseRecordViewModel>> ListAsync(string userName, DataRequest request)

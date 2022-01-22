@@ -74,18 +74,18 @@ public class SellingCore: Core, ISellingCore
                 new DbResponse<SellingReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
-    public Task<DbResponse> EditAsync(SellingEditModel model)
+    public Task<DbResponse<int>> EditAsync(SellingEditModel model)
     {
         try
         {
             if (!model.SellingLists.Any())
-                return Task.FromResult(new DbResponse(false, "Invalid Data"));
+                return Task.FromResult(new DbResponse<int>(false, "Invalid Data"));
 
             return Task.FromResult(_db.Selling.Edit(model));
         }
         catch (Exception e)
         {
-            return Task.FromResult(new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
     public Task<DataResult<SellingRecordViewModel>> ListAsync(string userName, DataRequest request)
