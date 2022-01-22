@@ -45,7 +45,11 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         var purchase = _mapper.Map<Purchase>(model);
 
         purchase.BranchId = branchId;
-        purchase.PurchaseLists.Select(c => { c.BranchId = branchId; return c; }).ToList();
+        purchase.PurchaseLists.Select(c =>
+        {
+            c.BranchId = branchId;
+            return c;
+        }).ToList();
         purchase.RegistrationId = registrationId;
         purchase.PurchaseSn = purchaseSn;
         if (purchase.PurchasePaidAmount > 0)
@@ -110,8 +114,8 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         var oldTotalPrice = purchase.PurchaseTotalPrice;
         var newTotalPrice = model.PurchaseTotalPrice;
 
-        purchase.Supplier.TotalAmount += newDiscount - oldDiscount;
-        purchase.Supplier.TotalDiscount += newTotalPrice - oldTotalPrice;
+        purchase.Supplier.TotalAmount += newTotalPrice - oldTotalPrice;
+        purchase.Supplier.TotalDiscount += newDiscount - oldDiscount;
 
 
         purchase.PurchaseDiscountAmount = model.PurchaseDiscountAmount;
@@ -120,6 +124,12 @@ public class PurchaseRepository : Repository, IPurchaseRepository
 
 
         var newPurchaseList = model.PurchaseLists.Select(p => _mapper.Map<PurchaseList>(p)).ToList();
+        newPurchaseList.Select(c =>
+        {
+            c.BranchId = purchase.BranchId;
+            c.PurchaseId = purchase.PurchaseId;
+            return c;
+        }).ToList();
         var oldPurchaseList = purchase.PurchaseLists;
         purchase.PurchaseLists = newPurchaseList;
 
