@@ -43,19 +43,19 @@
                     },
                     columns:
                     [
-                        { data: "PurchaseSn", "render": function(data) { return `<a>${data}</a>` } },
-                        { data: "SupplierCompanyName"},
+                        { data: "PurchaseSn", "render": function(data) { return `<a href="/purchase/receipt/${data}">${data}</a>` } },
+                        { data: "SupplierCompanyName" },
                         { data: "PurchaseTotalPrice" },
                         { data: "PurchasePaidAmount" },
                         { data: "PurchaseDueAmount" },
                         { data: "PurchaseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                        { data: "PurchaseId", "render": function(data) { return `<a>Update</a>` } }
+                        { data: "PurchaseId", "render": function(data) { return `<a href="/purchase/update/${data}">Update</a>` } }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [0, 5, 6] },
                         { 'sortable': false, 'targets': [6] },
-                        { 'className': "text-center", "targets": [0,5,6] },
-                        { 'className': "text-right", "targets": [2,3,4] }
+                        { 'className': "text-center", "targets": [0, 5, 6] },
+                        { 'className': "text-right", "targets": [2, 3, 4] }
                     ]
                 });
             },

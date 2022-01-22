@@ -24,5 +24,4 @@ public class PurchaseListAddModel
     public int MeasurementUnitId { get; set; }
     public decimal PurchaseQuantity { get; set; }
     public decimal PurchaseUnitPrice { get; set; }
-    public decimal? PurchasePrice { get; set; }
 }

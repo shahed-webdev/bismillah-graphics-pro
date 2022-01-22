@@ -1,4 +1,5 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
+using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
 using Microsoft.AspNetCore.Authorization;
@@ -99,7 +100,6 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-
         //purchase records view
         public IActionResult Records()
         {
@@ -114,7 +114,25 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+        //view update purchase
+        public async Task<IActionResult> Update(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Index");
+            
+            var response = await _purchaseCore.GetAsync(id.GetValueOrDefault());
+            ViewBag.updateData = response.Data;
+           
+            return View();
+        }
 
+
+        //post update purchase
+        [HttpPut]
+        public async Task<IActionResult> UpdatePurchase([FromBody] PurchaseEditModel model)
+        {
+            var response = await _purchaseCore.EditAsync(model);
+            return Json(response);
+        }
         #endregion
     }
 }

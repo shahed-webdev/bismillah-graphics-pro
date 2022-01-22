@@ -6,11 +6,6 @@
 <div x-data="initData()" x-init="getDropdownData">
     <h1 class="page-header my-3">Purchase</h1>
 
-    <div class="row">
-        <div class="col-sm-6 col-lg-4">
-        </div>
-    </div>
-
     <form x-on:submit.prevent="insertData()">
         <div class="row">
             <div class="col-xl-9 col-lg-8 mb-4">
@@ -81,7 +76,7 @@
                 <div class="card card-body">
                     <h6 class="font-weight-bold">
                         <span>Total Price:</span>
-                        <span x-text="totalAmount"></span>
+                        ৳<span x-text="totalAmount"></span>
                     </h6>
                     <div class="form-group mt-2 mb-4">
                         <label>Discount</label>
@@ -89,15 +84,15 @@
                     </div>
                     <h6 class="font-weight-bold text-success">
                         <span>Total Payable:</span>
-                        <span x-text="totalAmount - model.PurchaseDiscountAmount"></span>
+                        ৳<span x-text="totalAmount - model.PurchaseDiscountAmount"></span>
                     </h6>
                     <div class="form-group mt-2 mb-4">
                         <label>Paid</label>
-                        <input x-model.number="model.PurchasePaidAmount" type="number" class="form-control" :max="totalAmount - model.PurchaseDiscountAmount">
+                        ৳<input x-model.number="model.PurchasePaidAmount" type="number" class="form-control" :max="totalAmount - model.PurchaseDiscountAmount">
                     </div>
                     <h6 class="font-weight-bold text-danger">
                         <span>Total Due:</span>
-                        <span x-text="(totalAmount - model.PurchaseDiscountAmount) - model.PurchasePaidAmount"></span>
+                        ৳<span x-text="(totalAmount - model.PurchaseDiscountAmount) - model.PurchasePaidAmount"></span>
                     </h6>
                     <div class="form-group mt-2 mb-4">
                         <label>Payment Method</label>
@@ -118,7 +113,11 @@
                     </div>
                     <div x-init="findSupplier" class="form-group">
                         <label>Supplier <a href="/Purchase/Suppliers" target="_blank">Add new</a></label>
-                        <input x-ref="findSupplier" type="text" class="form-control" placeholder="find by name, phone" required>
+                        <input x-ref="findSupplier" x-on:keyup.debounce="resetSupplier" type="text" class="form-control" placeholder="find by name, phone" required>
+                    </div>
+                    <div>
+                        <span class="badge badge-primary" x-text="Supplier.SupplierCompanyName"></span>
+                        <span class="badge badge-primary" x-text="Supplier.SupplierPhone"></span>
                     </div>
                     <div class="mt-3">
                         <button :disabled="totalAmount <= 0 || loading" class="btn btn-custom-bg w-100" type="submit">Purchase</button>
@@ -150,7 +149,7 @@
             return {
                 loading: false,
                 clearInput: "",
-                SupplierId: null,
+                Supplier: {},
                 model: {
                     PurchaseDiscountAmount,
                     PurchasePaidAmount,
@@ -259,12 +258,10 @@
 
                 //find Supplier (autocomplete)
                 findSupplier() {
-                    this.SupplierId = null;
-
                     $(this.$refs.findSupplier).typeahead({
                         minLength: 1,
                         displayText: item => {
-                            return item.SupplierName;
+                            return `${item.SupplierName} ${item.SupplierPhone}`;
                         },
                         afterSelect: function(item) {
                             this.$element[0].value = item.SupplierName;
@@ -278,19 +275,24 @@
                             });
                         },
                         updater: item => {
-                            this.SupplierId = item.SupplierId;
-
+                            this.Supplier = item;
                             return item;
                         }
                     })
                 },
+
+                //reset supplier
+                resetSupplier() {
+                    this.Supplier = {};
+                },
+
 
                 //insert data
                 async insertData() {
                     if (!this.model.products.length)
                         return $.notify("Add Product!", "error");
 
-                    if (!this.SupplierId)
+                    if (!this.Supplier.SupplierId)
                         return $.notify("Select Supplier!", "error");
 
                     try {
@@ -298,7 +300,7 @@
 
                         const model = {
                             ...this.model,
-                            SupplierId: this.SupplierId,
+                            SupplierId: this.Supplier.SupplierId,
                             PurchaseTotalPrice: total,
                             PurchaseDueAmount: (total - this.model.PurchaseDiscountAmount) - this.model.PurchasePaidAmount,
                             PurchaseDate: new Date(this.model.PurchaseDate),
@@ -325,7 +327,7 @@
 
                             localStorage.removeItem("purchase-data");
 
-                            location.href = `purchase/receipt/${responseData.Data}`
+                            location.href = `purchase/receipt/${responseData.Data}`;
                         }
 
                         this.loading = false;
