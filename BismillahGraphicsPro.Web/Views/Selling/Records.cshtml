@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Selling";
+    Layout = "_AdminLayout";
+}
+
+
+<h1 class="page-header my-3">Selling Invoice</h1>
+
+<div class="card card-body mt-4">
+    <table id="data-table" class="table table-sm">
+        <thead>
+        <tr>
+            <th>Invoice</th>
+            <th>Supplier</th>
+            <th>Amount</th>
+            <th>Paid</th>
+            <th>Due</th>
+            <th>Date</th>
+            <th>Update</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(function() {
+            dataTable.getData();
+        });
+
+        //data table
+        const dataTable = {
+            table: null,
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Selling/GetRecordsData",
+                        type: "POST"
+                    },
+                    columns:
+                    [
+                        { data: "SellingSn", "render": function(data) { return `<a href="/Selling/receipt/${data}">${data}</a>` } },
+                        { data: "SupplierCompanyName" },
+                        { data: "SellingTotalPrice" },
+                        { data: "SellingPaidAmount" },
+                        { data: "SellingDueAmount" },
+                        { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "SellingId", "render": function(data) { return `<a href="/Selling/update/${data}">Update</a>` } }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [0, 5, 6] },
+                        { 'sortable': false, 'targets': [6] },
+                        { 'className': "text-center", "targets": [0, 5, 6] },
+                        { 'className': "text-right", "targets": [2, 3, 4] }
+                    ]
+                });
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
+        }
+    </script>
+}

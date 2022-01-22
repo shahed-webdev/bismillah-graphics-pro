@@ -10,9 +10,11 @@ namespace BismillahGraphicsPro.Web.Controllers
     public class SellingController : Controller
     {
         private readonly IVendorCore _vendorCore;
-        public SellingController(IVendorCore vendorCore)
+        private readonly ISellingCore _sellingCore;
+        public SellingController(IVendorCore vendorCore, ISellingCore sellingCore)
         {
             _vendorCore = vendorCore;
+            _sellingCore = sellingCore;
         }
 
 
@@ -68,6 +70,68 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+        #endregion
+
+        #region Selling
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
+        //post Selling
+        [HttpPost]
+        public async Task<IActionResult> PostSelling([FromBody] SellingAddModel model)
+        {
+            var response = await _sellingCore.AddAsync(User.Identity.Name, model);
+            return Json(response);
+        }
+
+
+        //Selling receipt
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Records");
+
+            var model = await _sellingCore.GetAsync(id.GetValueOrDefault());
+            return View(model.Data);
+        }
+
+
+        //Selling records view
+        public IActionResult Records()
+        {
+            return View();
+        }
+
+
+        //Selling records (data-table)
+        public async Task<IActionResult> GetRecordsData(DataRequest request)
+        {
+            var response = await _sellingCore.ListAsync(User.Identity.Name, request);
+            return Json(response);
+        }
+
+        //view update Selling
+        public async Task<IActionResult> Update(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Index");
+
+            var response = await _sellingCore.GetAsync(id.GetValueOrDefault());
+            ViewBag.updateData = response.Data;
+
+            return View();
+        }
+
+
+        //post update purchase
+        [HttpPut]
+        public async Task<IActionResult> UpdateSelling([FromBody] SellingEditModel model)
+        {
+            var response = await _sellingCore.EditAsync(model);
+            return Json(response);
+        }
         #endregion
     }
 }
