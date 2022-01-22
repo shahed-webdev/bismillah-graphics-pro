@@ -96,17 +96,17 @@ public class PurchaseRepository : Repository, IPurchaseRepository
                 purchase);
     }
 
-    public DbResponse Edit(PurchaseEditModel model)
+    public DbResponse<int> Edit(PurchaseEditModel model)
     {
         var purchase = Db.Purchases
             .Include(s => s.PurchaseLists)
             .Include(s => s.Supplier)
             .FirstOrDefault(s => s.PurchaseId == model.PurchaseId);
 
-        if (purchase == null) return new DbResponse(false, "data Not Found");
+        if (purchase == null) return new DbResponse<int>(false, "data Not Found");
         var due = (model.PurchaseTotalPrice - model.PurchaseDiscountAmount) - purchase.PurchasePaidAmount;
 
-        if (due < 0) return new DbResponse(false, "Due amount cannot be less than zero");
+        if (due < 0) return new DbResponse<int>(false, "Due amount cannot be less than zero");
 
         //Update Supplier
         var oldDiscount = purchase.PurchaseDiscountAmount;
@@ -127,7 +127,6 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         newPurchaseList.Select(c =>
         {
             c.BranchId = purchase.BranchId;
-            c.PurchaseId = purchase.PurchaseId;
             return c;
         }).ToList();
         var oldPurchaseList = purchase.PurchaseLists;
@@ -153,7 +152,7 @@ public class PurchaseRepository : Repository, IPurchaseRepository
 
         Db.Purchases.Update(purchase);
         Db.SaveChanges();
-        return new DbResponse(true, $"{purchase.PurchaseSn} Updated Successfully");
+        return new DbResponse<int>(true, $"{purchase.PurchaseSn} Updated Successfully", purchase.PurchaseId);
     }
 
     public DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request)

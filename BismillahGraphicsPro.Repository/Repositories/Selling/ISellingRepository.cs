@@ -9,6 +9,6 @@ public interface ISellingRepository
     int GetReceiptSn(int branchId);
     DbResponse<int> Add(int branchId, int registrationId, int sellingSn, int receiptSn, SellingAddModel model);
     DbResponse<SellingReceiptViewModel> Get(int id);
-    DbResponse Edit(SellingEditModel model);
+    DbResponse<int> Edit(SellingEditModel model);
     DataResult<SellingRecordViewModel> List(int branchId, DataRequest request);
 }

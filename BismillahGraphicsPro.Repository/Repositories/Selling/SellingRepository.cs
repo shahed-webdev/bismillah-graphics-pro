@@ -92,36 +92,42 @@ public class SellingRepository : Repository, ISellingRepository
                 Selling);
     }
 
-    public DbResponse Edit(SellingEditModel model)
+    public DbResponse<int> Edit(SellingEditModel model)
     {
-        var Selling = Db.Sellings
+        var selling = Db.Sellings
             .Include(s => s.SellingLists)
             .Include(s => s.Vendor)
             .FirstOrDefault(s => s.SellingId == model.SellingId);
 
-        if (Selling == null) return new DbResponse(false, "data Not Found");
-        var due = (model.SellingTotalPrice - model.SellingDiscountAmount) - Selling.SellingPaidAmount;
+        if (selling == null) return new DbResponse<int>(false, "data Not Found");
+        var due = (model.SellingTotalPrice - model.SellingDiscountAmount) - selling.SellingPaidAmount;
 
-        if (due < 0) return new DbResponse(false, "Due amount cannot be less than zero");
+        if (due < 0) return new DbResponse<int>(false, "Due amount cannot be less than zero");
 
         //Update Supplier
-        var oldDiscount = Selling.SellingDiscountAmount;
+        var oldDiscount = selling.SellingDiscountAmount;
         var newDiscount = model.SellingDiscountAmount;
-        var oldTotalPrice = Selling.SellingTotalPrice;
+        var oldTotalPrice = selling.SellingTotalPrice;
         var newTotalPrice = model.SellingTotalPrice;
 
-        Selling.Vendor.TotalAmount += newDiscount - oldDiscount;
-        Selling.Vendor.TotalDiscount += newTotalPrice - oldTotalPrice;
+        selling.Vendor.TotalAmount += newDiscount - oldDiscount;
+        selling.Vendor.TotalDiscount += newTotalPrice - oldTotalPrice;
 
 
-        Selling.SellingDiscountAmount = model.SellingDiscountAmount;
-        Selling.SellingTotalPrice = model.SellingTotalPrice;
-        Selling.Description = model.Description;
+        selling.SellingDiscountAmount = model.SellingDiscountAmount;
+        selling.SellingTotalPrice = model.SellingTotalPrice;
+        selling.Description = model.Description;
 
 
         var newSellingList = model.SellingLists.Select(p => _mapper.Map<SellingList>(p)).ToList();
-        var oldSellingList = Selling.SellingLists;
-        Selling.SellingLists = newSellingList;
+        newSellingList.Select(c =>
+        {
+            c.BranchId = selling.BranchId;
+            return c;
+        }).ToList();
+
+        var oldSellingList = selling.SellingLists;
+        selling.SellingLists = newSellingList;
 
 
         //product stock update
@@ -141,9 +147,9 @@ public class SellingRepository : Repository, ISellingRepository
             Db.Products.Update(product);
         }
 
-        Db.Sellings.Update(Selling);
+        Db.Sellings.Update(selling);
         Db.SaveChanges();
-        return new DbResponse(true, $"{Selling.SellingSn} Updated Successfully");
+        return new DbResponse<int>(true, $"{selling.SellingSn} Updated Successfully", selling.SellingId);
     }
 
     public DataResult<SellingRecordViewModel> List(int branchId, DataRequest request)
