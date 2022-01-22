@@ -148,7 +148,7 @@ public class PurchaseRepository : Repository, IPurchaseRepository
 
     public DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request)
     {
-        return Db.Suppliers.Where(m => m.BranchId == branchId)
+        return Db.Purchases.Where(m => m.BranchId == branchId)
             .ProjectTo<PurchaseRecordViewModel>(_mapper.ConfigurationProvider)
             .OrderByDescending(a => a.PurchaseSn)
             .ToDataResult(request);

@@ -23,6 +23,9 @@ namespace BismillahGraphicsPro.Repository
                     BranchPhone = c.Phone,
                     BranchEmail = c.Email
                 }));
+            CreateMap<SubAdminCreateModel, Registration>()
+                .ForMember(d => d.Ps, opt => opt.MapFrom(c => c.Password));
+            CreateMap<Registration, SubAdminListModel>().ReverseMap();
         }
     }
 }

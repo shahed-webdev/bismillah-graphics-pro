@@ -80,9 +80,44 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             }
         }
 
+        public async Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, BranchCreateModel model)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(model.UserName))
+                    return new DbResponse<IdentityUser>(false, "UserName or mobile number empty", null, "UserName");
+
+                //Identity Create
+                var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
+                var password = model.Password;
+
+                var result = await _userManager.CreateAsync(user, password).ConfigureAwait(false);
+
+                if (!result.Succeeded)
+                    return new DbResponse<IdentityUser>(false, result.Errors.FirstOrDefault()?.Description, null,
+                        "CustomError");
+
+                await _userManager.AddToRoleAsync(user, UserType.Admin.ToString()).ConfigureAwait(false);
+                var branchId = _db.Registration.BranchIdByUserName(userName);
+                _db.Branch.AddWithRegistration(model);
+
+                return new DbResponse<IdentityUser>(true, "Success", user);
+            }
+            catch (Exception e)
+            {
+                return new DbResponse<IdentityUser>(false, e.Message);
+            }
+        }
+
         public List<BranchListModel> BranchList()
         {
             return _db.Branch.BranchList();
+        }
+
+        public List<SubAdminListModel> SubAdminList(string userName)
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return _db.Branch.SubAdminList(branchId);
         }
     }
 }
