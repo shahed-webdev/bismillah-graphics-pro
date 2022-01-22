@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BismillahGraphicsPro.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace BismillahGraphicsPro.Repository
 {
@@ -7,12 +8,12 @@ namespace BismillahGraphicsPro.Repository
     {
         private readonly ApplicationDbContext _db;
 
-        public UnitOfWork(ApplicationDbContext db, IMapper mapper)
+        public UnitOfWork(ApplicationDbContext db, IMapper mapper, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             Account = new AccountRepository(_db, mapper);
             AccountLog = new AccountLogRepository(_db, mapper);
-            Branch = new BranchRepository(_db, mapper);
+            Branch = new BranchRepository(_db, mapper, roleManager);
             Expense = new ExpenseRepository(_db, mapper);
             ExpenseCategory = new ExpenseCategoryRepository(_db, mapper);
             MeasurementUnit = new MeasurementUnitRepository(_db, mapper);

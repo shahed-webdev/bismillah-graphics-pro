@@ -4,6 +4,7 @@ using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.Repository;
 using BismillahGraphicsPro.ViewModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BismillahGraphicsPro.BusinessLogic.Registration
 {
@@ -11,8 +12,7 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
     {
         private readonly UserManager<IdentityUser> _userManager;
 
-        public RegistrationCore(IUnitOfWork db, IMapper mapper, UserManager<IdentityUser> userManager) : base(db,
-            mapper)
+        public RegistrationCore(IUnitOfWork db, IMapper mapper, UserManager<IdentityUser> userManager) : base(db, mapper)
         {
             _userManager = userManager;
         }

@@ -148,7 +148,7 @@ public class SellingRepository : Repository, ISellingRepository
 
     public DataResult<SellingRecordViewModel> List(int branchId, DataRequest request)
     {
-        return Db.Suppliers.Where(m => m.BranchId == branchId)
+        return Db.Sellings.Where(m => m.BranchId == branchId)
             .ProjectTo<SellingRecordViewModel>(_mapper.ConfigurationProvider)
             .OrderByDescending(a => a.SellingSn)
             .ToDataResult(request);

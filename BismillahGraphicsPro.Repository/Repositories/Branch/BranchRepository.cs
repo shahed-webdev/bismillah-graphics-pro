@@ -11,7 +11,7 @@ public class BranchRepository : Repository, IBranchRepository
     private readonly RoleManager<IdentityRole> _roleManager;
     public BranchRepository(ApplicationDbContext db, IMapper mapper, RoleManager<IdentityRole> roleManager) : base(db, mapper)
     {
-        this._roleManager = roleManager;
+        _roleManager = roleManager;
     }
 
     public void AddWithRegistration(BranchCreateModel model)
@@ -41,6 +41,11 @@ public class BranchRepository : Repository, IBranchRepository
                     label = r.Name + " (" + r.UserName + ")"
                 }).ToList();
         ;
+    }
+
+    public void SubAdminAssignLinks(int registrationId, int[] linkIds)
+    {
+        throw new NotImplementedException();
     }
 
     public List<BranchListModel> BranchList()
