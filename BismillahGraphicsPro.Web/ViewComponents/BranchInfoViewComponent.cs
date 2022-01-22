@@ -16,8 +16,8 @@ namespace BismillahGraphicsPro.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(string filter)
         {
-            var model = _registration.UserTypeByUserName(User.Identity.Name);
-            return View("Default", model);
+            var model = await _registration.GetAsync(User.Identity.Name);
+            return View("Default", model.Data);
         }
     }
 }
