@@ -43,13 +43,13 @@
                     },
                     columns:
                     [
-                        { data: "PurchaseSn", "render": function(data) { return `<a href="/purchase/receipt/${data}">${data}</a>` } },
+                        { data: "PurchaseSn", "render": function(data) { return `<a class="blue-text" href="/purchase/receipt/${data}">${data}</a>` } },
                         { data: "SupplierCompanyName" },
                         { data: "PurchaseTotalPrice" },
                         { data: "PurchasePaidAmount" },
                         { data: "PurchaseDueAmount" },
                         { data: "PurchaseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                        { data: "PurchaseId", "render": function(data) { return `<a href="/purchase/update/${data}">Update</a>` } }
+                        { data: "PurchaseId", "render": function(data) { return `<a class="blue-text" href="/purchase/update/${data}">Update</a>` } }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [0, 5, 6] },

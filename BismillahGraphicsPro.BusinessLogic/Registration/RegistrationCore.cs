@@ -80,12 +80,12 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             }
         }
 
-        public async Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, BranchCreateModel model)
+        public async Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model)
         {
             try
             {
                 if (string.IsNullOrEmpty(model.UserName))
-                    return new DbResponse<IdentityUser>(false, "UserName or mobile number empty", null, "UserName");
+                    return new DbResponse<IdentityUser>(false, "Username or mobile number empty", null, "UserName");
 
                 //Identity Create
                 var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
@@ -94,12 +94,12 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
                 var result = await _userManager.CreateAsync(user, password).ConfigureAwait(false);
 
                 if (!result.Succeeded)
-                    return new DbResponse<IdentityUser>(false, result.Errors.FirstOrDefault()?.Description, null,
-                        "CustomError");
+                    return new DbResponse<IdentityUser>(false, result.Errors.FirstOrDefault()?.Description, null, "CustomError");
 
-                await _userManager.AddToRoleAsync(user, UserType.Admin.ToString()).ConfigureAwait(false);
+                await _userManager.AddToRoleAsync(user, UserType.SubAdmin.ToString()).ConfigureAwait(false);
                 var branchId = _db.Registration.BranchIdByUserName(userName);
-                _db.Branch.AddWithRegistration(model);
+                
+                _db.Branch.AddSubAdmin(model, branchId);
 
                 return new DbResponse<IdentityUser>(true, "Success", user);
             }

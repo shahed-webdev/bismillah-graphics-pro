@@ -11,7 +11,7 @@
         <thead>
         <tr>
             <th>Invoice</th>
-            <th>Supplier</th>
+            <th>Vendor</th>
             <th>Amount</th>
             <th>Paid</th>
             <th>Due</th>
@@ -43,13 +43,13 @@
                     },
                     columns:
                     [
-                        { data: "SellingSn", "render": function(data) { return `<a href="/Selling/receipt/${data}">${data}</a>` } },
-                        { data: "SupplierCompanyName" },
+                        { data: "SellingSn", "render": function(data) { return `<a class="blue-text" href="/Selling/receipt/${data}">${data}</a>` } },
+                        { data: "VendorCompanyName" },
                         { data: "SellingTotalPrice" },
                         { data: "SellingPaidAmount" },
                         { data: "SellingDueAmount" },
                         { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                        { data: "SellingId", "render": function(data) { return `<a href="/Selling/update/${data}">Update</a>` } }
+                        { data: "SellingId", "render": function(data) { return `<a class="blue-text" href="/Selling/update/${data}">Update</a>` } }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [0, 5, 6] },

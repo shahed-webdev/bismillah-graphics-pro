@@ -36,7 +36,7 @@
             <span>RECEIPT# @Model.SellingSn</span>
         </div>
         <div class="col text-center">
-            <strong>Selling BILL</strong>
+            <div class="invice-title">BILL</div>
         </div>
         <div class="col text-right">
             <span>Date: @Model.SellingDate.ToString("d MMM yyyy")</span>
@@ -62,6 +62,7 @@
             <tr>
                 <th class="text-center"><strong>No.</strong></th>
                 <th><strong>Product Name</strong></th>
+                <th><strong>Description</strong></th>
                 <th class="text-center"><strong>Quantity</strong></th>
                 <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
                 <th class="text-right"><strong>Line&nbsp;Total</strong></th>
@@ -76,6 +77,7 @@
                     <tr>
                         <td class="text-center">@index</td>
                         <td>@item.ProductName</td>
+                        <td class="text-center">@item.Length x @item.Width</td>
                         <td class="text-center">
                             @item.SellingQuantity
                             @item.MeasurementUnitName

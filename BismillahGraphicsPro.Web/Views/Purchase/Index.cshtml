@@ -330,6 +330,7 @@
                             location.href = `purchase/receipt/${responseData.Data}`;
                         }
 
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
                         this.loading = false;
 
                     } catch (error) {

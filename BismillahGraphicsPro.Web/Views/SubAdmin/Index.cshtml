@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SubAdminListModel>
+@{
+    ViewData["Title"] = "Sub Admins";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()" class="m-3">
+    <h1 class="page-header mb-3">Sub Admin</h1>
+
+    <div class="card card-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    <strong>Name</strong>
+                </th>
+                <th>
+                    <strong>User Name</strong>
+                </th>
+                <th scope="col">
+                    <strong>Phone</strong>
+                </th>
+                <th scope="col">
+                    <strong>Email</strong>
+                </th>
+                <th scope="col">
+                    <strong>Address</strong>
+                </th>
+                <th scope="col" style="width: 100px; text-align: center">
+                    <strong>Active</strong>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Phone</td>
+                    <td>@item.Email</td>
+                    <td>@item.Address</td>
+                    <td>
+                        <div class="form-check-inline">
+                            <input id="@item.RegistrationId" x-on:change="userActivation(@item.RegistrationId)" type="checkbox" class="form-check-input" @(item.Validation == true ? "checked" : "")>
+                            <label for="@item.RegistrationId" class="form-check-label">@(item.Validation == true ? "Active" : "Deactivate")</label>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function initData() {
+        return {
+            async userActivation(registrationId) {
+                //const options = {
+                //    method: 'POST',
+                //    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                //    body: `RegistrationId=${registrationId}`
+                //}
+
+                //const response = await fetch("/subAdmin/PostUserValidation", options);
+                //const responseData = await response.json();
+
+                //$.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+            }
+        }
+    }
+</script>
+}
