@@ -77,7 +77,7 @@
                                                min="0" class="form-control" required>
                                     </td>
                                     <td class="text-right">
-                                        <strong x-text="product.SellingQuantity * product.SellingUnitPrice"></strong>/-
+                                        <strong x-text="(product.Length * product.Width) * product.SellingUnitPrice"></strong>/-
                                     </td>
                                     <td class="text-center">
                                         <a x-on:click="removeProduct(product.ProductId)" class="btn btn-link red-text">
@@ -152,7 +152,7 @@
             //add product to list
             addProductToList(product) {
                 const data = { ...product,Length:0, Width:0, SellingUnitPrice: product.ProductPrice }
-                const ifFound = this.model.products.some(item => item.ProductId === product.ProductId);
+                const ifFound = this.model.SellingLists.some(item => item.ProductId === product.ProductId);
 
                 if (ifFound) {
                     $.notify(`${product.ProductName} already added!`, "error");
@@ -247,7 +247,7 @@
                     const responseData = await response.json();
 
                     if (responseData.IsSuccess) {
-                        location.href = `Selling/receipt/${responseData.Data}`;
+                        location.href = `/Selling/receipt/${responseData.Data}`;
                     }
 
                     $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");

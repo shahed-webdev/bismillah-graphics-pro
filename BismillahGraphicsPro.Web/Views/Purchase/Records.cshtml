@@ -43,7 +43,7 @@
                     },
                     columns:
                     [
-                        { data: "PurchaseSn", "render": function(data) { return `<a class="blue-text" href="/purchase/receipt/${data}">${data}</a>` } },
+                        { data: "PurchaseSn", "render": function(data,type,row) { return `<a class="blue-text" href="/purchase/Receipt/${row.PurchaseId}">${data}</a>` } },
                         { data: "SupplierCompanyName" },
                         { data: "PurchaseTotalPrice" },
                         { data: "PurchasePaidAmount" },

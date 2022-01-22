@@ -43,7 +43,7 @@
                     },
                     columns:
                     [
-                        { data: "SellingSn", "render": function(data) { return `<a class="blue-text" href="/Selling/receipt/${data}">${data}</a>` } },
+                        { data: "SellingSn", "render": function(data,type,row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
                         { data: "VendorCompanyName" },
                         { data: "SellingTotalPrice" },
                         { data: "SellingPaidAmount" },

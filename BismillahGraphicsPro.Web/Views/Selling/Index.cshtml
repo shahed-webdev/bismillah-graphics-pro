@@ -56,7 +56,7 @@
                                         <select x-model.number="product.MeasurementUnitId" x-on:change="saveData" class="form-control" required>
                                             <option value="">[ SELECT ]</option>
                                             <template x-for="item in measurementUnits" :key="item.value">
-                                                <option :selected="+item.value===product.MeasurementUnitId" :value="item.value" x-text="item.label"></option>
+                                                <option :selected="+item.value === product.MeasurementUnitId" :value="item.value" x-text="item.label"></option>
                                             </template>
                                         </select>
                                     </td>
@@ -355,7 +355,7 @@
 
                         localStorage.removeItem("Selling-data");
 
-                        location.href = `Selling/receipt/${responseData.Data}`;
+                        location.href = `/Selling/receipt/${responseData.Data}`;
                     }
 
                     $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
