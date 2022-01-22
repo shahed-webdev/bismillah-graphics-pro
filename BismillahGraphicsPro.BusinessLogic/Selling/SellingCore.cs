@@ -36,7 +36,7 @@ public class SellingCore: Core, ISellingCore
             //-----------Account and Account log added-----------------------------
             if (model.SellingPaidAmount>0)
             {
-                _db.Account.BalanceSubtract(model.AccountId, model.SellingPaidAmount);
+                _db.Account.BalanceAdd(model.AccountId, model.SellingPaidAmount);
 
                 var accountLog = new AccountLogAddModel
                 {
