@@ -9,6 +9,7 @@ namespace BismillahGraphicsPro.BusinessLogic
         UserType UserTypeByUserName(string userName);
         bool IsBranchActive(string userName);
         DbResponse ToggleBranchActivation(int branchId);
+        Task<DbResponse<BranchDetailsModel>> GetAsync(string userName);
         Task<DbResponse<IdentityUser>> BranchSignUpAsync(BranchCreateModel model);
         Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model);
         List<BranchListModel> BranchList();

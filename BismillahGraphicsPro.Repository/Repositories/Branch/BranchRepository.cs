@@ -85,11 +85,16 @@ public class BranchRepository : Repository, IBranchRepository
         Db.SaveChanges();
     }
 
-    public BranchDetailsModel? BranchDetails(int branchId)
+    public DbResponse<BranchDetailsModel> Get(int branchId)
     {
-        return Db.Branches.Where(b => b.BranchId == branchId)
+        var branch = Db.Branches.Where(b => b.BranchId == branchId)
             .ProjectTo<BranchDetailsModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
+
+        return branch == null
+            ? new DbResponse<BranchDetailsModel>(false, "data Not Found")
+            : new DbResponse<BranchDetailsModel>(true, $"{branch!.BranchName} Get Successfully",
+                branch);
     }
 
     public ICollection<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId)
