@@ -317,11 +317,17 @@
                         const responseData = await response.json();
 
                         if (responseData.IsSuccess) {
-                            this.model = {};
-                            localStorage.removeItem("purchase-data")
+                            this.model = {
+                                PurchaseDiscountAmount: 0,
+                                PurchasePaidAmount: 0,
+                                products: []
+                            };
+
+                            localStorage.removeItem("purchase-data");
+
+                            location.href = `purchase/receipt/${responseData.Data}`
                         }
 
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
                         this.loading = false;
 
                     } catch (error) {
