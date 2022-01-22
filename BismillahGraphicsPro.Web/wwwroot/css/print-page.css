@@ -1,7 +1,9 @@
 ﻿
 /*Printing*/
-@page { size: auto !important; margin: 0 .8in; }
+
 @media print {
+    @page { size: auto !important; margin:5mm; }
+
     body {color: #000; min-width: 0 !important; background-color: #fff; padding: 0 !important }
     .btn-floating,.btn, footer { display: none !important }
 
@@ -10,9 +12,11 @@
     .print-header span{ font-weight: 500;color: #000 }
 
     header { margin-left: 0; margin-bottom: 15px }
+    header nav { background-color: #fff; }
     .navbar { display: block }
     a.navbar-brand { text-decoration: none; font-size: 1.5rem; font-weight: bold; }
     
+
     #sidedrawer { position: static; width: 0; left: 0; }
 
     .container-fluid, .container { min-width: 0 !important; max-width: 100%; margin: 0; padding: 0; overflow: hidden !important }

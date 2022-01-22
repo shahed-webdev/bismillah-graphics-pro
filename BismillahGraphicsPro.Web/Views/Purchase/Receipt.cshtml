@@ -1,17 +1,9 @@
 ﻿@model PurchaseReceiptViewModel
 @{
-    ViewData["Title"] = "Receipt";
+    ViewData["Title"] = "Purchase Receipt";
     Layout = "_AdminLayout";
 }
 
-@section Styles{
-    <link href="~/CSS/selling-receipt.css" rel="stylesheet" />
-    <style>
-        .invice-title {
-            width: 150px;
-        }
-    </style>
-}
 
 <section class="my-4 d-print-none">
     <div class="d-flex justify-content-between">
@@ -36,19 +28,19 @@
 
 
 <div id="main-page">
-    <div class="row my-2 receipt-info align-items-center">
+    <div class="row my-2 align-items-center">
         <div class="col">
             <span>RECEIPT# @Model.PurchaseSn</span>
         </div>
-        <div class="col">
-            <div class="invice-title">PURCHASE BILL</div>
+        <div class="col text-center">
+            <strong>PURCHASE BILL</strong>
         </div>
         <div class="col text-right">
             <span>Date: @Model.PurchaseDate.ToString("d MMM yyyy")</span>
         </div>
     </div>
 
-    <div class="row mb-1" id="vendor-area">
+    <div class="row mb-2" id="vendor-area">
         <div class="col-7">
             <h5><strong>@Model.Supplier.SupplierCompanyName</strong></h5>
             <h5><strong>@Model.Supplier.SupplierName</strong></h5>
@@ -62,7 +54,7 @@
         </div>
     </div>
 
-    <table>
+    <table class="table table-sm table-bordered text-dark">
         <thead>
             <tr>
                 <th class="text-center"><strong>No.</strong></th>
@@ -132,7 +124,7 @@
             if (paymentRecord.Count > 0)
             {
                 <h5 class="mt-4">PAYMENT RECORD</h5>
-                <table>
+                <table class="table table-sm table-bordered text-dark">
                     <thead>
                         <tr>
                             <th><strong>Paid Date</strong></th>
@@ -168,7 +160,7 @@
         $(function() {
             $("#amount-word").text(`Taka (in words): ${number2text(@Model.PurchaseTotalPrice)}`);
 
-            getSMSBalance();
+            //getSMSBalance();
         });
 
         //amount in word

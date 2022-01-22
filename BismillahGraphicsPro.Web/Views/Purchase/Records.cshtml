@@ -3,7 +3,10 @@
     Layout = "_AdminLayout";
 }
 
-<<div class="card card-body mt-4">
+
+<h1 class="page-header my-3">Purchase Invoice</h1>
+
+<div class="card card-body mt-4">
     <table id="data-table" class="table table-sm">
         <thead>
         <tr>
@@ -40,13 +43,13 @@
                     },
                     columns:
                     [
-                        { data: "PurchaseSn", "render": function(data) { return `<a>${data}<a/>` } },
+                        { data: "PurchaseSn", "render": function(data) { return `<a>${data}</a>` } },
                         { data: "SupplierCompanyName"},
                         { data: "PurchaseTotalPrice" },
                         { data: "PurchasePaidAmount" },
                         { data: "PurchaseDueAmount" },
                         { data: "PurchaseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                        { data: "PurchaseId", "render": function(data) { return `<a>Update<a/>` } }
+                        { data: "PurchaseId", "render": function(data) { return `<a>Update</a>` } }
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [0, 5, 6] },
