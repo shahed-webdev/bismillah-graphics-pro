@@ -11,11 +11,13 @@ namespace BismillahGraphicsPro.Web.Controllers
     {
         private readonly IVendorCore _vendorCore;
         private readonly ISellingCore _sellingCore;
+        private readonly IRegistrationCore _registration;
 
-        public SellingController(IVendorCore vendorCore, ISellingCore sellingCore)
+        public SellingController(IVendorCore vendorCore, ISellingCore sellingCore, IRegistrationCore registration)
         {
             _vendorCore = vendorCore;
             _sellingCore = sellingCore;
+            _registration = registration;
         }
 
 
@@ -74,7 +76,6 @@ namespace BismillahGraphicsPro.Web.Controllers
         #endregion
 
 
-
         #region Selling
 
         public IActionResult Index()
@@ -96,6 +97,10 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> Receipt(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Records");
+
+            //branch info
+            var branch = await _registration.GetAsync(User.Identity.Name);
+            ViewBag.branchInfo = branch.Data;
 
             var model = await _sellingCore.GetAsync(id.GetValueOrDefault());
             return View(model.Data);
@@ -135,6 +140,27 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = await _sellingCore.EditAsync(model);
             return Json(response);
         }
+        #endregion
+
+
+        #region Due Collection
+
+        //Pay Due view
+        public IActionResult PayDue()
+        {
+            return View();
+        }
+
+
+        //post Pay Due
+        //[HttpPost]
+        //public async Task<IActionResult> PostPayDue([FromBody] SellingAddModel model)
+        //{
+        //    var response = await _sellingCore.AddAsync(User.Identity.Name, model);
+        //    return Json(response);
+        //}
+
+
         #endregion
     }
 }

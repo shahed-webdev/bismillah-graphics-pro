@@ -261,7 +261,7 @@
             const number = this.getAttribute('data-number');
             if (!number) return;
 
-            const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.PurchaseTotalPrice Thanks Bismillah Graphic. Zirabo MD:HAZRAT ALI, 01712-676781`;
+            const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.PurchaseTotalPrice Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
             const model = { PhoneNumber: number, TextSMS: text };
 
             send(model);
@@ -278,7 +278,7 @@
             const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
             const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
 
-            const text = `Dear Valued Supplier, The Order Amount Tk: @Model.PurchaseTotalPrice.${paid}${due}Thanks Bismillah Graphic. 01712-676781`;
+            const text = `Dear Valued Supplier, The Order Amount Tk: @Model.PurchaseTotalPrice.${paid}${due}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
             const model = { PhoneNumber: number, TextSMS: text };
 
             send(model);

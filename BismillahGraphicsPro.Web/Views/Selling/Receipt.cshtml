@@ -5,7 +5,7 @@
 }
 
 @section Styles{
-    <link rel="stylesheet" href="/css/receipt.css">
+<link rel="stylesheet" href="/css/receipt.css">
 }
 
 <section class="my-4 d-print-none">
@@ -19,7 +19,7 @@
             {
                 <button disabled="" class="btn btn-success btn-rounded"><i class="fas fa-money-bill-alt mr-1"></i>No Due</button>
             }
-           
+
             <a class="btn btn-discord btn-rounded" href="/Selling/records"><i class="fas fa-shopping-bag mr-1"></i>Selling Record</a>
         </div>
         <div>
@@ -121,7 +121,7 @@
         </div>
         <button id="btnSendPaymentSMS" @(Model.Vendor.SmsNumber=="" ? "disabled='disabled'" : "") data-number="@Model.Vendor.SmsNumber" class="btn btn-outline-danger"><i class="fas fa-paper-plane mr-1"></i>Send Payment Status</button>
     </div>
-
+   
     <div class="d-print-none">
         @{
             var paymentRecord = Model.SellingPaymentRecords;
@@ -131,174 +131,185 @@
                 <h5 class="mt-4">PAYMENT RECORD</h5>
                 <table class="table table-sm table-bordered text-dark">
                     <thead>
-                        <tr>
-                            <th><strong>Paid Date</strong></th>
-                            <th><strong>Paid Amount</strong></th>
-                            <th><strong>Payment Method</strong></th>
-                        </tr>
+                    <tr>
+                        <th><strong>Paid Date</strong></th>
+                        <th><strong>Paid Amount</strong></th>
+                        <th><strong>Payment Method</strong></th>
+                    </tr>
                     </thead>
                     <tbody>
-
-
-                        @foreach (var item in paymentRecord)
-                        {
-                            <tr>
-                                <td>@item.SellingPaidDate.ToString("d MMM yyyy")</td>
-                                <td class="text-right">@item.SellingPaidAmount/-</td>
-                                <td class="text-center">
-                                    <strong>@item.AccountName</strong>
-                                    <em class="text-dark">@item.Description</em>
-                                </td>
-                            </tr>
-                        }
-
+                    @foreach (var item in paymentRecord)
+                    {
+                        <tr>
+                            <td>@item.SellingPaidDate.ToString("d MMM yyyy")</td>
+                            <td class="text-right">@item.SellingPaidAmount/-</td>
+                            <td class="text-center">
+                                <strong>@item.AccountName</strong>
+                                <em class="text-dark">@item.Description</em>
+                            </td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             }
         }
     </div>
+    
+    <div class="p-footer">
+        <div class="row">
+            <div class="col">
+                Received By
+                <small class="d-block text-muted">@DateTime.Now.ToString("ddd, dd-MMM-yyyy (hh: mm tt)")</small>
+            </div>
+
+            <div class="col text-right">
+                For
+                <small class="d-block text-muted">Served By: <strong>@Model.SoldByUserName</strong></small>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 @section scripts{
-    <script>
-        $(function() {
-            $("#amount-word").text(`Taka (in words): ${number2text(@Model.SellingTotalPrice)}`);
+<script>
+    $(function() {
+        $("#amount-word").text(`Taka (in words): ${number2text(@Model.SellingTotalPrice)}`);
 
-            //getSMSBalance();
-        });
+        //getSMSBalance();
+    });
 
-        //amount in word
-        function number2text(value) {
-            const fraction = Math.round((value % 1) * 100);
-            var fullText = "";
+    //amount in word
+    function number2text(value) {
+        const fraction = Math.round((value % 1) * 100);
+        var fullText = "";
 
-            if (fraction > 0) {
-                fullText = `AND ${convertNumber(fraction)} PAISA`;
-            }
-
-            return convertNumber(value) + " TK " + fullText + " ONLY";
+        if (fraction > 0) {
+            fullText = `AND ${convertNumber(fraction)} PAISA`;
         }
 
-        function convertNumber(number) {
-            if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
+        return convertNumber(value) + " TK " + fullText + " ONLY";
+    }
 
-            var coreAmount = Math.floor(number / 10000000);
-            number -= coreAmount * 10000000;
+    function convertNumber(number) {
+        if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
 
-            var lakhAmount = Math.floor(number / 100000);
-            number -= lakhAmount * 100000;
+        var coreAmount = Math.floor(number / 10000000);
+        number -= coreAmount * 10000000;
 
-            var thousandAmount = Math.floor(number / 1000);
-            number -= thousandAmount * 1000;
+        var lakhAmount = Math.floor(number / 100000);
+        number -= lakhAmount * 100000;
 
-            var hundredAmount = Math.floor(number / 100);
-            number = number % 100;
+        var thousandAmount = Math.floor(number / 1000);
+        number -= thousandAmount * 1000;
 
-            var tn = Math.floor(number / 10);
-            var one = Math.floor(number % 10);
-            var res = "";
+        var hundredAmount = Math.floor(number / 100);
+        number = number % 100;
 
-            if (coreAmount > 0) {
-                res += (convertNumber(coreAmount) + " CRORE");
+        var tn = Math.floor(number / 10);
+        var one = Math.floor(number % 10);
+        var res = "";
+
+        if (coreAmount > 0) {
+            res += (convertNumber(coreAmount) + " CRORE");
+        }
+        if (lakhAmount > 0) {
+            res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
+        }
+        if (thousandAmount > 0) {
+            res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
+        }
+
+        if (hundredAmount) {
+            res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
+        }
+
+
+        var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
+        var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
+
+        if (tn > 0 || one > 0) {
+            if (!(res === "")) {
+                res += " AND ";
             }
-            if (lakhAmount > 0) {
-                res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
-            }
-            if (thousandAmount > 0) {
-                res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
-            }
 
-            if (hundredAmount) {
-                res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
-            }
-
-
-            var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
-            var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
-
-            if (tn > 0 || one > 0) {
-                if (!(res === "")) {
-                    res += " AND ";
+            if (tn < 2) {
+                res += ones[tn * 10 + one];
+            } else {
+                res += tens[tn];
+                if (one > 0) {
+                    res += (`-${ones[one]}`);
                 }
-
-                if (tn < 2) {
-                    res += ones[tn * 10 + one];
-                } else {
-                    res += tens[tn];
-                    if (one > 0) {
-                        res += (`-${ones[one]}`);
-                    }
-                }
             }
-
-            if (res === "") {
-                res = "zero";
-            }
-            return res;
         }
 
-
-        //SMS balance
-        function getSMSBalance() {
-            const balance = document.getElementById('smsBalance');
-            balance.textContent = "loading.."
-            $.ajax({
-                url: '/SMS/SmsBalance',
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    balance.textContent = `Remaining SMS: ${response}`;
-                },
-                error: error => console.log(error)
-            });
+        if (res === "") {
+            res = "zero";
         }
+        return res;
+    }
 
-        //send SMS
-        const btnBlockReadySendSMS = document.getElementById('btnBlockReadySendSMS');
-        const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
 
-        //sms product received
-        btnBlockReadySendSMS.addEventListener('click', function() {
-            const number = this.getAttribute('data-number');
-            if (!number) return;
-
-            const text = `Dear Valued Vendor, I have received your product. Bill Amount TK: @Model.SellingTotalPrice Thanks Bismillah Graphic. Zirabo MD:HAZRAT ALI, 01712-676781`;
-            const model = { PhoneNumber: number, TextSMS: text };
-
-            send(model);
+    //SMS balance
+    function getSMSBalance() {
+        const balance = document.getElementById('smsBalance');
+        balance.textContent = "loading.."
+        $.ajax({
+            url: '/SMS/SmsBalance',
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                balance.textContent = `Remaining SMS: ${response}`;
+            },
+            error: error => console.log(error)
         });
+    }
 
-        //sms payment status
-        btnSendPaymentSMS.addEventListener('click', function() {
-            const number = this.getAttribute('data-number');
-            if (!number) return;
+    //send SMS
+    const btnBlockReadySendSMS = document.getElementById('btnBlockReadySendSMS');
+    const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
 
-            const paidAmount = @Model.SellingPaidAmount;
-            const dueAmount = @Model.SellingDueAmount;
+    //sms product received
+    btnBlockReadySendSMS.addEventListener('click', function() {
+        const number = this.getAttribute('data-number');
+        if (!number) return;
 
-            const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
-            const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
+        const text = `Dear Valued Vendor, I have received your product. Bill Amount TK: @Model.SellingTotalPrice Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
+        const model = { PhoneNumber: number, TextSMS: text };
 
-            const text = `Dear Valued Vendor, The Order Amount Tk: @Model.SellingTotalPrice.${paid}${due}Thanks Bismillah Graphic. 01712-676781`;
-            const model = { PhoneNumber: number, TextSMS: text };
+        send(model);
+    });
 
-            send(model);
+    //sms payment status
+    btnSendPaymentSMS.addEventListener('click', function() {
+        const number = this.getAttribute('data-number');
+        if (!number) return;
+
+        const paidAmount = @Model.SellingPaidAmount;
+        const dueAmount = @Model.SellingDueAmount;
+
+        const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
+        const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
+
+        const text = `Dear Valued Vendor, The Order Amount Tk: @Model.SellingTotalPrice.${paid}${due}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
+        const model = { PhoneNumber: number, TextSMS: text };
+
+        send(model);
+    });
+
+    //send to server
+    function send(model) {
+        $.ajax({
+            url: '/SMS/SingleSMS',
+            type: "POST",
+            data: JSON.stringify(model),
+            contentType: "application/json; charset=utf-8",
+            success: function(response) {
+                location.href = "/Selling";
+            },
+            error: error => console.log(error)
         });
-
-        //send to server
-        function send(model) {
-            $.ajax({
-                url: '/SMS/SingleSMS',
-                type: "POST",
-                data: JSON.stringify(model),
-                contentType: "application/json; charset=utf-8",
-                success: function(response) {
-                    location.href = "/Selling";
-                },
-                error: error => console.log(error)
-            });
-        }
-    </script>
+    }
+</script>
 }
 

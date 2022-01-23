@@ -1,0 +1,352 @@
+﻿@{
+    ViewData["Title"] = "Due Collection";
+    Layout = "_AdminLayout";
+}
+
+
+
+<div class="m-md-4">
+    <div class="card card-body">
+        <input id="vendorId" type="hidden" value="4196">
+        <input id="sellingId" type="hidden" value="25609">
+
+        <section class="mb-4 d-print-none">
+            <div class="d-flex justify-content-between">
+                <h3 class="page-header">Due Collection</h3>
+                <div>
+                    <a class="btn btn-amber btn-rounded waves-effect waves-light" href="/selling/records"><i class="fas fa-list mr-1"></i>Selling Record</a>
+                    <a class="btn btn-secondary btn-rounded waves-effect waves-light" href="/selling/vendors"><i class="fas fa-user mr-1"></i>Vendor</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="row mb-1">
+            <div class="col">
+                <strong>RECEIPT# 9761</strong>
+            </div>
+            <div class="col text-right">
+                <strong>Selling Date: 22 Jan 2022</strong>
+            </div>
+        </div>
+        <hr>
+
+        <div class="mdb-color darken-1 white-text p-3 mb-4 rounded">
+            <div class="row">
+                <div class="col">
+                    Company: <strong class="mr-3">Jinsheng Garments Accessories Co Ltd.</strong>
+                    Name: <strong>Farhad .</strong>
+                </div>
+                <div class="col text-right">
+                    Phone: <strong class="mr-3">01746-851740.</strong>
+                    Address: <strong>Baipail.</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-4">
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center"><strong>No.</strong></th>
+                        <th><strong>Product&nbsp;Name</strong></th>
+                        <th class="text-center"><strong>Description</strong></th>
+                        <th class="text-center"><strong>Quantity</strong></th>
+                        <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
+                        <th class="text-right"><strong>Line&nbsp;Total</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center">1</td>
+                        <td>NYLO BLOCK </td>
+                        <td class="text-center">37.5 x 17</td>
+                        <td class="text-center">637.5 Inch</td>
+                        <td class="text-right">11.5/-</td>
+                        <td class="text-right">7331.25/-</td>
+                    </tr>
+
+
+                    <tr>
+                        <td colspan="5">
+                           
+                        </td>
+                        <td>
+                            <div class="text-right">
+                                <h6>Total: <strong>12414.25/-</strong></h6>
+                                <h6>Paid: <strong> 0/-</strong></h6>
+                                <h6>Due: <strong>12414.25/-</strong></h6>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+        </div>
+
+        <div class="col-md-6">
+            <div id="payment-area" class="card card-body">
+                <h4>Total Due: ৳<strong id="dueAmount">12414.25</strong></h4>
+                <form>
+                    <div class="form-group">
+                        <label>Paid Amount</label>
+                        <input required type="number" step="0.01" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select class="form-control">
+                            <option value="">[ Payment Method ]</option>
+                            <option>Cash</option>
+                            <option>Bank</option>
+                            <option>Cheque</option>
+                            <option>bkash</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Paid Date</label>
+                        <input required type="text" class="form-control datepicker" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input placeholder="Description" type="text" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-custom-bg">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts {
+<script>
+    //get local store
+    function getStore() {
+        const store = localStorage.getItem("Selling-data");
+        return store ? JSON.parse(store) : {};
+    }
+
+    //alpine js code
+    function initData() {
+        const {
+            SellingDiscountAmount = 0,
+            SellingPaidAmount = 0,
+            products = []
+        } = getStore();
+
+        return {
+            loading: false,
+            clearInput: "",
+            Vendor: {},
+            model: {
+                SellingDiscountAmount,
+                SellingPaidAmount,
+                products
+            },
+
+            //save data to local store
+            saveData() {
+                localStorage.setItem("Selling-data", JSON.stringify(this.model));
+            },
+
+            //dropdown list
+            accounts: [],
+            measurementUnits: [],
+
+            //get dropdown data
+            async getDropdownData() {
+                //get account
+                const accountResponse = await fetch("/common/getAccount");
+                const account = await accountResponse.json();
+                this.accounts = account;
+
+                //get measurement
+                const measurementResponse = await fetch("/common/getMeasurementUnit");
+                const measurement = await measurementResponse.json();
+                this.measurementUnits = measurement;
+            },
+
+            //date function init
+            dateInit() {
+                this.model.SellingDate = moment(new Date()).format("D, MMM YYYY");
+
+                $(this.$refs.datePicker).pickadate({
+                    onSet: context => {
+                        this.model.SellingDate = moment(context.select).format("D, MMM YYYY");
+                    }
+                })
+            },
+
+            //add product to list
+            addProductToList(product) {
+                const data = { ...product,Length:0, Width:0, SellingUnitPrice: product.ProductPrice }
+                const ifFound = this.model.products.some(item => item.ProductId === product.ProductId);
+
+                if (ifFound) {
+                    $.notify(`${product.ProductName} already added!`, "error");
+                    return;
+                }
+
+                this.model.products.push(data);
+                this.clearInput = "";
+                this.$refs.findProduct.focus();
+
+                //save to local
+                this.saveData();
+            },
+
+            //find product (autocomplete)
+            findProduct() {
+                $(this.$refs.findProduct).typeahead({
+                    minLength: 1,
+                    displayText: item => {
+                        return item.ProductName;
+                    },
+                    afterSelect: function(item) {
+                        this.$element[0].value = item.ProductName;
+                    },
+                    source: (request, result) => {
+                        $.ajax({
+                            url: `/common/findProduct`,
+                            data: { prefix: request },
+                            success: response => result(response),
+                            error: err => console.log(err)
+                        });
+                    },
+                    updater: item => {
+                        this.addProductToList(item);
+                        return item;
+                    }
+                })
+            },
+
+            //remove Data
+            removeProduct(id) {
+                this.model.products = this.model.products.filter(item => item.ProductId !== id);
+
+                //save to local
+                this.saveData();
+
+                const total = this.calculateTotal();
+
+                if (!total) {
+                    this.model.SellingDiscountAmount = 0
+                    this.model.SellingPaidAmount = 0
+                }
+            },
+
+            //sum total amount
+            totalAmount: 0,
+            calculateTotal() {
+                const total = this.model.products.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
+                this.totalAmount = total;
+
+                return total || 0;
+            },
+
+
+            //find Vendor (autocomplete)
+            findVendor() {
+                $(this.$refs.findVendor).typeahead({
+                    minLength: 1,
+                    displayText: item => {
+                        return `${item.VendorName} ${item.VendorPhone}`;
+                    },
+                    afterSelect: function(item) {
+                        this.$element[0].value = item.VendorName;
+                    },
+                    source: (request, result) => {
+                        $.ajax({
+                            url: `/common/findVendor`,
+                            data: { prefix: request },
+                            success: response => result(response),
+                            error: err => console.log(err)
+                        });
+                    },
+                    updater: item => {
+                        this.Vendor = item;
+                        return item;
+                    }
+                })
+            },
+
+            //reset Vendor
+            resetVendor() {
+                this.Vendor = {};
+            },
+
+
+            //insert data
+            async insertData() {
+                if (!this.model.products.length)
+                    return $.notify("Add Product!", "error");
+
+                if (!this.Vendor.VendorId)
+                    return $.notify("Select Vendor!", "error");
+
+                try {
+                    const total = this.calculateTotal();
+
+                    const model = {
+                        VendorId: this.Vendor.VendorId,
+                        AccountId: this.model.AccountId,
+                        SellingTotalPrice: total,
+                        SellingDiscountAmount: this.model.SellingDiscountAmount,
+                        SellingPaidAmount: this.model.SellingPaidAmount,
+                        SellingDueAmount: (total - this.model.SellingDiscountAmount) - this.model.SellingPaidAmount,
+                        Description: this.model.Description,
+                        SellingDate: new Date(this.model.SellingDate),
+                        SellingLists: this.model.products.map(item => {
+                            return {
+                                ProductId: item.ProductId,
+                                MeasurementUnitId: item.MeasurementUnitId,
+                                SellingQuantity: item.Length*item.Width,
+                                SellingUnitPrice: item.SellingUnitPrice,
+                                Length: item.Length,
+                                Width: item.Width
+                            }
+                        })
+                    };
+
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(model)
+                    };
+
+                    this.loading = true;
+
+                    const response = await fetch("/Selling/PostSelling", options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        this.model = {
+                            SellingDiscountAmount: 0,
+                            SellingPaidAmount: 0,
+                            products: []
+                        };
+
+                        localStorage.removeItem("Selling-data");
+
+                        location.href = `/Selling/receipt/${responseData.Data}`;
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                    this.loading = false;
+
+                } catch (error) {
+                    console.log(error);
+                    this.loading = false;
+                }
+            }
+        };
+    }
+</script>
+}

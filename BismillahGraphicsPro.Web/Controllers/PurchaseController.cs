@@ -12,11 +12,13 @@ namespace BismillahGraphicsPro.Web.Controllers
     {
         private readonly ISupplierCore _supplierCore;
         private readonly IPurchaseCore _purchaseCore;
+        private readonly IRegistrationCore _registration;
 
-        public PurchaseController(ISupplierCore supplierCore, IPurchaseCore purchaseCore, IMeasurementUnitCore measurementUnit)
+        public PurchaseController(ISupplierCore supplierCore, IPurchaseCore purchaseCore, IMeasurementUnitCore measurementUnit, IRegistrationCore registration)
         {
             _supplierCore = supplierCore;
             _purchaseCore = purchaseCore;
+            _registration = registration;
         }
 
 
@@ -94,7 +96,11 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> Receipt(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Records");
-
+            
+            //branch info
+            var branch = await _registration.GetAsync(User.Identity.Name);
+            ViewBag.branchInfo = branch.Data;
+            
             var model = await _purchaseCore.GetAsync(id.GetValueOrDefault());
             return View(model.Data);
         }

@@ -48,3 +48,4 @@ input[type="number"] { -moz-appearance: textfield; }
 
 .loading-overlay { z-index: 999; position: fixed; bottom: 0; top: 0; left: 0; right: 0; background-color: rgba(0,0,0,.1); display: flex; justify-content: center; align-items: center; }
 #toTop { background-color: var(--bg-secondary); color: #fff; bottom: 10px; cursor: pointer; display: none; position: fixed; right: 10px; z-index: 999; padding: 6px 13px; border-radius: 5px; }
+#amount-word { text-transform: lowercase; font-style: italic; font-size: 12px; color: #000 }

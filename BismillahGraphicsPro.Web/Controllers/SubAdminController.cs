@@ -2,6 +2,7 @@
 using BismillahGraphicsPro.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
@@ -42,9 +43,10 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             return View(model);
         }
-        
+
 
         //todo
+        //Post User Validation
         //[HttpPost]
         //public async Task<IActionResult> PostUserValidation(int registrationId)
         //{
@@ -53,12 +55,24 @@ namespace BismillahGraphicsPro.Web.Controllers
         //}
 
 
+        //page access view
         public IActionResult PageAccess()
         {
+            //ViewBag.SubAdmins = new SelectList(_registrations.SubAdmins(), "value", "label");
             return View();
         }
 
 
+        //todo
+        //get page links
+        //public IActionResult GetPageLinks(int registrationId)
+        //{
+        //    var response = _registration
+        //    return Json(response);
+        //}
+
+
+        //post page links
         //[HttpPost]
         //public IActionResult PostPageAccess()
         //{

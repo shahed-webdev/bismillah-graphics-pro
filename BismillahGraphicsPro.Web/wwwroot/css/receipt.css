@@ -18,13 +18,13 @@
 #main-page table td, th { color: #000; padding: 0.5rem; font-weight: 400; border: 1px solid #000; }
 #main-page table h5 { font-weight: 400; font-size: 14px; color: #000 }
 
-#amount-word { text-transform: lowercase; font-style: italic; font-size: 12px; color: #000 }
+
 .p-footer { width: 100%; border-top: 1px solid #333; padding-top: 5px; margin-top: 20px; font-size: 13px; color: #000; }
 
 @page { margin: 3cm 0 0 0; }
 
 @media print {
-    #header { display: none !important }
+    header { display: none !important }
 
     #main-page { position: relative; margin: auto; height: 672px; width: 504px; padding-top: 1rem }
     .receipt-info span { font-size: 14px; font-weight: bold }
