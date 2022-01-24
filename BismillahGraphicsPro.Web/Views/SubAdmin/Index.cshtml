@@ -59,16 +59,16 @@
     function initData() {
         return {
             async userActivation(registrationId) {
-                //const options = {
-                //    method: 'POST',
-                //    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                //    body: `RegistrationId=${registrationId}`
-                //}
+                const options = {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `registrationId=${registrationId}`
+                }
 
-                //const response = await fetch("/subAdmin/PostUserValidation", options);
-                //const responseData = await response.json();
+                const response = await fetch("/subAdmin/PostUserValidation", options);
+                const responseData = await response.json();
 
-                //$.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
             }
         }
     }
