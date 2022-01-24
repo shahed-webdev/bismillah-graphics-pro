@@ -45,31 +45,30 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //todo
+
         //Post User Validation
-        //[HttpPost]
-        //public async Task<IActionResult> PostUserValidation(int registrationId)
-        //{
-        //    var response = await _registration.SubAdminValidation(registrationId);
-        //    return Json();
-        //}
+        [HttpPost]
+        public IActionResult PostUserValidation(int registrationId)
+        {
+            var response =  _registration.SubAdminToggleActivation(registrationId);
+            return Json(response);
+        }
 
 
         //page access view
         public IActionResult PageAccess()
         {
-            //ViewBag.SubAdmins = new SelectList(_registrations.SubAdmins(), "value", "label");
+            ViewBag.SubAdmins =_registration.SubAdminDdl(User.Identity.Name);
             return View();
         }
 
 
-        //todo
         //get page links
-        //public IActionResult GetPageLinks(int registrationId)
-        //{
-        //    var response = _registration
-        //    return Json(response);
-        //}
+        public IActionResult GetPageLinks(int id)
+        {
+            var response = _registration.SubAdminPageLinks(id);
+            return Json(response);
+        }
 
 
         //post page links

@@ -12,8 +12,8 @@
             <div class="col-sm-6 col-lg-4">
                 <div class="form-group">
                     <label>Category</label>
-                    <select x-model="formData.ExpenseCategoryId" class="form-control">
-                        <option>[ SELECT ]</option>
+                    <select x-model="formData.ExpenseCategoryId" class="form-control" required>
+                        <option value="">[ SELECT ]</option>
                         <template x-for="category in categories" :key="category.value">
                             <option :value="category.value" x-text="category.label"></option>
                         </template>
@@ -36,8 +36,8 @@
             <div class="col-sm-6 col-lg-4">
                 <div class="form-group">
                     <label>Payment Method</label>
-                    <select x-model.number="formData.AccountId" class="form-control">
-                        <option>[ SELECT ]</option>
+                    <select x-model.number="formData.AccountId" class="form-control" required>
+                        <option value="">[ SELECT ]</option>
                         <template x-for="account in accounts" :key="account.value">
                             <option :value="account.value" x-text="account.label"></option>
                         </template>
