@@ -152,11 +152,63 @@ public class SellingRepository : Repository, ISellingRepository
         return new DbResponse<int>(true, $"{selling.SellingSn} Updated Successfully", selling.SellingId);
     }
 
+    public DbResponse<decimal> UpdateDiscountAndPaid(List<SellingDuePayRecord> bills)
+    {
+        var sellings = Db.Sellings.Where(s => bills.Select(i => i.SellingId).Contains(s.SellingId)).ToList();
+
+        if (!sellings.Any()) return new DbResponse<decimal>(false, $"Data not found");
+        decimal previousDiscount = 0;
+        decimal newDiscount = 0;
+        foreach (var bill in bills)
+        {
+            var selling = sellings.FirstOrDefault(s => s.SellingId == bill.SellingId);
+            if (selling == null) return new DbResponse<decimal>(false, $"Bill not found");
+
+            previousDiscount += selling.SellingDiscountAmount;
+            newDiscount += bill.SellingDiscountAmount;
+
+            selling.SellingDiscountAmount = bill.SellingDiscountAmount;
+            var due = Math.Round(
+                selling.SellingTotalPrice - (selling.SellingDiscountAmount + selling.SellingPaidAmount), 2);
+            if (due < bill.SellingPaidAmount)
+                return new DbResponse<decimal>(false, $"{bill.SellingPaidAmount} Paid amount is greater than due");
+            selling.SellingPaidAmount += bill.SellingPaidAmount;
+        }
+
+        Db.Sellings.UpdateRange(sellings);
+        Db.SaveChanges();
+        var netDiscount = newDiscount - previousDiscount;
+        return new DbResponse<decimal>(true, $"Selling record update successfully", netDiscount);
+    }
+
     public DataResult<SellingRecordViewModel> List(int branchId, DataRequest request)
     {
         return Db.Sellings.Where(m => m.BranchId == branchId)
             .ProjectTo<SellingRecordViewModel>(_mapper.ConfigurationProvider)
             .OrderByDescending(a => a.SellingSn)
             .ToDataResult(request);
+    }
+
+    public DbResponse<SellingPaymentReceipt> DueCollection(int branchId, int registrationId, int receiptSn, SellingDuePayModel model)
+    {
+        var paymentReceipt = _mapper.Map<SellingPaymentReceipt>(model);
+        paymentReceipt.ReceiptSn = receiptSn;
+        paymentReceipt.BranchId = branchId;
+        paymentReceipt.RegistrationId = registrationId;
+
+        paymentReceipt.SellingPaymentRecords = model.Bills.Select(b =>
+            new SellingPaymentRecord
+            {
+                BranchId = branchId,
+                SellingId = b.SellingId,
+                AccountId = model.AccountId,
+                Description = model.Description,
+                SellingPaidAmount = b.SellingPaidAmount,
+                SellingPaidDate = model.PaidDate
+            }).ToList();
+
+        Db.SellingPaymentReceipts.Add(paymentReceipt);
+        Db.SaveChanges();
+        return new DbResponse<SellingPaymentReceipt>(true, "Due collected successfully", paymentReceipt);
     }
 }

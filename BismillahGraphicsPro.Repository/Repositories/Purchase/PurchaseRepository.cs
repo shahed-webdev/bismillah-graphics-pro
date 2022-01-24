@@ -212,6 +212,6 @@ public class PurchaseRepository : Repository, IPurchaseRepository
 
         Db.PurchasePaymentReceipts.Add(paymentReceipt);
         Db.SaveChanges();
-        return new DbResponse<PurchasePaymentReceipt>(true, "Due collected successfully", paymentReceipt);
+        return new DbResponse<PurchasePaymentReceipt>(true, "Due paid successfully", paymentReceipt);
     }
 }

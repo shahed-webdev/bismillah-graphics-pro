@@ -8,7 +8,6 @@ public class PurchaseDuePayModel
     }
     public int SupplierId { get; set; }
     public int AccountId { get; set; }
-    public string PaymentMethod { get; set; }
     public decimal PaidAmount { get; set; }
     public DateTime PaidDate { get; set; }
     public string? Description { get; set; }

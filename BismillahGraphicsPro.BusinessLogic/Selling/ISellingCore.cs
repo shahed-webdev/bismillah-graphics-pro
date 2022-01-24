@@ -9,4 +9,5 @@ public interface ISellingCore
     Task<DbResponse<SellingReceiptViewModel>> GetAsync(int id);
     Task<DbResponse<int>> EditAsync(SellingEditModel model);
     Task<DataResult<SellingRecordViewModel>> ListAsync(string userName, DataRequest request);
+    Task<DbResponse<int>> DueCollectionAsync(string userName, SellingDuePayModel model);
 }

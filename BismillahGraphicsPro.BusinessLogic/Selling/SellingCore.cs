@@ -93,4 +93,55 @@ public class SellingCore: Core, ISellingCore
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return Task.FromResult(_db.Selling.List(branchId, request));
     }
+
+    public Task<DbResponse<int>> DueCollectionAsync(string userName, SellingDuePayModel model)
+    {
+        try
+        {
+            if (model.PaidAmount <= 0) return Task.FromResult(new DbResponse<int>(false, "Paid amount must be greater than zero"));
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            var registrationId = _db.Registration.RegistrationIdByUserName(userName);
+
+            var receiptSn = _db.Selling.GetReceiptSn(branchId);
+
+
+            var sellingResponse = _db.Selling.UpdateDiscountAndPaid(model.Bills);
+            if (!sellingResponse.IsSuccess)
+                return Task.FromResult(new DbResponse<int>(sellingResponse.IsSuccess, sellingResponse.Message));
+
+            var sellingPaymentResponse = _db.Selling.DueCollection(branchId, registrationId, receiptSn, model);
+
+            if (!sellingPaymentResponse.IsSuccess)
+                return Task.FromResult(new DbResponse<int>(sellingPaymentResponse.IsSuccess, sellingPaymentResponse.Message));
+            //-----------Account and Account log added-----------------------------
+
+            _db.Vendor.UpdatePaidDue(model.VendorId, model.PaidAmount, sellingResponse.Data, model.PaidAmount);
+
+            _db.Account.BalanceAdd(model.AccountId, model.PaidAmount);
+
+
+            var accountLogs = sellingPaymentResponse.Data.SellingPaymentRecords.Select(p =>
+                new AccountLogAddModel
+                {
+                    AccountId = model.AccountId,
+                    BranchId = branchId,
+                    RegistrationId = registrationId,
+                    IsAdded = true,
+                    Amount = p.SellingPaidAmount,
+                    Details = $"Receipt No:{receiptSn}, {model.Description}",
+                    Type = AccountLogType.Sale,
+                    TableName = AccountLogTableName.SellingPaymentRecord,
+                    TableId = p.SellingPaymentRecordId,
+                    LogDate = p.SellingPaidDate
+                }).ToList();
+
+            _db.AccountLog.AddRange(accountLogs);
+
+            return Task.FromResult(new DbResponse<int>(true, $"Paid Successfully", sellingPaymentResponse.Data.SellingReceiptId));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }

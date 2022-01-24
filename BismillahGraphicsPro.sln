@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BismillahGraphicsPro.Busine
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BismillahGraphicsPro.ViewModel", "BismillahGraphicsPro.ViewModel\BismillahGraphicsPro.ViewModel.csproj", "{BA5C3B86-D9DD-4B49-8977-ED0180CF68C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JqueryDataTables", "JqueryDataTables\JqueryDataTables.csproj", "{4AD787D3-EEA5-4826-81BE-4ECDB2F4AE93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JqueryDataTables", "JqueryDataTables\JqueryDataTables.csproj", "{4AD787D3-EEA5-4826-81BE-4ECDB2F4AE93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

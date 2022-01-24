@@ -29,5 +29,7 @@ public class SellingMappingProfile: Profile
             .ForMember(d => d.SoldByUserName, opt => opt.MapFrom(c => c.Registration.UserName))
             .ReverseMap();
 
+        CreateMap<SellingDuePayModel, SellingPaymentReceipt>();
+
     }
 }
