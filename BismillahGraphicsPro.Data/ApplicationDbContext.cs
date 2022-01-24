@@ -276,7 +276,7 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Link)
                     .WithMany(p => p.PageLinkAssigns)
                     .HasForeignKey(d => d.LinkId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_PageLinkAssign_PageLink");
 
                 entity.HasOne(d => d.Registration)

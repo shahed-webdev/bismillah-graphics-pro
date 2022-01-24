@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BismillahGraphicsPro.Repository;
 
@@ -31,6 +32,18 @@ public class BranchRepository : Repository, IBranchRepository
         Db.SaveChanges();
     }
 
+    public DbResponse<SubAdminListModel> SubAdminGet(int registrationId)
+    {
+        var registration = Db.Registrations.Where(b => b.RegistrationId == registrationId)
+            .ProjectTo<SubAdminListModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefault();
+
+        return registration == null
+            ? new DbResponse<SubAdminListModel>(false, "data Not Found")
+            : new DbResponse<SubAdminListModel>(true, $"{registration!.UserName} Get Successfully",
+                registration);
+    }
+
     public List<DDL> SubAdminDdl(int branchId)
     {
         return Db.Registrations.Where(r => r.BranchId == branchId && r.Type == UserType.SubAdmin)
@@ -43,10 +56,24 @@ public class BranchRepository : Repository, IBranchRepository
         ;
     }
 
-    public void SubAdminAssignLinks(int registrationId, int[] linkIds)
+    public DbResponse<string> SubAdminAssignLinks(int registrationId, List<PageLinkAssignModel> links)
     {
-        throw new NotImplementedException();
+        var pAssigns = links.Select(l => new PageLinkAssign
+        {
+            LinkId = l.LinkId,
+        }).ToList();
+        var registration = Db.Registrations
+            .Include(r=> r.PageLinkAssigns)
+            .FirstOrDefault(p => p.RegistrationId == registrationId);
+        if (registration == null) return new DbResponse<string>(false, "Data not found");
+            registration.PageLinkAssigns = pAssigns;
+
+            Db.Registrations.Update(registration);
+            Db.SaveChanges();
+        return new DbResponse<string>(true, "Assigned successfully", registration.UserName);
     }
+
+
 
     public List<BranchListModel> BranchList()
     {
@@ -97,7 +124,7 @@ public class BranchRepository : Repository, IBranchRepository
                 branch);
     }
 
-    public ICollection<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId)
+    public List<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId)
     {
 
         var userDll = (from c in Db.PageLinkCategories
@@ -118,5 +145,29 @@ public class BranchRepository : Repository, IBranchRepository
                     }).ToList()
             }).ToList();
         return userDll;
+    }
+
+
+    public bool IsSubAdminActive(int registrationId)
+    {
+        return Db.Registrations.Find(registrationId)!.Validation;
+    }
+
+    public void SubAdminActivate(int registrationId)
+    {
+        var registration = Db.Registrations.Find(registrationId);
+        if (registration == null) return;
+        registration.Validation = true;
+        Db.Registrations.Update(registration);
+        Db.SaveChanges();
+    }
+
+    public void SubAdminDeactivate(int registrationId)
+    {
+        var registration = Db.Registrations.Find(registrationId);
+        if (registration == null) return;
+        registration.Validation = false;
+        Db.Registrations.Update(registration);
+        Db.SaveChanges();
     }
 }

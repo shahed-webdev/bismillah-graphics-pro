@@ -11,8 +11,14 @@ namespace BismillahGraphicsPro.BusinessLogic
         DbResponse ToggleBranchActivation(int branchId);
         Task<DbResponse<BranchDetailsModel>> GetAsync(string userName);
         Task<DbResponse<IdentityUser>> BranchSignUpAsync(BranchCreateModel model);
-        Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model);
         List<BranchListModel> BranchList();
+        //-----------Sub-Admin--------------------------
+        Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model);
         List<SubAdminListModel> SubAdminList(string userName);
+        List<DDL> SubAdminDdl(string userName);
+        List<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId);
+        Task<DbResponse> SubAdminAssignLinks(int registrationId, List<PageLinkAssignModel> links);
+        DbResponse SubAdminToggleActivation(int registrationId);
+        bool IsSubAdminActive(string userName);
     }
 }

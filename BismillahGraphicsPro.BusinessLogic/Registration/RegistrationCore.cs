@@ -12,7 +12,8 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
     {
         private readonly UserManager<IdentityUser> _userManager;
 
-        public RegistrationCore(IUnitOfWork db, IMapper mapper, UserManager<IdentityUser> userManager) : base(db, mapper)
+        public RegistrationCore(IUnitOfWork db, IMapper mapper, UserManager<IdentityUser> userManager) : base(db,
+            mapper)
         {
             _userManager = userManager;
         }
@@ -108,11 +109,12 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
                 var result = await _userManager.CreateAsync(user, password).ConfigureAwait(false);
 
                 if (!result.Succeeded)
-                    return new DbResponse<IdentityUser>(false, result.Errors.FirstOrDefault()?.Description, null, "CustomError");
+                    return new DbResponse<IdentityUser>(false, result.Errors.FirstOrDefault()?.Description, null,
+                        "CustomError");
 
                 await _userManager.AddToRoleAsync(user, UserType.SubAdmin.ToString()).ConfigureAwait(false);
                 var branchId = _db.Registration.BranchIdByUserName(userName);
-                
+
                 _db.Branch.AddSubAdmin(model, branchId);
 
                 return new DbResponse<IdentityUser>(true, "Success", user);
@@ -132,6 +134,73 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
         {
             var branchId = _db.Registration.BranchIdByUserName(userName);
             return _db.Branch.SubAdminList(branchId);
+        }
+
+        public List<DDL> SubAdminDdl(string userName)
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return _db.Branch.SubAdminDdl(branchId);
+        }
+
+        public List<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId)
+        {
+            return _db.Branch.SubAdminPageLinks(registrationId);
+        }
+
+        public async Task<DbResponse> SubAdminAssignLinks(int registrationId,List<PageLinkAssignModel> links)
+        {
+            try
+            {
+                if (registrationId == 0 || !links.Any())
+                    return new DbResponse(false, "Data not found");
+
+                var userNameResponse = _db.Branch.SubAdminAssignLinks(registrationId, links);
+                if (!userNameResponse.IsSuccess) return new DbResponse(false, userNameResponse.Message);
+
+                var user = await _userManager.FindByNameAsync(userNameResponse.Data);
+                var roleList = links.Select(l => l.RoleName).ToList();
+
+                roleList.Add("Sub-Admin");
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, userRoles.ToArray());
+                await _userManager.AddToRolesAsync(user, roleList.ToArray());
+
+                return new DbResponse(true, "Success");
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
+        public DbResponse SubAdminToggleActivation(int registrationId)
+        {
+            try
+            {
+                var branchResponse = _db.Branch.SubAdminGet(registrationId);
+                if (!branchResponse.IsSuccess) return new DbResponse(false, "Branch not found");
+                if (branchResponse.Data.Validation)
+                {
+                    _db.Branch.SubAdminDeactivate(registrationId);
+                    return new DbResponse(true, $"{branchResponse.Data.UserName} is deactivated");
+                }
+                else
+                {
+                    _db.Branch.SubAdminActivate(registrationId);
+                    return new DbResponse(true, $"{branchResponse.Data.UserName} is Activated");
+                }
+            }
+            catch (Exception e)
+            {
+                return new DbResponse(false, e.Message);
+            }
+        }
+
+        public bool IsSubAdminActive(string userName)
+        {
+            var registrationId = _db.Registration.RegistrationIdByUserName(userName);
+            return _db.Branch.IsSubAdminActive(registrationId);
         }
     }
 }
