@@ -140,5 +140,29 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
         #endregion
+
+
+        #region Pay Due
+        
+        //pay due single view
+        public IActionResult PayDueSingle()
+        {
+            return View();
+        }
+
+
+        //pay due multiple view
+        public IActionResult PayDueMultiple()
+        {
+            return View();
+        }
+
+        //get due bills info
+        //public IActionResult GetDueBills()
+        //{
+        //    return Json();
+        //}
+
+        #endregion
     }
 }

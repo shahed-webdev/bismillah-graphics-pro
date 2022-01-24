@@ -145,16 +145,16 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Due Collection
 
-        //Pay Due view
-        public IActionResult PayDue()
+        //due collection view
+        public IActionResult DueCollection()
         {
             return View();
         }
 
 
-        //post Pay Due
+        //post Due Collection
         //[HttpPost]
-        //public async Task<IActionResult> PostPayDue([FromBody] SellingAddModel model)
+        //public async Task<IActionResult> PostDueCollection([FromBody] SellingAddModel model)
         //{
         //    var response = await _sellingCore.AddAsync(User.Identity.Name, model);
         //    return Json(response);

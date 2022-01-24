@@ -7,8 +7,8 @@
 }
 
 header nav { background-color: var(--bg-primary) }
-.btn-custom-bg { background-color: var(--bg-secondary); color: #fff }
-.btn-custom-bg:hover { background-color: var(--bg-primary); color: #fff }
+.btn-custom-bg { background-color: var(--bg-primary); color: #fff; padding: 0.6rem 1.6rem !important; }
+.btn-custom-bg:hover { background-color: var(--bg-secondary); color: #fff }
 
 .page-header { font-weight: bold; margin-bottom: 0; font-size: 1.6rem; text-transform: uppercase; }
 
