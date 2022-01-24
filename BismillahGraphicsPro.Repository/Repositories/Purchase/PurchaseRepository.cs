@@ -155,11 +155,63 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         return new DbResponse<int>(true, $"{purchase.PurchaseSn} Updated Successfully", purchase.PurchaseId);
     }
 
+    public DbResponse<decimal> UpdateDiscountAndPaid(List<PurchaseDuePayRecord> bills)
+    {
+        var purchases = Db.Purchases.Where(s => bills.Select(i => i.PurchaseId).Contains(s.PurchaseId)).ToList();
+
+        if (!purchases.Any()) return new DbResponse<decimal>(false, $"Data not found");
+        decimal previousDiscount = 0;
+        decimal newDiscount = 0;
+        foreach (var bill in bills)
+        {
+            var purchase = purchases.FirstOrDefault(s => s.PurchaseId == bill.PurchaseId);
+            if (purchase == null) return new DbResponse<decimal>(false, $"Bill not found");
+
+            previousDiscount += purchase.PurchaseDiscountAmount;
+            newDiscount += bill.PurchaseDiscountAmount;
+
+            purchase.PurchaseDiscountAmount = bill.PurchaseDiscountAmount;
+            var due = Math.Round(
+                purchase.PurchaseTotalPrice - (purchase.PurchaseDiscountAmount + purchase.PurchasePaidAmount), 2);
+            if (due < bill.PurchasePaidAmount)
+                return new DbResponse<decimal>(false, $"{bill.PurchasePaidAmount} Paid amount is greater than due");
+            purchase.PurchasePaidAmount += bill.PurchasePaidAmount;
+        }
+
+        Db.Purchases.UpdateRange(purchases);
+        Db.SaveChanges();
+        var netDiscount = newDiscount - previousDiscount;
+        return new DbResponse<decimal>(true, $"Purchase record update successfully", netDiscount);
+    }
+
     public DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request)
     {
         return Db.Purchases.Where(m => m.BranchId == branchId)
             .ProjectTo<PurchaseRecordViewModel>(_mapper.ConfigurationProvider)
             .OrderByDescending(a => a.PurchaseSn)
             .ToDataResult(request);
+    }
+
+    public DbResponse<PurchasePaymentReceipt> DuePay(int branchId, int registrationId, int receiptSn, PurchaseDuePayModel model)
+    {
+        var paymentReceipt = _mapper.Map<PurchasePaymentReceipt>(model);
+        paymentReceipt.ReceiptSn = receiptSn;
+        paymentReceipt.BranchId = branchId;
+        paymentReceipt.RegistrationId = registrationId;
+
+        paymentReceipt.PurchasePaymentRecords = model.Bills.Select(b =>
+            new PurchasePaymentRecord
+            {
+                BranchId = branchId,
+                PurchaseId = b.PurchaseId,
+                AccountId = model.AccountId,
+                Description = model.Description,
+                PurchasePaidAmount = b.PurchasePaidAmount,
+                PurchasePaidDate = model.PaidDate
+            }).ToList();
+
+        Db.PurchasePaymentReceipts.Add(paymentReceipt);
+        Db.SaveChanges();
+        return new DbResponse<PurchasePaymentReceipt>(true, "Due collected successfully", paymentReceipt);
     }
 }

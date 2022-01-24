@@ -19,6 +19,13 @@ public class AccountLogRepository: Repository, IAccountLogRepository
         Db.SaveChanges();
     }
 
+    public void AddRange(List<AccountLogAddModel> model)
+    {
+        var accountLogs = model.Select(m=> _mapper.Map<AccountLog>(m)).ToList();
+        Db.AccountLogs.AddRange(accountLogs);
+        Db.SaveChanges();
+    }
+
     public void Delete(AccountLogTableName tableName, int tableId)
     {
         var accountLog = Db.AccountLogs.FirstOrDefault(x => x.TableName == tableName && x.TableId == tableId);

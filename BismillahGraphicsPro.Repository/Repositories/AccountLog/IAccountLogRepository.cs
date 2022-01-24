@@ -7,6 +7,7 @@ namespace BismillahGraphicsPro.Repository;
 public interface IAccountLogRepository
 {
     void Add(AccountLogAddModel model);
+    void AddRange(List<AccountLogAddModel> model);
     void Delete(AccountLogTableName tableName, int tableId);
     DataResult<AccountLogViewModel> List(DataRequest request, int branchId);
 }
