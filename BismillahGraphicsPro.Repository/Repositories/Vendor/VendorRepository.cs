@@ -100,14 +100,33 @@ public class VendorRepository : Repository, IVendorRepository
             .ToListAsync();
     }
 
-    public void UpdatePaidDue(int id, decimal totalAmount, decimal discount, decimal paid)
+    public void UpdatePaidDue(int id)
     {
         var vendor = Db.Vendors.Find(id);
         if (vendor == null) return;
 
-        vendor.TotalAmount += totalAmount;
-        vendor.TotalDiscount += discount;
-        vendor.VendorPaid += paid;
+        var obj = Db.Sellings.Where(s => s.VendorId == vendor.VendorId)
+            .GroupBy(s => s.VendorId).Select(s =>
+                new
+                {
+                    TotalAmount = s.Sum(c => c.SellingTotalPrice),
+                    TotalDiscount = s.Sum(c => c.SellingDiscountAmount),
+                    VendorPaid = s.Sum(c => c.SellingPaidAmount)
+                }).FirstOrDefault();
+
+        if (obj != null)
+        {
+            vendor.TotalAmount = Math.Round(obj.TotalAmount, 2);
+            vendor.TotalDiscount = Math.Round(obj.TotalDiscount, 2);
+            vendor.VendorPaid = Math.Round(obj.VendorPaid, 2);
+        }
+        else
+        {
+            vendor.TotalAmount = 0;
+            vendor.TotalDiscount = 0;
+            vendor.VendorPaid = 0;
+        }
+
 
         Db.Vendors.Update(vendor);
         Db.SaveChanges();

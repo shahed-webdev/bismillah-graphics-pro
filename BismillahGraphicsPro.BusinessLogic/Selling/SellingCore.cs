@@ -27,7 +27,7 @@ public class SellingCore: Core, ISellingCore
             var sellingResponse = _db.Selling.Add(branchId, registrationId,sellingSn, receiptSn, model);
             if(!sellingResponse.IsSuccess) return Task.FromResult(new DbResponse<int>(false, sellingResponse.Message));
 
-            _db.Vendor.UpdatePaidDue(model.VendorId, model.SellingTotalPrice, model.SellingDiscountAmount, model.SellingPaidAmount);
+            _db.Vendor.UpdatePaidDue(model.VendorId);
 
             foreach (var item in model.SellingLists)
             {
@@ -115,7 +115,7 @@ public class SellingCore: Core, ISellingCore
                 return Task.FromResult(new DbResponse<int>(sellingPaymentResponse.IsSuccess, sellingPaymentResponse.Message));
             //-----------Account and Account log added-----------------------------
 
-            _db.Vendor.UpdatePaidDue(model.VendorId, model.PaidAmount, sellingResponse.Data, model.PaidAmount);
+            _db.Vendor.UpdatePaidDue(model.VendorId);
 
             _db.Account.BalanceAdd(model.AccountId, model.PaidAmount);
 

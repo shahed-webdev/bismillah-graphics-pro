@@ -155,33 +155,28 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         return new DbResponse<int>(true, $"{purchase.PurchaseSn} Updated Successfully", purchase.PurchaseId);
     }
 
-    public DbResponse<decimal> UpdateDiscountAndPaid(List<PurchaseDuePayRecord> bills)
+    public DbResponse UpdateDiscountAndPaid(List<PurchaseDuePayRecord> bills)
     {
         var purchases = Db.Purchases.Where(s => bills.Select(i => i.PurchaseId).Contains(s.PurchaseId)).ToList();
 
-        if (!purchases.Any()) return new DbResponse<decimal>(false, $"Data not found");
-        decimal previousDiscount = 0;
-        decimal newDiscount = 0;
+        if (!purchases.Any()) return new DbResponse(false, $"Data not found");
+
         foreach (var bill in bills)
         {
             var purchase = purchases.FirstOrDefault(s => s.PurchaseId == bill.PurchaseId);
-            if (purchase == null) return new DbResponse<decimal>(false, $"Bill not found");
-
-            previousDiscount += purchase.PurchaseDiscountAmount;
-            newDiscount += bill.PurchaseDiscountAmount;
+            if (purchase == null) return new DbResponse(false, $"Bill not found");
 
             purchase.PurchaseDiscountAmount = bill.PurchaseDiscountAmount;
             var due = Math.Round(
                 purchase.PurchaseTotalPrice - (purchase.PurchaseDiscountAmount + purchase.PurchasePaidAmount), 2);
             if (due < bill.PurchasePaidAmount)
-                return new DbResponse<decimal>(false, $"{bill.PurchasePaidAmount} Paid amount is greater than due");
+                return new DbResponse(false, $"{bill.PurchasePaidAmount} Paid amount is greater than due");
             purchase.PurchasePaidAmount += bill.PurchasePaidAmount;
         }
 
         Db.Purchases.UpdateRange(purchases);
         Db.SaveChanges();
-        var netDiscount = newDiscount - previousDiscount;
-        return new DbResponse<decimal>(true, $"Purchase record update successfully", netDiscount);
+        return new DbResponse(true, $"Purchase record update successfully");
     }
 
     public DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request)
@@ -223,17 +218,19 @@ public class PurchaseRepository : Repository, IPurchaseRepository
 
         var supplier = Db.Suppliers
             .Include(v =>
-                v.Purchases.Where(p => p.PurchaseDate <= endDate && p.PurchaseDate >= startDate)
-                    .OrderBy(p => p.PurchaseDate))
-            .ProjectTo<PurchaseDueViewModel>(_mapper.ConfigurationProvider)
+                v.Purchases.Where(p => p.PurchaseDate <= endDate && p.PurchaseDate >= startDate))
+            //.ProjectTo<PurchaseDueViewModel>(_mapper.ConfigurationProvider) // not working for include filtering
             .FirstOrDefault(v => v.SupplierId == supplierId);
-        if (supplier == null) return new DbResponse<PurchaseDueViewModel>(false, $"data not found");
 
-        supplier.Amount = Math.Round(supplier.Purchases.Sum(s => s.PurchaseTotalPrice), 2);
-        supplier.Due = Math.Round(supplier.Purchases.Sum(s => s.PurchaseDueAmount), 2);
-        supplier.Paid = Math.Round(supplier.Purchases.Sum(s => s.PurchasePaidAmount), 2);
-        supplier.Discount = Math.Round(supplier.Purchases.Sum(s => s.PurchaseDiscountAmount), 2);
+        var supplierModel = _mapper.Map<PurchaseDueViewModel>(supplier);
 
-        return new DbResponse<PurchaseDueViewModel>(true, $"{supplier.SupplierCompanyName} get successfully", supplier);
+        if (supplierModel == null) return new DbResponse<PurchaseDueViewModel>(false, $"data not found");
+
+        supplierModel.Amount = Math.Round(supplierModel.Purchases.Sum(s => s.PurchaseTotalPrice), 2);
+        supplierModel.Due = Math.Round(supplierModel.Purchases.Sum(s => s.PurchaseDueAmount), 2);
+        supplierModel.Paid = Math.Round(supplierModel.Purchases.Sum(s => s.PurchasePaidAmount), 2);
+        supplierModel.Discount = Math.Round(supplierModel.Purchases.Sum(s => s.PurchaseDiscountAmount), 2);
+
+        return new DbResponse<PurchaseDueViewModel>(true, $"{supplierModel.SupplierCompanyName} get successfully", supplierModel);
     }
 }

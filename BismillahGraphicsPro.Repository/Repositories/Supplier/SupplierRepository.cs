@@ -99,14 +99,32 @@ public class SupplierRepository : Repository, ISupplierRepository
             .ToListAsync();
     }
 
-    public void UpdatePaidDue(int id,decimal totalAmount, decimal discount, decimal paid)
+    public void UpdatePaidDue(int id)
     {
         var supplier = Db.Suppliers.Find(id);
         if (supplier == null) return;
 
-        supplier.TotalAmount += totalAmount;
-        supplier.TotalDiscount += discount;
-        supplier.SupplierPaid += paid;
+        var obj = Db.Purchases.Where(s => s.SupplierId == supplier.SupplierId)
+            .GroupBy(s => s.SupplierId).Select(s =>
+            new
+            {
+                TotalAmount = s.Sum(c => c.PurchaseTotalPrice),
+                TotalDiscount = s.Sum(c => c.PurchaseDiscountAmount),
+                SupplierPaid = s.Sum(c => c.PurchasePaidAmount)
+            }).FirstOrDefault();
+
+        if (obj != null)
+        {
+            supplier.TotalAmount = Math.Round(obj.TotalAmount, 2);
+            supplier.TotalDiscount = Math.Round(obj.TotalDiscount, 2);
+            supplier.SupplierPaid = Math.Round(obj.SupplierPaid, 2);
+        }
+        else
+        {
+            supplier.TotalAmount = 0;
+            supplier.TotalDiscount = 0;
+            supplier.SupplierPaid = 0;
+        }
 
         Db.Suppliers.Update(supplier);
         Db.SaveChanges();

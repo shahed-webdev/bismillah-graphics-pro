@@ -28,8 +28,7 @@ public class PurchaseCore : Core, IPurchaseCore
             if (!purchaseResponse.IsSuccess)
                 return Task.FromResult(new DbResponse<int>(false, purchaseResponse.Message));
 
-            _db.Supplier.UpdatePaidDue(model.SupplierId, model.PurchaseTotalPrice, model.PurchaseDiscountAmount,
-                model.PurchasePaidAmount);
+            _db.Supplier.UpdatePaidDue(model.SupplierId);
 
             foreach (var item in model.PurchaseLists)
             {
@@ -121,7 +120,7 @@ public class PurchaseCore : Core, IPurchaseCore
                 return Task.FromResult(new DbResponse<int>(purchasePaymentResponse.IsSuccess, purchasePaymentResponse.Message));
             //-----------Account and Account log added-----------------------------
 
-            _db.Supplier.UpdatePaidDue(model.SupplierId, model.PaidAmount, purchaseResponse.Data, model.PaidAmount);
+            _db.Supplier.UpdatePaidDue(model.SupplierId);
 
             _db.Account.BalanceSubtract(model.AccountId, model.PaidAmount);
 

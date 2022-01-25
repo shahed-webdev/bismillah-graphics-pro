@@ -11,7 +11,7 @@ public interface IPurchaseRepository
     DbResponse<int> Add(int branchId, int registrationId, int purchaseSn, int receiptSn, PurchaseAddModel model);
     DbResponse<PurchaseReceiptViewModel> Get(int id);
     DbResponse<int> Edit(PurchaseEditModel model);
-    DbResponse<decimal> UpdateDiscountAndPaid(List<PurchaseDuePayRecord> bills);
+    DbResponse UpdateDiscountAndPaid(List<PurchaseDuePayRecord> bills);
     DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request);
     DbResponse<PurchasePaymentReceipt> DuePay(int branchId, int registrationId, int receiptSn,
         PurchaseDuePayModel model);
