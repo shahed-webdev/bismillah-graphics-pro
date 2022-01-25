@@ -192,7 +192,8 @@ public class PurchaseRepository : Repository, IPurchaseRepository
             .ToDataResult(request);
     }
 
-    public DbResponse<PurchasePaymentReceipt> DuePay(int branchId, int registrationId, int receiptSn, PurchaseDuePayModel model)
+    public DbResponse<PurchasePaymentReceipt> DuePay(int branchId, int registrationId, int receiptSn,
+        PurchaseDuePayModel model)
     {
         var paymentReceipt = _mapper.Map<PurchasePaymentReceipt>(model);
         paymentReceipt.ReceiptSn = receiptSn;
@@ -213,5 +214,26 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         Db.PurchasePaymentReceipts.Add(paymentReceipt);
         Db.SaveChanges();
         return new DbResponse<PurchasePaymentReceipt>(true, "Due paid successfully", paymentReceipt);
+    }
+
+    public DbResponse<PurchaseDueViewModel> GetSupplierWiseDue(int supplierId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+        var supplier = Db.Suppliers
+            .Include(v =>
+                v.Purchases.Where(p => p.PurchaseDate <= endDate && p.PurchaseDate >= startDate)
+                    .OrderBy(p => p.PurchaseDate))
+            .ProjectTo<PurchaseDueViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefault(v => v.SupplierId == supplierId);
+        if (supplier == null) return new DbResponse<PurchaseDueViewModel>(false, $"data not found");
+
+        supplier.Amount = Math.Round(supplier.Purchases.Sum(s => s.PurchaseTotalPrice), 2);
+        supplier.Due = Math.Round(supplier.Purchases.Sum(s => s.PurchaseDueAmount), 2);
+        supplier.Paid = Math.Round(supplier.Purchases.Sum(s => s.PurchasePaidAmount), 2);
+        supplier.Discount = Math.Round(supplier.Purchases.Sum(s => s.PurchaseDiscountAmount), 2);
+
+        return new DbResponse<PurchaseDueViewModel>(true, $"{supplier.SupplierCompanyName} get successfully", supplier);
     }
 }

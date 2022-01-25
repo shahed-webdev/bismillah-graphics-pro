@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="ViewModels\AccountLog\" />
-    <Folder Include="ViewModels\Purchase\" />
     <Folder Include="ViewModels\Supplier\" />
   </ItemGroup>
 

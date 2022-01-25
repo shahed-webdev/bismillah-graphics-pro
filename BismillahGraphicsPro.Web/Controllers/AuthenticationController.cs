@@ -55,7 +55,7 @@ namespace BismillahGraphicsPro.Web.Controllers
                     ModelState.AddModelError(string.Empty, "Branch is not activated");
                     return View(model);
                 }
-                if (type != UserType.SubAdmin && !_registration.IsSubAdminActive(model.UserName))
+                if (type == UserType.SubAdmin && !_registration.IsSubAdminActive(model.UserName))
                 {
                     await _signInManager.SignOutAsync();
                     ModelState.AddModelError(string.Empty, "Sub-Admin is deactivated by branch");

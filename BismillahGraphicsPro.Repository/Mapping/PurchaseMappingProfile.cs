@@ -30,5 +30,6 @@ public class PurchaseMappingProfile : Profile
             .ReverseMap();
 
         CreateMap<PurchaseDuePayModel, PurchasePaymentReceipt>();
+        CreateMap<Purchase, PurchaseDueBillsViewModel>();
     }
 }

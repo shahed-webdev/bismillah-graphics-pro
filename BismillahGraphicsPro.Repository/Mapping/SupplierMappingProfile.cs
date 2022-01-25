@@ -11,5 +11,7 @@ public class SupplierMappingProfile : Profile
         CreateMap<Supplier, SupplierAddModel>().ReverseMap();
         CreateMap<Supplier, SupplierEditModel>().ReverseMap();
         CreateMap<Supplier, SupplierViewModel>().ReverseMap();
+        CreateMap<Supplier, PurchaseDueViewModel>()
+            .ForMember(d=> d.TotalDue, opt => opt.MapFrom(c=> c.SupplierDue));
     }
 }

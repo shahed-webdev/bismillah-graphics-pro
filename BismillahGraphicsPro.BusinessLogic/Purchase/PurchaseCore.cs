@@ -150,4 +150,19 @@ public class PurchaseCore : Core, IPurchaseCore
             return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
+    public Task<DbResponse<PurchaseDueViewModel>> GetSupplierWiseDueAsync(int supplierId, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            if (supplierId ==0)
+                return Task.FromResult(new DbResponse<PurchaseDueViewModel>(false, "Invalid Data"));
+
+            return Task.FromResult(_db.Purchase.GetSupplierWiseDue(supplierId, sDate, eDate));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<PurchaseDueViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }

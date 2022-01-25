@@ -15,4 +15,6 @@ public interface IPurchaseRepository
     DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request);
     DbResponse<PurchasePaymentReceipt> DuePay(int branchId, int registrationId, int receiptSn,
         PurchaseDuePayModel model);
+
+    DbResponse<PurchaseDueViewModel> GetSupplierWiseDue(int supplierId, DateTime? sDate, DateTime? eDate);
 }
