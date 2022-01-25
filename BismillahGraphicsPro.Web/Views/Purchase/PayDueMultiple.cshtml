@@ -20,26 +20,26 @@
             </h4>
         </div>
 
-        <form>
+        <form x-on:submit.prevent="finByDate">
             <div class="form-inline d-print-none my-3 justify-content-end">
                 <div class="form-group mr-3">
-                    <input class="form-control datepicker" placeholder="Form Date" type="text">
+                    <input name="fromDate" :value="pickedDates.fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
                 </div>
                 <div class="form-group">
-                    <input class="form-control datepicker" placeholder="To Date" type="text">
+                    <input name="toDate" :value="pickedDates.toDate" class="form-control datepicker" placeholder="To Date" type="text">
                     <button class="btn btn-custom-bg btn-md my-0" type="submit">Search</button>
                 </div>
             </div>
         </form>
 
         <ul class="list-group list-group-horizontal my-4 text-right font-weight-bold">
-            <li class="list-group-item flex-fill">Total Sales: ৳<strong x-text="model.Amount"></strong></li>
-            <li class="list-group-item flex-fill">Total Received: ৳<strong x-text="model.Paid"></strong></li>
+            <li class="list-group-item flex-fill">Sales: ৳<strong x-text="model.Amount"></strong></li>
+            <li class="list-group-item flex-fill">Received: ৳<strong x-text="model.Paid"></strong></li>
             <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.Discount"></strong></li>
             <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.Due"></strong></li>
         </ul>
 
-        <form>
+        <form x-on:submit.prevent="payDues">
             <div class="card card-body">
                 <table class="table table-bordered table-sm">
                     <thead>
@@ -62,7 +62,7 @@
                                     ৳<span x-text="item.PurchaseTotalPrice"></span>
                                 </td>
                                 <td class="text-right" style="max-width: 100px">
-                                    <input x-model.number="item.PurchaseDiscountAmount" x-on:change="onDiscountChange(index)" type="number" class="form-control text-right" min="0" :max="item.PurchaseTotalPrice-item.PurchasePaidAmount" step="0.01" placeholder="Discount amount">
+                                    <input x-model.number="item.PurchaseDiscountAmount" x-on:input="onDiscountChange(index)" type="number" class="form-control text-right" min="0" :max="item.PurchaseTotalPrice-item.PurchasePaidAmount" step="0.01" placeholder="Discount amount">
                                 </td>
                                 <td class="text-right">
                                     ৳<span x-text="item.PurchasePaidAmount"></span>
@@ -81,13 +81,13 @@
 
             <div class="d-flex align-items-center flex-wrap mt-3">
                 <div class="form-group">
-                    <input x-on:input="inputPaidAmount" x-ref="totalPaid" type="number" step="0.01" min="0" :max="model.TotalDue" class="form-control" placeholder="Total paid amount" required>
+                    <input x-model.number="model.PaidAmount" x-on:input="inputPaidAmount" x-ref="totalPaid" type="number" step="0.01" min="0" :max="model.TotalDue" class="form-control" placeholder="Total paid amount" required>
                 </div>
                 <div class="form-group mx-3">
-                    <input required placeholder="Paid Date" type="text" class="form-control datepicker">
+                    <input name="PaidDate" :value="pickedDates.PaidDate" placeholder="Paid Date" type="text" class="form-control datepicker" required>
                 </div>
                 <div class="form-group">
-                    <select class="form-control" required>
+                    <select x-model.number="model.AccountId" class="form-control" required>
                         <option value="">[ Payment Method ]</option>
                         <template x-for="account in accounts" :key="account.value">
                             <option :value="account.value" x-text="account.label"></option>
@@ -95,10 +95,10 @@
                     </select>
                 </div>
                 <div class="form-group mx-3">
-                    <input type="text" class="form-control" placeholder="Description">
+                    <input x-model="model.Description" type="text" class="form-control" placeholder="Description">
                 </div>
                 <div class="form-group">
-                    <input id="submitPaid" type="submit" class="btn btn-custom-bg btn-md" value="Paid">
+                    <input type="submit" class="btn btn-custom-bg btn-md" value="Paid">
                 </div>
             </div>
         </form>
@@ -113,6 +113,7 @@
         function initData() {
             return {
                 loading: false,
+                pickedDates: { fromDate: '', toDate: '', PaidDate: "" },
                 model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
 
                 //dropdown list
@@ -126,31 +127,47 @@
                     const accountResponse = await fetch("/common/getAccount");
                     const account = await accountResponse.json();
                     this.accounts = account;
+
+                    this.dateInit();
                 },
 
                 //date function init
                 dateInit() {
-                    this.model.PurchaseDate = moment(new Date()).format("D, MMM YYYY");
+                    const self = this.pickedDates;
+                    self.PaidDate = moment(new Date()).format("D, MMM YYYY");
 
-                    $(this.$refs.datePicker).pickadate({
-                        onSet: context => {
-                            this.model.PurchaseDate = moment(context.select).format("D, MMM YYYY");
+                    $('.datepicker').pickadate({
+                        onSet: function(context) {
+                            self[this.component.$node[0].name] = moment(context.select).format("D, MMM YYYY");
                         }
                     })
                 },
 
+                //bill find by date
+                async finByDate() {
+                    const { fromDate, toDate } = this.pickedDates;
+                    const id = this.model.SupplierId;
+
+                    const response = await fetch(`/purchase/PayDueMultiple?id=${id}&from=${fromDate}&to=${toDate}`);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess)
+                        this.model = responseData.Data;
+                },
+
                 //discount amount change
                 onDiscountChange(index) {
-                    const item = { ...this.model.Purchases[index] };
+                    const modelCopy = [...this.model.Purchases];
+                    const item = modelCopy[index];
                     const due = item.PurchaseTotalPrice - item.PurchaseDiscountAmount - item.PurchasePaidAmount;
 
-                    this.model.Purchases.forEach((item,i) => {
-                        if (i === index) {
-                            item.PurchaseDueAmount = due;
-                        }
+                    modelCopy.forEach((item, i) => {
+                        if (i === index) item.PurchaseDueAmount = due;
+
                         item.Paying = 0;
                     });
 
+                    this.model.Purchases = modelCopy;
                     this.$refs.totalPaid.value = "";
                 },
 
@@ -176,6 +193,45 @@
 
                     this.model.Purchases = purchaseDues;
                 },
+
+                //submit dues
+               async payDues() {
+                    const { SupplierId,AccountId,PaidAmount,Description ,Purchases} = this.model;
+
+                    const model = {
+                        SupplierId,
+                        AccountId,
+                        PaidAmount,
+                        PaidDate: new Date(this.pickedDates.PaidDate),
+                        Description,
+                        Bills: Purchases.filter(item=> item.Paying>0).map(item => {
+                            return {
+                                PurchaseId:item.PurchaseId,
+                                PurchasePaidAmount:item.Paying,
+                                PurchaseDiscountAmount:item.PurchaseDiscountAmount
+                            }
+                        }) 
+                    }
+
+                    if (!model.Bills.length) {
+                       return $.notify("No Bill Paid", "error");
+                    }
+
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(model)
+                    };
+
+                    const response = await fetch("/purchase/PostDues", options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        location.href = "/purchase/Suppliers"
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                }
             };
         }
     </script>

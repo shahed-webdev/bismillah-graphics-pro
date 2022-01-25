@@ -154,15 +154,25 @@ namespace BismillahGraphicsPro.Web.Controllers
         //pay due multiple view
         public async Task<IActionResult> PayDueMultiple(int? id, DateTime? from, DateTime? to)
         {
-            if (!id.HasValue) return RedirectToAction("Index");
-
             var model = await _purchaseCore.GetSupplierWiseDueAsync(id.GetValueOrDefault(), from,to);
             ViewBag.dueModel = model.Data;
+           
+            //for ajax call
+            if (from != null || to != null)
+            {
+                return Json(model);
+            }
 
             return View();
         }
 
-       
+        //post due
+        [HttpPost]
+        public async Task<IActionResult> PostDues([FromBody] PurchaseDuePayModel model)
+        {
+            var response = await _purchaseCore.DuePayAsync(User.Identity.Name, model);
+            return Json(response);
+        }
 
         #endregion
     }
