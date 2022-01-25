@@ -148,7 +148,7 @@
                         { data: "TotalAmount", "render": function(data) { return `৳${data}` } },
                         { data: "TotalDiscount", "render": function(data) { return `৳${data}` } },
                         { data: "SupplierPaid", "render": function(data) { return `৳${data}` } },
-                        { data: "SupplierDue", "render": function(data) { return `৳${data}` } },
+                        { data: "SupplierDue", "render": function(data,type,row) { return `<a href="/Purchase/PayDueMultiple/${row.SupplierId}" class="blue-text">৳${data}</a>` } },
                         { data: "SupplierId", "render": function(data) { return `<a x-on:click="onEditCLick(${data})" class="fas fa-edit"></a>`; } },
                         { data: "SupplierId", "render": function(data) { return `<a x-on:click="deleteData(${data})" class="red-text fas fa-trash-alt"></a>`; } }
                     ],

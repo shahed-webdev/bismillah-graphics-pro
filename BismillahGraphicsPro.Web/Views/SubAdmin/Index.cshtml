@@ -17,16 +17,19 @@
                 <th>
                     <strong>User Name</strong>
                 </th>
-                <th scope="col">
+                <th>
+                    <strong>Password</strong>
+                </th>
+                <th>
                     <strong>Phone</strong>
                 </th>
-                <th scope="col">
+                <th>
                     <strong>Email</strong>
                 </th>
-                <th scope="col">
+                <th>
                     <strong>Address</strong>
                 </th>
-                <th scope="col" style="width: 100px; text-align: center">
+                <th style="width: 100px; text-align: center">
                     <strong>Active</strong>
                 </th>
             </tr>
@@ -38,13 +41,14 @@
                 <tr>
                     <td>@item.Name</td>
                     <td>@item.UserName</td>
+                    <td>@item.Ps</td>
                     <td>@item.Phone</td>
                     <td>@item.Email</td>
                     <td>@item.Address</td>
                     <td>
                         <div class="form-check-inline">
-                            <input id="@item.RegistrationId" x-on:change="userActivation(@item.RegistrationId)" type="checkbox" class="form-check-input" @(item.Validation == true ? "checked" : "")>
-                            <label for="@item.RegistrationId" class="form-check-label">@(item.Validation == true ? "Active" : "Deactivate")</label>
+                            <input id="@item.RegistrationId" x-on:change="(e)=>userActivation(@item.RegistrationId,e)" type="checkbox" class="form-check-input" @(item.Validation ? "checked" : "")>
+                            <label for="@item.RegistrationId" class="form-check-label @(item.Validation ? "text-success" : "text-danger")">@(item.Validation ? "Activated" : "Deactivated")</label>
                         </div>
                     </td>
                 </tr>
@@ -58,7 +62,7 @@
 <script>
     function initData() {
         return {
-            async userActivation(registrationId) {
+            async userActivation(registrationId,evt) {
                 const options = {
                     method: 'POST',
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -67,6 +71,19 @@
 
                 const response = await fetch("/subAdmin/PostUserValidation", options);
                 const responseData = await response.json();
+
+                const label = evt.target.nextElementSibling;
+
+                if (evt.target.checked) {
+                    label.textContent = "Activated";
+                    label.classList.remove("text-danger");
+                    label.classList.add("text-success");
+                } else {
+                    label.textContent =  "Deactivated";
+                    label.classList.remove("text-success")
+                    label.classList.add("text-danger")
+                }
+                
 
                 $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
             }

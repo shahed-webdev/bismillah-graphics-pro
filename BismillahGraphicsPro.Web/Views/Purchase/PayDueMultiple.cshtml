@@ -7,183 +7,176 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
-                <h1 x-text="model.Supplier.SupplierCompanyName" class="page-header"></h1>
-                <p>
-                    <span x-text="model.Supplier.SupplierAddress"></span>,
-                    <span x-text="model.Supplier.SupplierPhone"></span>
+                <h1 x-text="model.SupplierCompanyName" class="page-header"></h1>
+                <p class="mb-0">
+                    <span x-text="model.SupplierAddress"></span>,
+                    <span x-text="model.SmsNumber"></span>
                 </p>
             </div>
-            
+
             <h4 class="font-weight-bold mb-0">
                 Total Due:
-                ৳<span x-text="model.Supplier.SupplierDue"></span>
+                ৳<span x-text="model.TotalDue"></span>
             </h4>
         </div>
 
-        <div class="form-inline d-print-none my-3 justify-content-end">
-            <div class="form-group mr-3">
-                <input class="form-control datepicker" placeholder="Form Date" type="text">
+        <form>
+            <div class="form-inline d-print-none my-3 justify-content-end">
+                <div class="form-group mr-3">
+                    <input class="form-control datepicker" placeholder="Form Date" type="text">
+                </div>
+                <div class="form-group">
+                    <input class="form-control datepicker" placeholder="To Date" type="text">
+                    <button class="btn btn-custom-bg btn-md my-0" type="submit">Search</button>
+                </div>
             </div>
-            <div class="form-group">
-                <input class="form-control datepicker" placeholder="To Date" type="text">
-                <button class="btn btn-custom-bg btn-md my-0" type="button">Search</button>
-            </div>
-        </div>
-
+        </form>
 
         <ul class="list-group list-group-horizontal my-4 text-right font-weight-bold">
-            <li class="list-group-item flex-fill">Total Sales: <strong>৳502600</strong></li>
-            <li class="list-group-item flex-fill">Total Received: <strong>৳0</strong></li>
-            <li class="list-group-item flex-fill">Total Discount: <strong>৳0</strong></li>
-            <li class="list-group-item flex-fill">Total Due: <strong>৳502600</strong></li>
+            <li class="list-group-item flex-fill">Total Sales: ৳<strong x-text="model.Amount"></strong></li>
+            <li class="list-group-item flex-fill">Total Received: ৳<strong x-text="model.Paid"></strong></li>
+            <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.Discount"></strong></li>
+            <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.Due"></strong></li>
         </ul>
 
-        <div class="card card-body">
-            <table class="table table-bordered table-sm">
-                <thead>
-                <tr>
-                    <th>Date</th>
-                    <th class="text-center">Bill No</th>
-                    <th class="text-right">Sales</th>
-                    <th class="text-right">Discount</th>
-                    <th class="text-right">Received</th>
-                    <th class="text-right">Due Balance</th>
-                    <th class="text-right">Paid</th>
-                </tr>
-                </thead>
-                <tbody>
-                <template x-for="(item,index) in model.Dues" :key="item.PurchaseId">
-                    <tr>
-                        <td x-text="moment(item.PurchaseDate).format('D MMM, YYYY')"></td>
-                        <td class="text-center" x-text="item.PurchaseSN"></td>
-                        <td class="text-right">
-                            <span x-text="item.PurchaseAmount"></span>/-
-                        </td>
-                        <td class="text-right" style="max-width: 100px">
-                            <input type="number" class="form-control text-right" min="0" :max="item.PurchaseAmount" step="0.01" placeholder="Discount amount" :value="item.PurchaseDiscountAmount">
-                        </td>
-                        <td class="text-right">
-                            <span x-text="item.PurchasePaidAmount"></span>/-
-                        </td>
-                        <td class="text-right">
-                            <span x-text="item.PurchaseDueAmount"></span>/-
-                        </td>
-                        <td class="text-right">
-                            <span x-text="item.Paying"></span>
-                        </td>
-                    </tr>
-                </template>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="form-inline">
-                <div class="md-form">
-                    <input required type="number" step="0.01" class="form-control" placeholder="Total paid amount">
+        <form>
+            <div class="card card-body">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th class="text-center">Bill No</th>
+                            <th class="text-right">Sales</th>
+                            <th class="text-right">Discount</th>
+                            <th class="text-right">Received</th>
+                            <th class="text-right">Due Balance</th>
+                            <th class="text-right">Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item,index) in model.Purchases" :key="item.PurchaseId">
+                            <tr>
+                                <td x-text="moment(item.PurchaseDate).format('D MMM, YYYY')"></td>
+                                <td class="text-center" x-text="item.PurchaseSn"></td>
+                                <td class="text-right">
+                                    ৳<span x-text="item.PurchaseTotalPrice"></span>
+                                </td>
+                                <td class="text-right" style="max-width: 100px">
+                                    <input x-model.number="item.PurchaseDiscountAmount" x-on:change="onDiscountChange(index)" type="number" class="form-control text-right" min="0" :max="item.PurchaseTotalPrice-item.PurchasePaidAmount" step="0.01" placeholder="Discount amount">
+                                </td>
+                                <td class="text-right">
+                                    ৳<span x-text="item.PurchasePaidAmount"></span>
+                                </td>
+                                <td class="text-right">
+                                    ৳<span x-text="item.PurchaseDueAmount"></span>
+                                </td>
+                                <td class="text-right">
+                                    ৳<span x-text="item.Paying || 0"></span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex align-items-center flex-wrap mt-3">
+                <div class="form-group">
+                    <input x-on:input="inputPaidAmount" x-ref="totalPaid" type="number" step="0.01" min="0" :max="model.TotalDue" class="form-control" placeholder="Total paid amount" required>
                 </div>
-                <div class="md-form mx-3">
-                    <input required="" placeholder="Paid Date" type="text" class="form-control datepicker">
+                <div class="form-group mx-3">
+                    <input required placeholder="Paid Date" type="text" class="form-control datepicker">
                 </div>
-                <div class="md-form">
-                    <select class="form-control">
-                        <option>Cash</option>
-                        <option>Bank</option>
-                        <option>Cheque</option>
-                        <option>bkash</option>
+                <div class="form-group">
+                    <select class="form-control" required>
+                        <option value="">[ Payment Method ]</option>
+                        <template x-for="account in accounts" :key="account.value">
+                            <option :value="account.value" x-text="account.label"></option>
+                        </template>
                     </select>
                 </div>
-                <div class="md-form flex-1">
-                    <input type="text" class="form-control w-100" placeholder="Description" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+                <div class="form-group mx-3">
+                    <input type="text" class="form-control" placeholder="Description">
                 </div>
-                <div class="md-form">
-                    <span class="waves-input-wrapper waves-effect waves-light"><input id="submitPaid" type="submit" class="btn btn-brown" value="Paid"></span>
+                <div class="form-group">
+                    <input id="submitPaid" type="submit" class="btn btn-custom-bg btn-md" value="Paid">
                 </div>
             </div>
+        </form>
     </div>
 </div>
 
 
 
 @section Scripts {
-<script>
-    //alpine js code
-    function initData() {
-        return {
-            loading: false,
-            model: {
-                "Supplier": {
-                    "SupplierId": 20,
-                    "SupplierCompanyName": "BARKANTAJ GRAPHIC",
-                    "SupplierName": "MD.Rony ",
-                    "SupplierAddress": "Chittagongroad",
-                    "SupplierPhone": "01978516642",
-                    "SmsNumber": "01889719183",
-                    "Insert_Date": "\/Date(1632974169473)\/",
-                    "SupplierDue": 502600,
-                    "DateToDateSale": 502600,
-                    "DateToDatePaid": 0,
-                    "DateToDateDue": 502600,
-                    "DateToDateDiscount": 0
+    <script>
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
+
+                //dropdown list
+                accounts: [],
+
+                //get dropdown data
+                async getDropdownData() {
+                    //reset paid amount after reload
+                    this.$refs.totalPaid.value = "";
+
+                    const accountResponse = await fetch("/common/getAccount");
+                    const account = await accountResponse.json();
+                    this.accounts = account;
                 },
-                "Dues": [
-                    {
-                        "PurchaseId": 58,
-                        "SupplierId": 20,
-                        "SupplierCompanyName": "BARKANTAJ GRAPHIC",
-                        "PurchaseSN": 58,
-                        "PurchaseAmount": 73300,
-                        "PurchasePaidAmount": 0,
-                        "PurchaseDiscountAmount": 0,
-                        "PurchaseDueAmount": 73300,
-                        "PurchaseDate": "\/Date(1632938400000)\/"
-                    },
-                    {
-                        "PurchaseId": 92,
-                        "SupplierId": 20,
-                        "SupplierCompanyName": "BARKANTAJ GRAPHIC",
-                        "PurchaseSN": 92,
-                        "PurchaseAmount": 147300,
-                        "PurchasePaidAmount": 0,
-                        "PurchaseDiscountAmount": 0,
-                        "PurchaseDueAmount": 147300,
-                        "PurchaseDate": "\/Date(1639936800000)\/"
-                    },
-                    {
-                        "PurchaseId": 94,
-                        "SupplierId": 20,
-                        "SupplierCompanyName": "BARKANTAJ GRAPHIC",
-                        "PurchaseSN": 94,
-                        "PurchaseAmount": 282000,
-                        "PurchasePaidAmount": 0,
-                        "PurchaseDiscountAmount": 0,
-                        "PurchaseDueAmount": 282000,
-                        "PurchaseDate": "\/Date(1641664800000)\/"
-                    }
-                ],
-            },
 
-            //dropdown list
-            accounts: [],
+                //date function init
+                dateInit() {
+                    this.model.PurchaseDate = moment(new Date()).format("D, MMM YYYY");
 
-            //get dropdown data
-            async getDropdownData() {
-                //get account
-                const accountResponse = await fetch("/common/getAccount");
-                const account = await accountResponse.json();
-                this.accounts = account;
-            },
+                    $(this.$refs.datePicker).pickadate({
+                        onSet: context => {
+                            this.model.PurchaseDate = moment(context.select).format("D, MMM YYYY");
+                        }
+                    })
+                },
 
-            //date function init
-            dateInit() {
-                this.model.PurchaseDate = moment(new Date()).format("D, MMM YYYY");
+                //discount amount change
+                onDiscountChange(index) {
+                    const item = { ...this.model.Purchases[index] };
+                    const due = item.PurchaseTotalPrice - item.PurchaseDiscountAmount - item.PurchasePaidAmount;
 
-                $(this.$refs.datePicker).pickadate({
-                    onSet: context => {
-                        this.model.PurchaseDate = moment(context.select).format("D, MMM YYYY");
-                    }
-                })
-            }
-        };
-    }
-</script>
+                    this.model.Purchases.forEach((item,i) => {
+                        if (i === index) {
+                            item.PurchaseDueAmount = due;
+                        }
+                        item.Paying = 0;
+                    });
+
+                    this.$refs.totalPaid.value = "";
+                },
+
+                //input total paid
+                inputPaidAmount(evt) {
+                    let totalPaid = +evt.target.value;
+
+                    const purchaseDues = [...this.model.Purchases];
+
+                    purchaseDues.forEach(item => {
+                        const lineDue = item.PurchaseDueAmount;
+
+                        if (totalPaid < lineDue && totalPaid > 0) {
+                            item.Paying = totalPaid;
+                        } else if (totalPaid >= lineDue) {
+                            item.Paying = lineDue;
+                        } else {
+                            item.Paying = 0;
+                        }
+
+                        totalPaid -= lineDue;
+                    });
+
+                    this.model.Purchases = purchaseDues;
+                },
+            };
+        }
+    </script>
 }
