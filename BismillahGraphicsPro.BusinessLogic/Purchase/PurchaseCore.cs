@@ -65,11 +65,12 @@ public class PurchaseCore : Core, IPurchaseCore
         }
     }
 
-    public Task<DbResponse<PurchaseReceiptViewModel>> GetAsync(int id)
+    public Task<DbResponse<PurchaseReceiptViewModel>> GetAsync(string userName, int id)
     {
         try
         {
-            return Task.FromResult(_db.Purchase.Get(id));
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(_db.Purchase.Get(branchId, id));
         }
         catch (Exception e)
         {
@@ -99,11 +100,32 @@ public class PurchaseCore : Core, IPurchaseCore
         return Task.FromResult(_db.Purchase.List(branchId, request));
     }
 
+    public Task<DataResult<PurchasePaymentViewModel>> PaymentListAsync(string userName, DataRequest request)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return Task.FromResult(_db.Purchase.PaymentList(branchId, request));
+    }
+
+    public Task<DbResponse<PurchasePaymentReceiptViewModel>> GetPaymentDetailsAsync(string userName, int purchaseReceiptId)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(_db.Purchase.GetPaymentDetails(branchId, purchaseReceiptId));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(
+                new DbResponse<PurchasePaymentReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
+
     public Task<DbResponse<int>> DuePayAsync(string userName, PurchaseDuePayModel model)
     {
         try
         {
-            if (model.PaidAmount <= 0) return Task.FromResult(new DbResponse<int>(false, "Paid amount must be greater than zero"));
+            if (model.PaidAmount <= 0)
+                return Task.FromResult(new DbResponse<int>(false, "Paid amount must be greater than zero"));
             var branchId = _db.Registration.BranchIdByUserName(userName);
             var registrationId = _db.Registration.RegistrationIdByUserName(userName);
 
@@ -117,7 +139,8 @@ public class PurchaseCore : Core, IPurchaseCore
             var purchasePaymentResponse = _db.Purchase.DuePay(branchId, registrationId, receiptSn, model);
 
             if (!purchasePaymentResponse.IsSuccess)
-                return Task.FromResult(new DbResponse<int>(purchasePaymentResponse.IsSuccess, purchasePaymentResponse.Message));
+                return Task.FromResult(new DbResponse<int>(purchasePaymentResponse.IsSuccess,
+                    purchasePaymentResponse.Message));
             //-----------Account and Account log added-----------------------------
 
             _db.Supplier.UpdatePaidDue(model.SupplierId);
@@ -142,7 +165,8 @@ public class PurchaseCore : Core, IPurchaseCore
 
             _db.AccountLog.AddRange(accountLogs);
 
-            return Task.FromResult(new DbResponse<int>(true,$"Paid Successfully", purchasePaymentResponse.Data.PurchaseReceiptId));
+            return Task.FromResult(new DbResponse<int>(true, $"Paid Successfully",
+                purchasePaymentResponse.Data.PurchaseReceiptId));
         }
         catch (Exception e)
         {
@@ -150,30 +174,44 @@ public class PurchaseCore : Core, IPurchaseCore
         }
     }
 
-    public Task<DbResponse<PurchaseDueViewModel>> GetSupplierWiseDueAsync(int supplierId, DateTime? sDate, DateTime? eDate)
+    public Task<DbResponse<PurchaseDueViewModel>> GetSupplierWiseDueAsync(int supplierId, DateTime? sDate,
+        DateTime? eDate)
     {
         try
         {
-            if (supplierId ==0)
+            if (supplierId == 0)
                 return Task.FromResult(new DbResponse<PurchaseDueViewModel>(false, "Invalid Data"));
 
             return Task.FromResult(_db.Purchase.GetSupplierWiseDue(supplierId, sDate, eDate));
         }
         catch (Exception e)
         {
-            return Task.FromResult(new DbResponse<PurchaseDueViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            return Task.FromResult(
+                new DbResponse<PurchaseDueViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 
-    public Task<DbResponse<decimal>> GetTotalDueAsync(int supplierId, DateTime? sDate, DateTime? eDate)
+    public Task<DbResponse<decimal>> GetTotalDueAsync(string userName, DateTime? sDate, DateTime? eDate)
     {
         try
         {
-            if (supplierId == 0)
-                return Task.FromResult(new DbResponse<decimal>(false, "Invalid Data"));
-
+            var branchId = _db.Registration.BranchIdByUserName(userName);
             return Task.FromResult(new DbResponse<decimal>(true, "Success",
-                _db.Purchase.TotalDue(supplierId, sDate, eDate)));
+                _db.Purchase.TotalDue(branchId, sDate, eDate)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
+
+    public Task<DbResponse<decimal>> GetTotalPaidAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(new DbResponse<decimal>(true, "Success",
+                _db.Purchase.TotalPaid(branchId, sDate, eDate)));
         }
         catch (Exception e)
         {

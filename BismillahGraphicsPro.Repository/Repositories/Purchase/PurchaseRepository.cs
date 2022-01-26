@@ -84,9 +84,9 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         return new DbResponse<int>(true, $"Purchase Successfully", purchase.PurchaseId);
     }
 
-    public DbResponse<PurchaseReceiptViewModel> Get(int id)
+    public DbResponse<PurchaseReceiptViewModel> Get(int branchId,int id)
     {
-        var purchase = Db.Purchases.Where(r => r.PurchaseId == id)
+        var purchase = Db.Purchases.Where(r =>r.BranchId == branchId && r.PurchaseId == id)
             .ProjectTo<PurchaseReceiptViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
 
@@ -187,6 +187,26 @@ public class PurchaseRepository : Repository, IPurchaseRepository
             .ToDataResult(request);
     }
 
+    public DataResult<PurchasePaymentViewModel> PaymentList(int branchId, DataRequest request)
+    {
+        return Db.PurchasePaymentReceipts.Where(m => m.BranchId == branchId)
+            .ProjectTo<PurchasePaymentViewModel>(_mapper.ConfigurationProvider)
+            .OrderByDescending(a => a.PaidDate)
+            .ToDataResult(request);
+    }
+
+    public DbResponse<PurchasePaymentReceiptViewModel> GetPaymentDetails(int branchId, int purchaseReceiptId)
+    {
+        var purchase = Db.PurchasePaymentReceipts.Where(r =>r.BranchId == branchId && r.PurchaseReceiptId == purchaseReceiptId)
+            .ProjectTo<PurchasePaymentReceiptViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefault();
+
+        return purchase == null
+            ? new DbResponse<PurchasePaymentReceiptViewModel>(false, "data Not Found")
+            : new DbResponse<PurchasePaymentReceiptViewModel>(true, $"{purchase!.ReceiptSn} Get Successfully",
+                purchase);
+    }
+
     public DbResponse<PurchasePaymentReceipt> DuePay(int branchId, int registrationId, int receiptSn,
         PurchaseDuePayModel model)
     {
@@ -242,5 +262,14 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         return Db.Purchases
             .Where(p => p.BranchId == branchId && p.PurchaseDate <= endDate && p.PurchaseDate >= startDate)
             .Sum(s => s.PurchaseDueAmount);
+    }
+
+    public decimal TotalPaid(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+        return Db.PurchasePaymentReceipts
+            .Where(p => p.BranchId == branchId && p.PaidDate <= endDate && p.PaidDate >= startDate)
+            .Sum(s => s.PaidAmount);
     }
 }

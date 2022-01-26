@@ -16,7 +16,7 @@ public class PurchaseMappingProfile : Profile
             .ForMember(d => d.ProductName, opt => opt.MapFrom(c => c.Product.ProductName))
             .ReverseMap();
 
-        CreateMap<PurchasePaymentRecord, PurchasePaymentViewModel>()
+        CreateMap<PurchasePaymentRecord, PurchasePaymentRecordViewModel>()
             .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName))
             .ReverseMap();
         CreateMap<Purchase, PurchaseRecordViewModel>()
@@ -31,5 +31,13 @@ public class PurchaseMappingProfile : Profile
 
         CreateMap<PurchaseDuePayModel, PurchasePaymentReceipt>();
         CreateMap<Purchase, PurchaseDueBillsViewModel>();
+        CreateMap<PurchasePaymentReceipt, PurchasePaymentViewModel>()
+            .ForMember(d => d.PaidByUserName, opt => opt.MapFrom(c => c.Registration.UserName))
+            .ForMember(d => d.SupplierCompanyName, opt => opt.MapFrom(c => c.Supplier.SupplierCompanyName))
+            .ForMember(d => d.SmsNumber, opt => opt.MapFrom(c => c.Supplier.SmsNumber))
+            .ForMember(d => d.SupplierAddress, opt => opt.MapFrom(c => c.Supplier.SupplierAddress))
+            .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName))
+
+            ;
     }
 }

@@ -168,15 +168,13 @@ public class SellingCore : Core, ISellingCore
         }
     }
 
-    public Task<DbResponse<decimal>> GetTotalDueAsync(int vendorId, DateTime? sDate, DateTime? eDate)
+    public Task<DbResponse<decimal>> GetTotalDueAsync(string userName, DateTime? sDate, DateTime? eDate)
     {
         try
         {
-            if (vendorId == 0)
-                return Task.FromResult(new DbResponse<decimal>(false, "Invalid Data"));
-
+            var branchId = _db.Registration.BranchIdByUserName(userName);
             return Task.FromResult(new DbResponse<decimal>(true, "Success",
-                _db.Selling.TotalDue(vendorId, sDate, eDate)));
+                _db.Selling.TotalDue(branchId, sDate, eDate)));
         }
         catch (Exception e)
         {

@@ -101,7 +101,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             var branch = await _registration.GetAsync(User.Identity.Name);
             ViewBag.branchInfo = branch.Data;
             
-            var model = await _purchaseCore.GetAsync(id.GetValueOrDefault());
+            var model = await _purchaseCore.GetAsync(User.Identity.Name, id.GetValueOrDefault());
             return View(model.Data);
         }
 
@@ -125,7 +125,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         {
             if (!id.HasValue) return RedirectToAction("Index");
             
-            var response = await _purchaseCore.GetAsync(id.GetValueOrDefault());
+            var response = await _purchaseCore.GetAsync(User.Identity.Name, id.GetValueOrDefault());
             ViewBag.updateData = response.Data;
            
             return View();
@@ -149,7 +149,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         {
             if (!id.HasValue) return RedirectToAction("Index");
 
-            var model = await _purchaseCore.GetAsync(id.GetValueOrDefault());
+            var model = await _purchaseCore.GetAsync(User.Identity.Name, id.GetValueOrDefault());
             return View(model.Data);
         }
 

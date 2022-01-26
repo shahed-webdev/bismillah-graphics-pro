@@ -5,7 +5,7 @@ public class PurchaseReceiptViewModel
     public PurchaseReceiptViewModel()
     {
         PurchaseLists = new List<PurchaseListViewModel>();
-        PurchasePaymentRecords = new List<PurchasePaymentViewModel>();
+        PurchasePaymentRecords = new List<PurchasePaymentRecordViewModel>();
     }
 
     public int PurchaseId { get; set; }
@@ -21,5 +21,5 @@ public class PurchaseReceiptViewModel
     public DateTime PurchaseDate { get; set; }
     public SupplierViewModel Supplier { get; set; }
     public List<PurchaseListViewModel> PurchaseLists { get; set; }
-    public List<PurchasePaymentViewModel> PurchasePaymentRecords { get; set; }
+    public List<PurchasePaymentRecordViewModel> PurchasePaymentRecords { get; set; }
 }
