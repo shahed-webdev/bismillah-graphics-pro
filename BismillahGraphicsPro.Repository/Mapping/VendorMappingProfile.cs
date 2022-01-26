@@ -11,5 +11,8 @@ public class VendorMappingProfile:Profile
         CreateMap<Vendor, VendorAddModel>().ReverseMap();
         CreateMap<Vendor, VendorEditModel>().ReverseMap();
         CreateMap<Vendor, VendorViewModel>().ReverseMap();
+        CreateMap<Vendor, SellingDueViewModel>()
+            .ForMember(d => d.TotalDue, opt => opt.MapFrom(c => c.VendorDue));
+
     }
 }

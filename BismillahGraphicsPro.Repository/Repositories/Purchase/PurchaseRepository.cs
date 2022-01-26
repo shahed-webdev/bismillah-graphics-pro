@@ -231,6 +231,16 @@ public class PurchaseRepository : Repository, IPurchaseRepository
         supplierModel.Paid = Math.Round(supplierModel.Purchases.Sum(s => s.PurchasePaidAmount), 2);
         supplierModel.Discount = Math.Round(supplierModel.Purchases.Sum(s => s.PurchaseDiscountAmount), 2);
 
-        return new DbResponse<PurchaseDueViewModel>(true, $"{supplierModel.SupplierCompanyName} get successfully", supplierModel);
+        return new DbResponse<PurchaseDueViewModel>(true, $"{supplierModel.SupplierCompanyName} get successfully",
+            supplierModel);
+    }
+
+    public decimal TotalDue(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+        return Db.Purchases
+            .Where(p => p.BranchId == branchId && p.PurchaseDate <= endDate && p.PurchaseDate >= startDate)
+            .Sum(s => s.PurchaseDueAmount);
     }
 }
