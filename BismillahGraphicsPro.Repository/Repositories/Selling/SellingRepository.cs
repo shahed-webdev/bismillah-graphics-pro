@@ -104,7 +104,7 @@ public class SellingRepository : Repository, ISellingRepository
 
         if (due < 0) return new DbResponse<int>(false, "Due amount cannot be less than zero");
 
-        //Update Supplier
+        //Update Vendor
         var oldDiscount = selling.SellingDiscountAmount;
         var newDiscount = model.SellingDiscountAmount;
         var oldTotalPrice = selling.SellingTotalPrice;
@@ -210,5 +210,29 @@ public class SellingRepository : Repository, ISellingRepository
         Db.SellingPaymentReceipts.Add(paymentReceipt);
         Db.SaveChanges();
         return new DbResponse<SellingPaymentReceipt>(true, "Due collected successfully", paymentReceipt);
+    }
+
+    public DbResponse<SellingDueViewModel> GetVendorWiseDue(int VendorId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+        var vendor = Db.Vendors
+            .Include(v =>
+                v.Sellings.Where(p => p.SellingDate <= endDate && p.SellingDate >= startDate))
+            //.ProjectTo<SellingDueViewModel>(_mapper.ConfigurationProvider) // not working for include filtering
+            .FirstOrDefault(v => v.VendorId == VendorId);
+
+        var vendorModel = _mapper.Map<SellingDueViewModel>(vendor);
+
+        if (vendorModel == null) return new DbResponse<SellingDueViewModel>(false, $"data not found");
+
+        vendorModel.Amount = Math.Round(vendorModel.Sellings.Sum(s => s.SellingTotalPrice), 2);
+        vendorModel.Due = Math.Round(vendorModel.Sellings.Sum(s => s.SellingDueAmount), 2);
+        vendorModel.Paid = Math.Round(vendorModel.Sellings.Sum(s => s.SellingPaidAmount), 2);
+        vendorModel.Discount = Math.Round(vendorModel.Sellings.Sum(s => s.SellingDiscountAmount), 2);
+
+        return new DbResponse<SellingDueViewModel>(true, $"{vendorModel.VendorCompanyName} get successfully", vendorModel);
+
     }
 }
