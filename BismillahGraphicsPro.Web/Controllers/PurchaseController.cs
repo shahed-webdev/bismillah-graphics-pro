@@ -193,13 +193,13 @@ namespace BismillahGraphicsPro.Web.Controllers
         public IActionResult DueReport()
         {
             return View();
-        } 
-        
+        }
+
         //get total due
-        //public IActionResult GetSupplierDue()
-        //{
-        //    var response = _supplierCore.GetAsync()
-        //    return Json();
-        //}
+        public async Task<IActionResult> GetSupplierDue(int supplierId)
+        {
+            var response =await _purchaseCore.GetTotalDueAsync(supplierId,null,null);
+            return Json(response);
+        }
     }
 }
