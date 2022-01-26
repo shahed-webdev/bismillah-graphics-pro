@@ -12,5 +12,5 @@ public class SupplierViewModel
     public decimal TotalAmount { get; set; }
     public decimal TotalDiscount { get; set; }
     public decimal SupplierPaid { get; set; }
-    public decimal? SupplierDue { get; set; }
+    public decimal SupplierDue { get; set; }
 }
