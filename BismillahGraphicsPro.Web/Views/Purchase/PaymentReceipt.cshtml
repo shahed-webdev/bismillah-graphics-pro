@@ -1,0 +1,82 @@
+﻿@model PurchasePaymentReceiptViewModel
+@{
+    ViewData["Title"] = "Purchase Payment Receipt";
+    Layout = "_AdminLayout";
+}
+
+
+<section class="my-4 d-print-none">
+    <a class="btn btn-brown btn-rounded" href="/purchase/paymentReport"><i class="fas fa-shopping-cart mr-1"></i>Payment Report</a>
+    <button class="btn btn-deep-purple btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
+</section>
+
+
+<div class="card card-body">
+    <div class="row my-2 align-items-center">
+        <div class="col">
+            <span>RECEIPT# @Model.ReceiptSn</span>
+        </div>
+        <div class="col text-center">
+            <strong>PURCHASE BILLS</strong>
+        </div>
+        <div class="col text-right">
+            <span>Date: @Model.PaidDate.ToString("d MMM yyyy")</span>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-7">
+            <h6><strong>@Model.SupplierCompanyName</strong></h6>
+            <h6><strong>@Model.SupplierName</strong></h6>
+        </div>
+        <div class="col text-right">
+            @if (!string.IsNullOrEmpty(Model.SupplierAddress))
+            {
+                <h6><strong>@Model.SupplierAddress</strong></h6>
+            }
+            <h6><strong>@Model.SmsNumber</strong></h6>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center"><strong>No.</strong></th>
+                <th><strong>Purchase Date</strong></th>
+                <th class="text-center"><strong>Bill No.</strong></th>
+                <th class="text-right"><strong>Amount</strong></th>
+                <th class="text-right"><strong>Paid</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var index = 0;
+                foreach (var item in Model.Bills)
+                {
+                    index++;
+                    <tr>
+                        <td class="text-center">@index</td>
+                        <td>@item.PurchaseDate.ToString("d MMM yyyy")</td>
+                        <td class="text-center">
+                            <a class="blue-text" href="/purchase/receipt/@item.PurchaseId">
+                                @item.PurchaseSn
+                            </a>
+                        </td>
+                        <td class="text-right">@item.PurchaseTotalPrice/-</td>
+                        <td class="text-right">@item.PurchasePaidAmount/-</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="4">
+                    <span id="amount-word"></span>
+                </td>
+                <td colspan="2">
+                    <div class="text-right">
+                        <h5>Total Paid: <strong>@Model.PaidAmount/-</strong></h5>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

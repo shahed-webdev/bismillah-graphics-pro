@@ -5,7 +5,7 @@
 
 
 <div x-data="initData()" x-init="getTotalDue()" class="d-flex justify-content-between align-items-center my-3">
-    <h1 class="page-header">Purchase Due Report</h1>
+    <h1 class="page-header">Selling Due Report</h1>
     <h5 class="font-weight-bold mb-0">Total Due: ৳<span x-text="totalDue"></span></h5>
 </div>
 
@@ -13,9 +13,9 @@
     <table id="data-table" class="table table-sm">
         <thead>
             <tr>
-                <th>Supplier</th>
-                <th>Amount</th>
-                <th>Paid</th>
+                <th>Party</th>
+                <th>Sales</th>
+                <th>Received</th>
                 <th>Discount</th>
                 <th>Due</th>
             </tr>
@@ -40,7 +40,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "/Purchase/GetSupplierData",
+                        url: "/Selling/GetVendorData",
                         type: "POST",
                         data: function(d) {
                             d.filters = dataTable.filter;
@@ -49,18 +49,18 @@
                     columns:
                     [
                         {
-                            data: "SupplierCompanyName",
+                            data: "VendorCompanyName",
                             "render": function(data, type, row) {
-                                return `<p class="font-weight-bold mb-0">${data}</p><span>${row.SupplierName}</span>`
+                                return `<p class="font-weight-bold mb-0">${data}</p><span>${row.VendorName}</span>`
                             }
                         },
                         { data: "TotalAmount", "render": function(data) { return `৳${data}` } },
-                        { data: "SupplierPaid", "render": function(data) { return `৳${data}` } },
+                        { data: "VendorPaid", "render": function(data) { return `৳${data}` } },
                         { data: "TotalDiscount", "render": function(data) { return `৳${data}` } },
                         {
-                            data: "SupplierDue",
+                            data: "VendorDue",
                             "render": function(data, type, row) {
-                                return data ? `<a href="/Purchase/PayDueMultiple/${row.SupplierId}" class="blue-text">৳${data}</a>` : data
+                                return data ? `<a href="/Purchase/PayDueMultiple/${row.VendorId}" class="blue-text">৳${data}</a>` : data
                             }
                         },
                     ],
@@ -84,7 +84,7 @@
                 EndsWith: 8
             },
             getData: function() {
-                dataTable.filter.push({ Field: "SupplierDue", Value: 0, Operand: dataTable.operand.GreaterThan });
+                dataTable.filter.push({ Field: "VendorDue", Value: 0, Operand: dataTable.operand.GreaterThan });
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
             }
         }
@@ -96,7 +96,7 @@
 
                 async getTotalDue() {
                     try {
-                        const response = await fetch("/purchase/GetDue");
+                        const response = await fetch("/selling/GetDue");
                         const responseData = await response.json();
                         this.totalDue = responseData.Data;
 

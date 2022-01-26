@@ -157,5 +157,12 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         #endregion
+
+
+        //view product
+        public IActionResult StockReport()
+        {
+            return View();
+        }
     }
 }

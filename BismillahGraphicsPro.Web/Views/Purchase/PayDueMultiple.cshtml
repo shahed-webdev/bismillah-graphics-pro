@@ -31,8 +31,8 @@
         </form>
 
         <ul class="list-group list-group-horizontal my-4 text-right font-weight-bold">
-            <li class="list-group-item flex-fill">Sales: ৳<strong x-text="model.Amount"></strong></li>
-            <li class="list-group-item flex-fill">Received: ৳<strong x-text="model.Paid"></strong></li>
+            <li class="list-group-item flex-fill">Total Amount: ৳<strong x-text="model.Amount"></strong></li>
+            <li class="list-group-item flex-fill">Total Paid: ৳<strong x-text="model.Paid"></strong></li>
             <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.Discount"></strong></li>
             <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.Due"></strong></li>
         </ul>
@@ -44,10 +44,10 @@
                         <tr>
                             <th>Date</th>
                             <th class="text-center">Bill No</th>
-                            <th class="text-right">Sales</th>
+                            <th class="text-right">Amount</th>
                             <th class="text-right">Discount</th>
-                            <th class="text-right">Received</th>
-                            <th class="text-right">Due Balance</th>
+                            <th class="text-right">Paid</th>
+                            <th class="text-right">Due</th>
                             <th class="text-right">Paid</th>
                         </tr>
                     </thead>
@@ -106,131 +106,131 @@
 
 
 @section Scripts {
-<script>
-    //alpine js code
-    function initData() {
-        return {
-            loading: false,
-            pickedDates: { fromDate: '', toDate: '', PaidDate: "" },
-            model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
+    <script>
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                pickedDates: { fromDate: '', toDate: '', PaidDate: "" },
+                model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
 
-            //dropdown list
-            accounts: [],
+                //dropdown list
+                accounts: [],
 
-            //get dropdown data
-            async getDropdownData() {
-                //reset paid amount after reload
-                this.$refs.totalPaid.value = "";
+                //get dropdown data
+                async getDropdownData() {
+                    //reset paid amount after reload
+                    this.$refs.totalPaid.value = "";
 
-                const accountResponse = await fetch("/common/getAccount");
-                const account = await accountResponse.json();
-                this.accounts = account;
+                    const accountResponse = await fetch("/common/getAccount");
+                    const account = await accountResponse.json();
+                    this.accounts = account;
 
-                this.dateInit();
-            },
+                    this.dateInit();
+                },
 
-            //date function init
-            dateInit() {
-                const self = this.pickedDates;
-                self.PaidDate = moment(new Date()).format("D, MMM YYYY");
+                //date function init
+                dateInit() {
+                    const self = this.pickedDates;
+                    self.PaidDate = moment(new Date()).format("D, MMM YYYY");
 
-                $('.datepicker').pickadate({
-                    onSet: function(context) {
-                        self[this.component.$node[0].name] = moment(context.select).format("D, MMM YYYY");
-                    }
-                })
-            },
-
-            //bill find by date
-            async finByDate() {
-                const { fromDate, toDate } = this.pickedDates;
-                const id = this.model.SupplierId;
-
-                const response = await fetch(`/purchase/PayDueMultiple?id=${id}&from=${fromDate}&to=${toDate}`);
-                const responseData = await response.json();
-
-                if (responseData.IsSuccess)
-                    this.model = responseData.Data;
-            },
-
-            //discount amount change
-            onDiscountChange(index) {
-                const modelCopy = [...this.model.Purchases];
-                const item = modelCopy[index];
-                const due = item.PurchaseTotalPrice - item.PurchaseDiscountAmount - item.PurchasePaidAmount;
-
-                modelCopy.forEach((item, i) => {
-                    if (i === index) item.PurchaseDueAmount = due;
-
-                    item.Paying = 0;
-                });
-
-                this.model.Purchases = modelCopy;
-                this.$refs.totalPaid.value = "";
-            },
-
-            //input total paid
-            inputPaidAmount(evt) {
-                let totalPaid = +evt.target.value;
-
-                const purchaseDues = [...this.model.Purchases];
-
-                purchaseDues.forEach(item => {
-                    const lineDue = item.PurchaseDueAmount;
-
-                    if (totalPaid < lineDue && totalPaid > 0) {
-                        item.Paying = totalPaid;
-                    } else if (totalPaid >= lineDue) {
-                        item.Paying = lineDue;
-                    } else {
-                        item.Paying = 0;
-                    }
-
-                    totalPaid -= lineDue;
-                });
-
-                this.model.Purchases = purchaseDues;
-            },
-
-            //submit dues
-            async payDues() {
-                const { SupplierId, AccountId, PaidAmount, Description, Purchases } = this.model;
-
-                const model = {
-                    SupplierId,
-                    AccountId,
-                    PaidAmount,
-                    PaidDate: new Date(this.pickedDates.PaidDate),
-                    Description,
-                    Bills: Purchases.filter(item => item.Paying > 0).map(item => {
-                        return {
-                            PurchaseId: item.PurchaseId,
-                            PurchasePaidAmount: item.Paying,
-                            PurchaseDiscountAmount: item.PurchaseDiscountAmount
+                    $('.datepicker').pickadate({
+                        onSet: function(context) {
+                            self[this.component.$node[0].name] = moment(context.select).format("D, MMM YYYY");
                         }
                     })
+                },
+
+                //bill find by date
+                async finByDate() {
+                    const { fromDate, toDate } = this.pickedDates;
+                    const id = this.model.SupplierId;
+
+                    const response = await fetch(`/purchase/PayDueMultiple?id=${id}&from=${fromDate}&to=${toDate}`);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess)
+                        this.model = responseData.Data;
+                },
+
+                //discount amount change
+                onDiscountChange(index) {
+                    const modelCopy = [...this.model.Purchases];
+                    const item = modelCopy[index];
+                    const due = item.PurchaseTotalPrice - item.PurchaseDiscountAmount - item.PurchasePaidAmount;
+
+                    modelCopy.forEach((item, i) => {
+                        if (i === index) item.PurchaseDueAmount = due;
+
+                        item.Paying = 0;
+                    });
+
+                    this.model.Purchases = modelCopy;
+                    this.$refs.totalPaid.value = "";
+                },
+
+                //input total paid
+                inputPaidAmount(evt) {
+                    let totalPaid = +evt.target.value;
+
+                    const purchaseDues = [...this.model.Purchases];
+
+                    purchaseDues.forEach(item => {
+                        const lineDue = item.PurchaseDueAmount;
+
+                        if (totalPaid < lineDue && totalPaid > 0) {
+                            item.Paying = totalPaid;
+                        } else if (totalPaid >= lineDue) {
+                            item.Paying = lineDue;
+                        } else {
+                            item.Paying = 0;
+                        }
+
+                        totalPaid -= lineDue;
+                    });
+
+                    this.model.Purchases = purchaseDues;
+                },
+
+                //submit dues
+                async payDues() {
+                    const { SupplierId, AccountId, PaidAmount, Description, Purchases } = this.model;
+
+                    const model = {
+                        SupplierId,
+                        AccountId,
+                        PaidAmount,
+                        PaidDate: new Date(this.pickedDates.PaidDate),
+                        Description,
+                        Bills: Purchases.filter(item => item.Paying > 0).map(item => {
+                            return {
+                                PurchaseId: item.PurchaseId,
+                                PurchasePaidAmount: item.Paying,
+                                PurchaseDiscountAmount: item.PurchaseDiscountAmount
+                            }
+                        })
+                    }
+
+                    if (!model.Bills.length) {
+                        return $.notify("No Bill Paid", "error");
+                    }
+
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(model)
+                    };
+
+                    const response = await fetch("/purchase/PostDues", options);
+                    const responseData = await response.json();
+
+                    if (responseData.IsSuccess) {
+                        location.href = `/purchase/paymentReceipt/${responseData.Data}`;
+                    }
+
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
                 }
-
-                if (!model.Bills.length) {
-                    return $.notify("No Bill Paid", "error");
-                }
-
-                const options = {
-                    method: 'POST',
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(model)
-                };
-
-                const response = await fetch("/purchase/PostDues", options);
-                const responseData = await response.json();
-
-                if (responseData.IsSuccess) {
-                    location.href = "/purchase/Suppliers"
-                }
-
-                $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-            }
-        };
-    }
-</script>
+            };
+        }
+    </script>
 }

@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Selling Payment Report";
+    Layout = "_AdminLayout";
+}
+
+
+<div class="d-flex justify-content-between align-items-center my-3">
+    <h1 class="page-header">Selling Payment Report</h1>
+</div>
+
+<div class="card card-body mt-4">
+    <table id="data-table" class="table table-sm">
+        <thead>
+            <tr>
+                <th>Receipt</th>
+                <th>Vendor</th>
+                <th class="text-right">Paid Amount</th>
+                <th>Paid Date</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(function() {
+            dataTable.getData();
+        });
+
+        //data table
+        const dataTable = {
+            table: null,
+            filter: [],
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/selling/GetPaymentData",
+                        type: "POST"
+                    },
+                    columns:
+                    [
+                        { data: "ReceiptSn",
+                            "render": function(data, type, row) {
+                                return `<a class="blue-text" href="/selling/paymentReceipt/${row.SellingReceiptId}">${data}</a>`;
+                            }
+                        },
+                        { data: "VendorCompanyName" },
+                        { data: "PaidAmount", "render": function(data) { return `৳${data}` } },
+                        {
+                            data: "PaidDate", "render": function(data, type, row) {
+                                return moment(data).format("D MMM, YYYY");
+                            }
+                        }
+                    ],
+                    columnDefs: [
+                        //{ 'searchable': false, 'targets': [7, 8] },
+                        //{ 'sortable': false, 'targets': [7, 8] },
+                        { 'className': "text-center", "targets": [0, 3] },
+                        { 'className': "text-right", "targets": [2] }
+                    ]
+                });
+            },
+            operand: {
+                Equal: 0,
+                NotEqual: 1,
+                GreaterThan: 2,
+                LessThan: 3,
+                GreaterThanOrEqual: 4,
+                LessThanOrEqual: 5,
+                Contains: 6,
+                StartsWith: 7,
+                EndsWith: 8
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
+        }
+    </script>
+}

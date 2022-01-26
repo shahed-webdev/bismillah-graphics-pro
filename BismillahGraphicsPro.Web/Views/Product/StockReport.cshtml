@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Product";
+    Layout = "_AdminLayout";
+}
+
+<div class="mx-3">
+
+    <h1 class="page-header my-3">Stock Report</h1>
+
+    <div class="card card-body mt-4">
+        <table id="data-table" class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            dataTable.getData();
+        });
+
+        //data table
+        const dataTable = {
+            table: null,
+            filter: [],
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Product/GetProducts",
+                        type: "POST"
+                    },
+                    columns:
+                    [
+                        { data: "ProductCategoryName" },
+                        { data: "ProductName" },
+                        { data: "ProductPrice", "render": function(data) { return `${data}/-` } },
+                        { data: "Stock", "render": function(data) { return `${data}` } }
+                    ],
+                    columnDefs: [
+                        //{ 'searchable': false, 'targets': [4, 5] },
+                        //{ 'sortable': false, 'targets': [4, 5] },
+                        { 'className': "text-center", "targets": [3] },
+                        { 'className': "text-right", "targets": [2] }
+                    ]
+                });
+            },
+            operand: {
+                Equal: 0,
+                NotEqual: 1,
+                GreaterThan: 2,
+                LessThan: 3,
+                GreaterThanOrEqual: 4,
+                LessThanOrEqual: 5,
+                Contains: 6,
+                StartsWith: 7,
+                EndsWith: 8
+            },
+            getData: function() {
+                dataTable.filter.push({ Field: "Stock", Value: 0, Operand: dataTable.operand.NotEqual });
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
+        }
+    </script>
+}

@@ -225,7 +225,7 @@
                 const responseData = await response.json();
 
                 if (responseData.IsSuccess) {
-                    location.href = "/Selling/Vendors"
+                    location.href = `/selling/paymentReceipt/${responseData.Data}`;
                 }
 
                 $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");

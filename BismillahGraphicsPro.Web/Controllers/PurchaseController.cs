@@ -187,9 +187,37 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+
+        //payment receipt view
+        public async Task<IActionResult> PaymentReceipt(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Suppliers");
+            var model = await _purchaseCore.GetPaymentDetailsAsync(User.Identity.Name, id.GetValueOrDefault());
+
+            return View(model.Data);
+        }
+
+
         #endregion
 
 
+        //payment report
+        public IActionResult PaymentReport()
+        {
+            return View();
+        }
+
+
+        //get payment data table
+        public async Task<IActionResult> GetPaymentData(DataRequest request)
+        {
+            var response = await _purchaseCore.PaymentListAsync(User.Identity.Name, request);
+            return Json(response);
+        }
+
+
+
+        //due report
         public IActionResult DueReport()
         {
             return View();
@@ -198,7 +226,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         //get total due
         public async Task<IActionResult> GetDue()
         {
-            var response =await _purchaseCore.GetTotalDueAsync(User.Identity.Name, null,null);
+            var response = await _purchaseCore.GetTotalDueAsync(User.Identity.Name, null, null);
             return Json(response);
         }
     }
