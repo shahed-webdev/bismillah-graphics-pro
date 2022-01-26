@@ -15,4 +15,6 @@ public interface ISellingRepository
     DataResult<SellingRecordViewModel> List(int branchId, DataRequest request);
     DbResponse<SellingPaymentReceipt> DueCollection(int branchId, int registrationId, int receiptSn,
         SellingDuePayModel model);
+
+    DbResponse<SellingDueViewModel> GetVendorWiseDue(int supplierId, DateTime? sDate, DateTime? eDate);
 }

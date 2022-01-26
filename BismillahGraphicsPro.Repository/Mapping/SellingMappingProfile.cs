@@ -30,6 +30,7 @@ public class SellingMappingProfile: Profile
             .ReverseMap();
 
         CreateMap<SellingDuePayModel, SellingPaymentReceipt>();
+        CreateMap<Selling, SellingDueBillsViewModel>();
 
     }
 }
