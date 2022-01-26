@@ -145,16 +145,28 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Pay Due
         
         //pay due single view
-        public IActionResult PayDueSingle()
+        public async Task<IActionResult> PayDueSingle(int? id)
         {
-            return View();
+            if (!id.HasValue) return RedirectToAction("Index");
+
+            var model = await _purchaseCore.GetAsync(id.GetValueOrDefault());
+            return View(model.Data);
+        }
+
+        //post single due
+        [HttpPost]
+        public async Task<IActionResult> PostSingleDue([FromBody] PurchaseDuePayModel model)
+        {
+            var response = await _purchaseCore.DuePayAsync(User.Identity.Name, model);
+            return Json(response);
         }
 
 
+
         //pay due multiple view
-        public async Task<IActionResult> PayDueMultiple(int? id, DateTime? from, DateTime? to)
+        public async Task<IActionResult> PayDueMultiple(int id, DateTime? from, DateTime? to)
         {
-            var model = await _purchaseCore.GetSupplierWiseDueAsync(id.GetValueOrDefault(), from,to);
+            var model = await _purchaseCore.GetSupplierWiseDueAsync(id, from,to);
             ViewBag.dueModel = model.Data;
            
             //for ajax call
@@ -166,7 +178,8 @@ namespace BismillahGraphicsPro.Web.Controllers
             return View();
         }
 
-        //post due
+
+        //post multiple due
         [HttpPost]
         public async Task<IActionResult> PostDues([FromBody] PurchaseDuePayModel model)
         {
