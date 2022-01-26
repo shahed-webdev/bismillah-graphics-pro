@@ -144,4 +144,19 @@ public class SellingCore: Core, ISellingCore
             return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
+    public Task<DbResponse<SellingDueViewModel>> GetVendorWiseDueAsync(int vendorId, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            if (vendorId == 0)
+                return Task.FromResult(new DbResponse<SellingDueViewModel>(false, "Invalid Data"));
+
+            return Task.FromResult(_db.Selling.GetVendorWiseDue(vendorId, sDate, eDate));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<SellingDueViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }
