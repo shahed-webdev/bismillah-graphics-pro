@@ -62,7 +62,7 @@
             <tr>
                 <th class="text-center"><strong>No.</strong></th>
                 <th><strong>Product Name</strong></th>
-                <th><strong>Description</strong></th>
+                <th class="text-center"><strong>Description</strong></th>
                 <th class="text-center"><strong>Quantity</strong></th>
                 <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
                 <th class="text-right"><strong>Line&nbsp;Total</strong></th>
@@ -93,18 +93,18 @@
                 </td>
                 <td colspan="2">
                     <div class="text-right">
-                        <h5>Total: <strong>@Model.SellingTotalPrice/-</strong></h5>
+                        <h6>Total: <strong>@Model.SellingTotalPrice/-</strong></h6>
                         @{
                             var discount = Model.SellingDiscountAmount;
 
                             if (discount > 0)
                             {
-                                <h5>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h5>
+                                <h6>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h6>
                             }
                         }
 
-                        <h5>Paid: <strong> @Model.SellingPaidAmount/-</strong></h5>
-                        <h5>Due: <strong>@Model.SellingDueAmount/-</strong></h5>
+                        <h6>Paid: <strong> @Model.SellingPaidAmount/-</strong></h6>
+                        <h6>Due: <strong>@Model.SellingDueAmount/-</strong></h6>
                     </div>
                 </td>
             </tr>

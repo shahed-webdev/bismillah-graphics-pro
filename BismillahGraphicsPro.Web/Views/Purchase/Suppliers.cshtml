@@ -118,7 +118,6 @@
             dataTable.getData();
         });
 
-
         //data table
         const dataTable = {
             table: null,
@@ -148,15 +147,20 @@
                         { data: "TotalAmount", "render": function(data) { return `৳${data}` } },
                         { data: "TotalDiscount", "render": function(data) { return `৳${data}` } },
                         { data: "SupplierPaid", "render": function(data) { return `৳${data}` } },
-                        { data: "SupplierDue", "render": function(data,type,row) { return `<a href="/Purchase/PayDueMultiple/${row.SupplierId}" class="blue-text">৳${data}</a>` } },
+                        {
+                            data: "SupplierDue",
+                            "render": function(data, type, row) {
+                                return data?`<a href="/Purchase/PayDueMultiple/${row.SupplierId}" class="blue-text">৳${data}</a>`:data
+                            }
+                        },
                         { data: "SupplierId", "render": function(data) { return `<a x-on:click="onEditCLick(${data})" class="fas fa-edit"></a>`; } },
                         { data: "SupplierId", "render": function(data) { return `<a x-on:click="deleteData(${data})" class="red-text fas fa-trash-alt"></a>`; } }
                     ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [7,8] },
-                        { 'sortable': false, 'targets': [7,8] },
-                        { 'className': "text-center", "targets": [2,7,8] },
-                        { 'className': "text-right", "targets": [3,4,5,6] }
+                        { 'searchable': false, 'targets': [7, 8] },
+                        { 'sortable': false, 'targets': [7, 8] },
+                        { 'className': "text-center", "targets": [2, 7, 8] },
+                        { 'className': "text-right", "targets": [3, 4, 5, 6] }
                     ]
                 });
             },
