@@ -5,7 +5,7 @@ public class SellingReceiptViewModel
     public SellingReceiptViewModel()
     {
         SellingLists = new List<SellingListViewModel>();
-        SellingPaymentRecords = new List<SellingPaymentViewModel>();
+        SellingPaymentRecords = new List<SellingPaymentRecordViewModel>();
     }
 
     public int SellingId { get; set; }
@@ -21,5 +21,5 @@ public class SellingReceiptViewModel
     public DateTime SellingDate { get; set; }
     public VendorViewModel Vendor { get; set; }
     public List<SellingListViewModel> SellingLists { get; set; }
-    public List<SellingPaymentViewModel> SellingPaymentRecords { get; set; }
+    public List<SellingPaymentRecordViewModel> SellingPaymentRecords { get; set; }
 }

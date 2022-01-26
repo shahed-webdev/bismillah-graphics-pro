@@ -97,6 +97,25 @@ public class SellingCore : Core, ISellingCore
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return Task.FromResult(_db.Selling.List(branchId, request));
     }
+    public Task<DataResult<SellingPaymentViewModel>> PaymentListAsync(string userName, DataRequest request)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return Task.FromResult(_db.Selling.PaymentList(branchId, request));
+    }
+
+    public Task<DbResponse<SellingPaymentReceiptViewModel>> GetPaymentDetailsAsync(string userName, int SellingReceiptId)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(_db.Selling.GetPaymentDetails(branchId, SellingReceiptId));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(
+                new DbResponse<SellingPaymentReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 
     public Task<DbResponse<int>> DueCollectionAsync(string userName, SellingDuePayModel model)
     {
@@ -175,6 +194,19 @@ public class SellingCore : Core, ISellingCore
             var branchId = _db.Registration.BranchIdByUserName(userName);
             return Task.FromResult(new DbResponse<decimal>(true, "Success",
                 _db.Selling.TotalDue(branchId, sDate, eDate)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
+    public Task<DbResponse<decimal>> GetTotalPaidAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(new DbResponse<decimal>(true, "Success",
+                _db.Selling.TotalPaid(branchId, sDate, eDate)));
         }
         catch (Exception e)
         {

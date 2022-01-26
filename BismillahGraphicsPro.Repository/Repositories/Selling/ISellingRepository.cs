@@ -13,10 +13,14 @@ public interface ISellingRepository
     DbResponse<int> Edit(SellingEditModel model);
     DbResponse<decimal> UpdateDiscountAndPaid(List<SellingDuePayRecord> bills);
     DataResult<SellingRecordViewModel> List(int branchId, DataRequest request);
+    DataResult<SellingPaymentViewModel> PaymentList(int branchId, DataRequest request);
+    DbResponse<SellingPaymentReceiptViewModel> GetPaymentDetails(int branchId, int sellingReceiptId);
+
     DbResponse<SellingPaymentReceipt> DueCollection(int branchId, int registrationId, int receiptSn,
         SellingDuePayModel model);
 
     DbResponse<SellingDueViewModel> GetVendorWiseDue(int supplierId, DateTime? sDate, DateTime? eDate);
 
     decimal TotalDue(int branchId, DateTime? sDate, DateTime? eDate);
+    decimal TotalPaid(int branchId, DateTime? sDate, DateTime? eDate);
 }

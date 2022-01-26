@@ -16,7 +16,7 @@ public class SellingMappingProfile: Profile
             .ForMember(d=> d.ProductName, opt=> opt.MapFrom(c=> c.Product.ProductName))
             .ReverseMap();
 
-        CreateMap<SellingPaymentRecord, SellingPaymentViewModel>()
+        CreateMap<SellingPaymentRecord, SellingPaymentRecordViewModel>()
             .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName))
             .ReverseMap();
         CreateMap<Selling, SellingRecordViewModel>()
@@ -31,6 +31,29 @@ public class SellingMappingProfile: Profile
 
         CreateMap<SellingDuePayModel, SellingPaymentReceipt>();
         CreateMap<Selling, SellingDueBillsViewModel>();
+
+        CreateMap<SellingPaymentReceipt, SellingPaymentViewModel>()
+            .ForMember(d => d.PaidByUserName, opt => opt.MapFrom(c => c.Registration.UserName))
+            .ForMember(d => d.VendorCompanyName, opt => opt.MapFrom(c => c.Vendor.VendorCompanyName))
+            .ForMember(d => d.SmsNumber, opt => opt.MapFrom(c => c.Vendor.SmsNumber))
+            .ForMember(d => d.VendorAddress, opt => opt.MapFrom(c => c.Vendor.VendorAddress))
+            .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName));
+
+        CreateMap<SellingPaymentRecord, SellingPaymentBillModel>()
+            .ForMember(d => d.SellingDate, opt => opt.MapFrom(c => c.Selling.SellingDate))
+            .ForMember(d => d.SellingSn, opt => opt.MapFrom(c => c.Selling.SellingSn))
+            .ForMember(d => d.SellingTotalPrice, opt => opt.MapFrom(c => c.Selling.SellingTotalPrice))
+            ;
+
+        CreateMap<SellingPaymentReceipt, SellingPaymentReceiptViewModel>()
+            .ForMember(d => d.PaidByUserName, opt => opt.MapFrom(c => c.Registration.UserName))
+            .ForMember(d => d.VendorCompanyName, opt => opt.MapFrom(c => c.Vendor.VendorCompanyName))
+            .ForMember(d => d.VendorName, opt => opt.MapFrom(c => c.Vendor.VendorName))
+            .ForMember(d => d.SmsNumber, opt => opt.MapFrom(c => c.Vendor.SmsNumber))
+            .ForMember(d => d.VendorAddress, opt => opt.MapFrom(c => c.Vendor.VendorAddress))
+            .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName))
+            .ForMember(d => d.Bills, opt => opt.MapFrom(c => c.SellingPaymentRecords));
+
 
     }
 }

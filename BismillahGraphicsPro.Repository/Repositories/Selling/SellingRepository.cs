@@ -188,6 +188,25 @@ public class SellingRepository : Repository, ISellingRepository
             .OrderByDescending(a => a.SellingSn)
             .ToDataResult(request);
     }
+    public DataResult<SellingPaymentViewModel> PaymentList(int branchId, DataRequest request)
+    {
+        return Db.SellingPaymentReceipts.Where(m => m.BranchId == branchId)
+            .ProjectTo<SellingPaymentViewModel>(_mapper.ConfigurationProvider)
+            .OrderByDescending(a => a.PaidDate)
+            .ToDataResult(request);
+    }
+
+    public DbResponse<SellingPaymentReceiptViewModel> GetPaymentDetails(int branchId, int SellingReceiptId)
+    {
+        var Selling = Db.SellingPaymentReceipts.Where(r => r.BranchId == branchId && r.SellingReceiptId == SellingReceiptId)
+            .ProjectTo<SellingPaymentReceiptViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefault();
+
+        return Selling == null
+            ? new DbResponse<SellingPaymentReceiptViewModel>(false, "data Not Found")
+            : new DbResponse<SellingPaymentReceiptViewModel>(true, $"{Selling!.ReceiptSn} Get Successfully",
+                Selling);
+    }
 
     public DbResponse<SellingPaymentReceipt> DueCollection(int branchId, int registrationId, int receiptSn, SellingDuePayModel model)
     {
@@ -243,5 +262,14 @@ public class SellingRepository : Repository, ISellingRepository
         return Db.Sellings
             .Where(p => p.BranchId == branchId && p.SellingDate <= endDate && p.SellingDate >= startDate)
             .Sum(s => s.SellingDueAmount);
+    }
+
+    public decimal TotalPaid(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+        return Db.SellingPaymentReceipts
+            .Where(p => p.BranchId == branchId && p.PaidDate <= endDate && p.PaidDate >= startDate)
+            .Sum(s => s.PaidAmount);
     }
 }

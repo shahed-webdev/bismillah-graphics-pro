@@ -36,8 +36,25 @@ public class PurchaseMappingProfile : Profile
             .ForMember(d => d.SupplierCompanyName, opt => opt.MapFrom(c => c.Supplier.SupplierCompanyName))
             .ForMember(d => d.SmsNumber, opt => opt.MapFrom(c => c.Supplier.SmsNumber))
             .ForMember(d => d.SupplierAddress, opt => opt.MapFrom(c => c.Supplier.SupplierAddress))
-            .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName))
+            .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName));
 
+
+        CreateMap<PurchasePaymentRecord, PurchasePaymentBillModel>()
+            .ForMember(d => d.PurchaseDate, opt => opt.MapFrom(c => c.Purchase.PurchaseDate))
+            .ForMember(d => d.PurchaseSn, opt => opt.MapFrom(c => c.Purchase.PurchaseSn))
+            .ForMember(d => d.PurchaseTotalPrice, opt => opt.MapFrom(c => c.Purchase.PurchaseTotalPrice))
             ;
+
+        CreateMap<PurchasePaymentReceipt, PurchasePaymentReceiptViewModel>()
+            .ForMember(d => d.PaidByUserName, opt => opt.MapFrom(c => c.Registration.UserName))
+            .ForMember(d => d.SupplierCompanyName, opt => opt.MapFrom(c => c.Supplier.SupplierCompanyName))
+            .ForMember(d => d.SupplierName, opt => opt.MapFrom(c => c.Supplier.SupplierName))
+            .ForMember(d => d.SmsNumber, opt => opt.MapFrom(c => c.Supplier.SmsNumber))
+            .ForMember(d => d.SupplierAddress, opt => opt.MapFrom(c => c.Supplier.SupplierAddress))
+            .ForMember(d => d.AccountName, opt => opt.MapFrom(c => c.Account.AccountName))
+            .ForMember(d => d.Bills, opt => opt.MapFrom(c => c.PurchasePaymentRecords));
+
+
+        
     }
 }
