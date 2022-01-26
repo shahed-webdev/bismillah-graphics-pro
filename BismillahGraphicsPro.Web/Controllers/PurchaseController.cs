@@ -196,9 +196,9 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         //get total due
-        public async Task<IActionResult> GetSupplierDue(int supplierId)
+        public async Task<IActionResult> GetDue()
         {
-            var response =await _purchaseCore.GetTotalDueAsync(supplierId,null,null);
+            var response =await _purchaseCore.GetTotalDueAsync(User.Identity.Name, null,null);
             return Json(response);
         }
     }
