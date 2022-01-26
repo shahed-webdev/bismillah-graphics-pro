@@ -4,9 +4,9 @@
 }
 
 
-<div class="d-flex justify-content-between align-items-center my-3">
+<div x-data="initData()" x-init="getTotalDue()" class="d-flex justify-content-between align-items-center my-3">
     <h1 class="page-header">Purchase Due Report</h1>
-    <h5 class="font-weight-bold mb-0">Total Due: ৳1454260</h5>
+    <h5 class="font-weight-bold mb-0">Total Due: ৳<span x-text="totalDue"></span></h5>
 </div>
 
 <div class="card card-body mt-4">
@@ -99,6 +99,7 @@
                     try {
                         const response = await fetch("/purchase/GetSupplierDue");
                         const responseData = await response.json();
+                        console.log(responseData)
                         this.totalDue = responseData.Data;
 
                     } catch (error) {
