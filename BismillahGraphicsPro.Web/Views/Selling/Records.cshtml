@@ -43,11 +43,16 @@
                     },
                     columns:
                     [
-                        { data: "SellingSn", "render": function(data,type,row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
+                        { data: "SellingSn", "render": function(data, type, row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
                         { data: "VendorCompanyName" },
                         { data: "SellingTotalPrice" },
                         { data: "SellingPaidAmount" },
-                        { data: "SellingDueAmount" },
+                        {
+                            data: "SellingDueAmount",
+                            "render": function(data, type, row) {
+                                return data ? `<a class="blue-text" href="/selling/DueCollectionSingle/${row.SellingId}">${data}</a>` : data;
+                            }
+                        },
                         { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
                         { data: "SellingId", "render": function(data) { return `<a class="blue-text" href="/Selling/update/${data}">Update</a>` } }
                     ],

@@ -188,5 +188,18 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         #endregion
+
+
+        public IActionResult DueReport()
+        {
+            return View();
+        } 
+        
+        //get total due
+        //public IActionResult GetSupplierDue()
+        //{
+        //    var response = _supplierCore.GetAsync()
+        //    return Json();
+        //}
     }
 }

@@ -145,21 +145,49 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Due Collection
 
-        //due collection view
-        public IActionResult DueCollection()
+        //due Collection single view
+        public async Task<IActionResult> DueCollectionSingle(int? id)
         {
+            if (!id.HasValue) return RedirectToAction("Index");
+
+            var model = await _sellingCore.GetAsync(id.GetValueOrDefault());
+            return View(model.Data);
+        }
+
+
+        //post single due Collection
+        [HttpPost]
+        public async Task<IActionResult> PostSingleDue([FromBody] SellingDuePayModel model)
+        {
+            var response = await _sellingCore.DueCollectionAsync(User.Identity.Name, model);
+            return Json(response);
+        }
+
+
+
+        //due Collection multiple view
+        public async Task<IActionResult> DueCollectionMultiple(int id, DateTime? from, DateTime? to)
+        {
+            var model = await _sellingCore.GetVendorWiseDueAsync(id, from, to);
+            ViewBag.dueModel = model.Data;
+
+            //for ajax call
+            if (from != null || to != null)
+            {
+                return Json(model);
+            }
+
             return View();
         }
 
 
-        //post Due Collection
-        //[HttpPost]
-        //public async Task<IActionResult> PostDueCollection([FromBody] SellingAddModel model)
-        //{
-        //    var response = await _sellingCore.AddAsync(User.Identity.Name, model);
-        //    return Json(response);
-        //}
-
+        //post multiple due Collection
+        [HttpPost]
+        public async Task<IActionResult> PostDues([FromBody] SellingDuePayModel model)
+        {
+            var response = await _sellingCore.DueCollectionAsync(User.Identity.Name, model);
+            return Json(response);
+        }
 
         #endregion
     }

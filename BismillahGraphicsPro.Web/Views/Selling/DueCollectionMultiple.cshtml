@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Purchase due Pay";
+    ViewData["Title"] = "Selling due pay";
     Layout = "_AdminLayout";
 }
 
@@ -8,9 +8,9 @@
         <form x-on:submit.prevent="finByDate">
             <div class="row align-items-center mt-3">
                 <div class="col">
-                    <h5 x-text="model.SupplierCompanyName" class="mb-0 font-weight-bold"></h5>
+                    <h5 x-text="model.VendorCompanyName" class="mb-0 font-weight-bold"></h5>
                     <p class="mb-0">
-                        <span x-text="model.SupplierAddress"></span>,
+                        <span x-text="model.VendorAddress"></span>,
                         <span x-text="model.SmsNumber"></span>
                     </p>
                 </div>
@@ -52,21 +52,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template x-for="(item,index) in model.Purchases" :key="item.PurchaseId">
+                        <template x-for="(item,index) in model.Sellings" :key="item.SellingId">
                             <tr>
-                                <td x-text="moment(item.PurchaseDate).format('D MMM, YYYY')"></td>
-                                <td class="text-center" x-text="item.PurchaseSn"></td>
+                                <td x-text="moment(item.SellingDate).format('D MMM, YYYY')"></td>
+                                <td class="text-center" x-text="item.SellingSn"></td>
                                 <td class="text-right">
-                                    ৳<span x-text="item.PurchaseTotalPrice"></span>
+                                    ৳<span x-text="item.SellingTotalPrice"></span>
                                 </td>
                                 <td class="text-right" style="max-width: 100px">
-                                    <input x-model.number="item.PurchaseDiscountAmount" x-on:input="onDiscountChange(index)" type="number" class="form-control text-right" min="0" :max="item.PurchaseTotalPrice-item.PurchasePaidAmount" step="0.01" placeholder="Discount amount">
+                                    <input x-model.number="item.SellingDiscountAmount" x-on:input="onDiscountChange(index)" type="number" class="form-control text-right" min="0" :max="item.SellingTotalPrice-item.SellingPaidAmount" step="0.01" placeholder="Discount amount">
                                 </td>
                                 <td class="text-right">
-                                    ৳<span x-text="item.PurchasePaidAmount"></span>
+                                    ৳<span x-text="item.SellingPaidAmount"></span>
                                 </td>
                                 <td class="text-right">
-                                    ৳<span x-text="item.PurchaseDueAmount"></span>
+                                    ৳<span x-text="item.SellingDueAmount"></span>
                                 </td>
                                 <td class="text-right">
                                     ৳<span x-text="item.Paying || 0"></span>
@@ -144,9 +144,9 @@
             //bill find by date
             async finByDate() {
                 const { fromDate, toDate } = this.pickedDates;
-                const id = this.model.SupplierId;
+                const id = this.model.VendorId;
 
-                const response = await fetch(`/purchase/PayDueMultiple?id=${id}&from=${fromDate}&to=${toDate}`);
+                const response = await fetch(`/Selling/PayDueMultiple?id=${id}&from=${fromDate}&to=${toDate}`);
                 const responseData = await response.json();
 
                 if (responseData.IsSuccess)
@@ -155,17 +155,17 @@
 
             //discount amount change
             onDiscountChange(index) {
-                const modelCopy = [...this.model.Purchases];
+                const modelCopy = [...this.model.Sellings];
                 const item = modelCopy[index];
-                const due = item.PurchaseTotalPrice - item.PurchaseDiscountAmount - item.PurchasePaidAmount;
+                const due = item.SellingTotalPrice - item.SellingDiscountAmount - item.SellingPaidAmount;
 
                 modelCopy.forEach((item, i) => {
-                    if (i === index) item.PurchaseDueAmount = due;
+                    if (i === index) item.SellingDueAmount = due;
 
                     item.Paying = 0;
                 });
 
-                this.model.Purchases = modelCopy;
+                this.model.Sellings = modelCopy;
                 this.$refs.totalPaid.value = "";
             },
 
@@ -173,10 +173,10 @@
             inputPaidAmount(evt) {
                 let totalPaid = +evt.target.value;
 
-                const purchaseDues = [...this.model.Purchases];
+                const SellingDues = [...this.model.Sellings];
 
-                purchaseDues.forEach(item => {
-                    const lineDue = item.PurchaseDueAmount;
+                SellingDues.forEach(item => {
+                    const lineDue = item.SellingDueAmount;
 
                     if (totalPaid < lineDue && totalPaid > 0) {
                         item.Paying = totalPaid;
@@ -189,24 +189,24 @@
                     totalPaid -= lineDue;
                 });
 
-                this.model.Purchases = purchaseDues;
+                this.model.Sellings = SellingDues;
             },
 
             //submit dues
             async payDues() {
-                const { SupplierId, AccountId, PaidAmount, Description, Purchases } = this.model;
+                const { VendorId, AccountId, PaidAmount, Description, Sellings } = this.model;
 
                 const model = {
-                    SupplierId,
+                    VendorId,
                     AccountId,
                     PaidAmount,
                     PaidDate: new Date(this.pickedDates.PaidDate),
                     Description,
-                    Bills: Purchases.filter(item => item.Paying > 0).map(item => {
+                    Bills: Sellings.filter(item => item.Paying > 0).map(item => {
                         return {
-                            PurchaseId: item.PurchaseId,
-                            PurchasePaidAmount: item.Paying,
-                            PurchaseDiscountAmount: item.PurchaseDiscountAmount
+                            SellingId: item.SellingId,
+                            SellingPaidAmount: item.Paying,
+                            SellingDiscountAmount: item.SellingDiscountAmount
                         }
                     })
                 }
@@ -221,11 +221,11 @@
                     body: JSON.stringify(model)
                 };
 
-                const response = await fetch("/purchase/PostDues", options);
+                const response = await fetch("/Selling/PostDues", options);
                 const responseData = await response.json();
 
                 if (responseData.IsSuccess) {
-                    location.href = "/purchase/Suppliers"
+                    location.href = "/Selling/Vendors"
                 }
 
                 $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");

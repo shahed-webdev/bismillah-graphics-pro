@@ -1,0 +1,332 @@
+﻿@model SellingReceiptViewModel
+
+@{
+    ViewData["Title"] = "Due Collection";
+    Layout = "_AdminLayout";
+}
+
+
+
+<div class="m-md-4">
+    <div class="card card-body">
+        <section class="mb-4 d-print-none">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="page-header">Due Collection</h3>
+                <div>
+                    <a class="btn btn-secondary btn-rounded" href="/Selling/records"><i class="fas fa-list mr-1"></i>Selling Record</a>
+                    <a href="/Selling/Vendors" class="btn btn-amber btn-rounded"><i class="fas fa-user mr-1"></i>Vendor</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="row mb-1">
+            <div class="col">
+                <strong>RECEIPT# @Model.SellingSn</strong>
+            </div>
+            <div class="col text-right">
+                <strong>Selling Date: @Model.SellingDate.ToString("d MMM yyyy")</strong>
+            </div>
+        </div>
+        <hr />
+
+        <div class="purple-gradient darken-2 white-text p-3 mb-4 rounded">
+            <div class="row">
+                <div class="col">
+                    Company: <strong class="mr-3">@Model.Vendor.VendorCompanyName.</strong>
+                    Name: <strong>@Model.Vendor.VendorName.</strong>
+                </div>
+                <div class="col text-right">
+                    Phone: <strong class="mr-3">@Model.Vendor.VendorPhone.</strong>
+                    Address: <strong>@Model.Vendor.VendorAddress.</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-4">
+            <table class="table table-sm table-bordered">
+             <thead>
+            <tr>
+                <th class="text-center"><strong>No.</strong></th>
+                <th><strong>Product Name</strong></th>
+                <th class="text-center"><strong>Description</strong></th>
+                <th class="text-center"><strong>Quantity</strong></th>
+                <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
+                <th class="text-right"><strong>Line&nbsp;Total</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var index = 0;
+                foreach (var item in Model.SellingLists)
+                {
+                    index++;
+                    <tr>
+                        <td class="text-center">@index</td>
+                        <td>@item.ProductName</td>
+                        <td class="text-center">@item.Length x @item.Width</td>
+                        <td class="text-center">
+                            @item.SellingQuantity
+                            @item.MeasurementUnitName
+                        </td>
+                        <td class="text-right">@item.SellingUnitPrice/-</td>
+                        <td class="text-right">@item.SellingPrice?.ToString("0.00")/-</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="4">
+                    <span id="amount-word"></span>
+                </td>
+                <td colspan="2">
+                    <div class="text-right">
+                        <h5>Total: <strong>@Model.SellingTotalPrice/-</strong></h5>
+                        @{
+                            var discount = Model.SellingDiscountAmount;
+
+                            if (discount > 0)
+                            {
+                                <h5>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h5>
+                            }
+                        }
+
+                        <h5>Paid: <strong> @Model.SellingPaidAmount/-</strong></h5>
+                        <h5>Due: <strong>@Model.SellingDueAmount/-</strong></h5>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            @{
+                var paymentRecord = Model.SellingPaymentRecords;
+
+                if (paymentRecord.Count > 0)
+                {
+                    <div class="card card-body mb-3">
+                        <h5 class="mt-4">PAYMENT RECORD</h5>
+                        <table class="table table-sm table-bordered">
+                            <thead class="text-center">
+                                <tr>
+                                    <th><strong>Paid Date</strong></th>
+                                    <th><strong>Paid Amount</strong></th>
+                                    <th><strong>Payment Method</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                @foreach (var item in paymentRecord)
+                                {
+                                    <tr>
+                                        <td>@item.SellingPaidDate.ToString("d MMM yyyy")</td>
+                                        <td class="text-right">@item.SellingPaidAmount/-</td>
+                                        <td class="text-center">
+                                            <strong>@item.AccountName</strong>
+                                            <em class="text-dark">@item.Description</em>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+
+        <div x-data="initData()" x-init="getDropdownData" class="col-md-6">
+            <div class="card card-body">
+                <h4>Total Due: ৳<strong>@Model.SellingDueAmount</strong></h4>
+
+                <form x-on:submit.prevent="insertData">
+                    <div class="form-group">
+                        <label>Paid Amount</label>
+                        <input x-model.number="model.PaidAmount" x-ref="totalPaid" type="number" step="0.01" min="0" max="@Model.SellingDueAmount" class="form-control" required />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select x-model.number="model.AccountId" class="form-control" required>
+                            <option value="">[ SELECT ]</option>
+                            <template x-for="account in accounts" :key="account.value">
+                                <option :value="account.value" x-text="account.label"></option>
+                            </template>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Paid Date</label>
+                        <input x-model="model.PaidDate" type="text" class="form-control datepicker" />
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input x-model="model.Description" type="text" class="form-control" />
+                    </div>
+
+                    <button :disabled="loading" type="submit" class="btn btn-custom-bg">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        $(function() {
+            $("#amount-word").text(`Taka (in word): ${number2text(@Model.SellingTotalPrice)}`);
+        });
+
+        //number in word
+        function number2text(value) {
+            const fraction = Math.round((value % 1) * 100);
+            var fullText = "";
+
+            if (fraction > 0) {
+                fullText = `AND ${convertNumber(fraction)} PAISA`;
+            }
+
+            return convertNumber(value) + " TK " + fullText + " ONLY";
+        }
+
+        function convertNumber(number) {
+            if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
+
+            var coreAmount = Math.floor(number / 10000000);
+            number -= coreAmount * 10000000;
+
+            var lakhAmount = Math.floor(number / 100000);
+            number -= lakhAmount * 100000;
+
+            var thousandAmount = Math.floor(number / 1000);
+            number -= thousandAmount * 1000;
+
+            var hundredAmount = Math.floor(number / 100);
+            number = number % 100;
+
+            var tn = Math.floor(number / 10);
+            var one = Math.floor(number % 10);
+            var res = "";
+
+            if (coreAmount > 0) {
+                res += (convertNumber(coreAmount) + " CRORE");
+            }
+            if (lakhAmount > 0) {
+                res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
+            }
+            if (thousandAmount > 0) {
+                res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
+            }
+
+            if (hundredAmount) {
+                res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
+            }
+
+            var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
+            var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
+
+            if (tn > 0 || one > 0) {
+                if (!(res === "")) {
+                    res += " AND ";
+                }
+
+                if (tn < 2) {
+                    res += ones[tn * 10 + one];
+                } else {
+                    res += tens[tn];
+                    if (one > 0) {
+                        res += (`-${ones[one]}`);
+                    }
+                }
+            }
+
+            if (res === "") {
+                res = "zero";
+            }
+            return res;
+        }
+
+
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+
+                //dropdown list
+                accounts: [],
+
+                //get dropdown data
+                async getDropdownData() {
+                    //reset paid amount after reload
+                    this.$refs.totalPaid.value = "";
+
+                    const accountResponse = await fetch("/common/getAccount");
+                    const account = await accountResponse.json();
+                    this.accounts = account;
+
+                    this.dateInit();
+                },
+
+                model: {},
+
+                //date function init
+                dateInit() {
+                    this.model.PaidDate = moment(new Date()).format("D, MMM YYYY");
+
+                    $('.datepicker').pickadate({
+                        onSet: context => {
+                            this.model.PaidDate = moment(context.select).format("D, MMM YYYY");
+                        }
+                    })
+                },
+
+                //insert data
+                async insertData() {
+                    this.loading = true;
+
+                    const { AccountId, PaidAmount, Description, PaidDate } = this.model;
+
+                    try {
+                        const model = {
+                            VendorId: @Model.VendorId,
+                            AccountId,
+                            PaidAmount,
+                            PaidDate: new Date(PaidDate),
+                            Description,
+                            Bills: [
+                                {
+                                    SellingId: @Model.SellingId,
+                                    SellingPaidAmount: PaidAmount
+                                }
+                            ]
+                        }
+
+                        const options = {
+                            method: 'POST',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(model)
+                        };
+
+                        const response = await fetch("/Selling/PostSingleDue", options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            this.model = {};
+                            location.href = "/Selling/records";
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                }
+            };
+        }
+    </script>
+}
