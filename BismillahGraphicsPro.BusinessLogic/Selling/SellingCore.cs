@@ -6,7 +6,7 @@ using JqueryDataTables;
 
 namespace BismillahGraphicsPro.BusinessLogic;
 
-public class SellingCore: Core, ISellingCore
+public class SellingCore : Core, ISellingCore
 {
     public SellingCore(IUnitOfWork db, IMapper mapper) : base(db, mapper)
     {
@@ -18,14 +18,14 @@ public class SellingCore: Core, ISellingCore
         {
             if (!model.SellingLists.Any())
                 return Task.FromResult(new DbResponse<int>(false, "Invalid Data"));
-            
+
             var branchId = _db.Registration.BranchIdByUserName(userName);
             var registrationId = _db.Registration.RegistrationIdByUserName(userName);
             var sellingSn = _db.Selling.GetSellingSn(branchId);
             var receiptSn = _db.Selling.GetReceiptSn(branchId);
 
-            var sellingResponse = _db.Selling.Add(branchId, registrationId,sellingSn, receiptSn, model);
-            if(!sellingResponse.IsSuccess) return Task.FromResult(new DbResponse<int>(false, sellingResponse.Message));
+            var sellingResponse = _db.Selling.Add(branchId, registrationId, sellingSn, receiptSn, model);
+            if (!sellingResponse.IsSuccess) return Task.FromResult(new DbResponse<int>(false, sellingResponse.Message));
 
             _db.Vendor.UpdatePaidDue(model.VendorId);
 
@@ -33,8 +33,9 @@ public class SellingCore: Core, ISellingCore
             {
                 _db.Product.SubtractStock(item.ProductId, item.SellingQuantity);
             }
+
             //-----------Account and Account log added-----------------------------
-            if (model.SellingPaidAmount>0)
+            if (model.SellingPaidAmount > 0)
             {
                 _db.Account.BalanceAdd(model.AccountId, model.SellingPaidAmount);
 
@@ -54,6 +55,7 @@ public class SellingCore: Core, ISellingCore
 
                 _db.AccountLog.Add(accountLog);
             }
+
             return Task.FromResult(sellingResponse);
         }
         catch (Exception e)
@@ -74,6 +76,7 @@ public class SellingCore: Core, ISellingCore
                 new DbResponse<SellingReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
     public Task<DbResponse<int>> EditAsync(SellingEditModel model)
     {
         try
@@ -88,6 +91,7 @@ public class SellingCore: Core, ISellingCore
             return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
     public Task<DataResult<SellingRecordViewModel>> ListAsync(string userName, DataRequest request)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
@@ -98,7 +102,8 @@ public class SellingCore: Core, ISellingCore
     {
         try
         {
-            if (model.PaidAmount <= 0) return Task.FromResult(new DbResponse<int>(false, "Paid amount must be greater than zero"));
+            if (model.PaidAmount <= 0)
+                return Task.FromResult(new DbResponse<int>(false, "Paid amount must be greater than zero"));
             var branchId = _db.Registration.BranchIdByUserName(userName);
             var registrationId = _db.Registration.RegistrationIdByUserName(userName);
 
@@ -112,7 +117,8 @@ public class SellingCore: Core, ISellingCore
             var sellingPaymentResponse = _db.Selling.DueCollection(branchId, registrationId, receiptSn, model);
 
             if (!sellingPaymentResponse.IsSuccess)
-                return Task.FromResult(new DbResponse<int>(sellingPaymentResponse.IsSuccess, sellingPaymentResponse.Message));
+                return Task.FromResult(new DbResponse<int>(sellingPaymentResponse.IsSuccess,
+                    sellingPaymentResponse.Message));
             //-----------Account and Account log added-----------------------------
 
             _db.Vendor.UpdatePaidDue(model.VendorId);
@@ -137,7 +143,8 @@ public class SellingCore: Core, ISellingCore
 
             _db.AccountLog.AddRange(accountLogs);
 
-            return Task.FromResult(new DbResponse<int>(true, $"Paid Successfully", sellingPaymentResponse.Data.SellingReceiptId));
+            return Task.FromResult(new DbResponse<int>(true, $"Paid Successfully",
+                sellingPaymentResponse.Data.SellingReceiptId));
         }
         catch (Exception e)
         {
@@ -156,7 +163,24 @@ public class SellingCore: Core, ISellingCore
         }
         catch (Exception e)
         {
-            return Task.FromResult(new DbResponse<SellingDueViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            return Task.FromResult(
+                new DbResponse<SellingDueViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
+
+    public Task<DbResponse<decimal>> GetTotalDueAsync(int vendorId, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            if (vendorId == 0)
+                return Task.FromResult(new DbResponse<decimal>(false, "Invalid Data"));
+
+            return Task.FromResult(new DbResponse<decimal>(true, "Success",
+                _db.Selling.TotalDue(vendorId, sDate, eDate)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
 }

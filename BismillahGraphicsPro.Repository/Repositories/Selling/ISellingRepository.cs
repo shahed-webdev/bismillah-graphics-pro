@@ -17,4 +17,6 @@ public interface ISellingRepository
         SellingDuePayModel model);
 
     DbResponse<SellingDueViewModel> GetVendorWiseDue(int supplierId, DateTime? sDate, DateTime? eDate);
+
+    decimal TotalDue(int branchId, DateTime? sDate, DateTime? eDate);
 }

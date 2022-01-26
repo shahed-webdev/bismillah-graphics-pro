@@ -235,4 +235,13 @@ public class SellingRepository : Repository, ISellingRepository
         return new DbResponse<SellingDueViewModel>(true, $"{vendorModel.VendorCompanyName} get successfully", vendorModel);
 
     }
+
+    public decimal TotalDue(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+        return Db.Sellings
+            .Where(p => p.BranchId == branchId && p.SellingDate <= endDate && p.SellingDate >= startDate)
+            .Sum(s => s.SellingDueAmount);
+    }
 }

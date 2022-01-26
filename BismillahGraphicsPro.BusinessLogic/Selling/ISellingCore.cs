@@ -11,4 +11,5 @@ public interface ISellingCore
     Task<DataResult<SellingRecordViewModel>> ListAsync(string userName, DataRequest request);
     Task<DbResponse<int>> DueCollectionAsync(string userName, SellingDuePayModel model);
     Task<DbResponse<SellingDueViewModel>> GetVendorWiseDueAsync(int vendorId, DateTime? sDate, DateTime? eDate);
+    Task<DbResponse<decimal>> GetTotalDueAsync(int vendorId, DateTime? sDate, DateTime? eDate);
 }

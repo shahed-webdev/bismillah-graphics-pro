@@ -164,4 +164,20 @@ public class PurchaseCore : Core, IPurchaseCore
             return Task.FromResult(new DbResponse<PurchaseDueViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
+    public Task<DbResponse<decimal>> GetTotalDueAsync(int supplierId, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            if (supplierId == 0)
+                return Task.FromResult(new DbResponse<decimal>(false, "Invalid Data"));
+
+            return Task.FromResult(new DbResponse<decimal>(true, "Success",
+                _db.Purchase.TotalDue(supplierId, sDate, eDate)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }
