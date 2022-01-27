@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
+using Microsoft.EntityFrameworkCore;
 
 namespace BismillahGraphicsPro.Repository;
 
@@ -38,6 +39,41 @@ public class ExpenseRepository: Repository, IExpenseRepository
             .ProjectTo<ExpenseViewModel>(_mapper.ConfigurationProvider)
             .OrderByDescending(a => a.ExpenseDate)
             .ToDataResult(request);
+    }
+
+    public List<ExpenseCategoryWiseViewModel> CategoryWiseExpense(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+        var ex = Db.Expenses
+            .Include(e => e.ExpenseCategory)
+            .Where(e => e.ExpenseDate <= endDate && e.ExpenseDate >= startDate)
+            .GroupBy(e => new
+            {
+                ExpanseCategoryId = e.ExpenseCategoryId,
+                CategoryName = e.ExpenseCategory.CategoryName
+
+            })
+            .Select(g => new ExpenseCategoryWiseViewModel
+            {
+                ExpanseCategoryId = g.Key.ExpanseCategoryId,
+                CategoryName = g.Key.CategoryName,
+                TotalExpanse = Math.Round(g.Sum(e => e.ExpenseAmount), 2)
+            })
+            .OrderByDescending(e=> e.TotalExpanse)
+            .ToList();
+
+        return ex;
+    }
+
+    public decimal TotalExpense(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+        return Db.Expenses
+            .Where(p => p.BranchId == branchId && p.ExpenseDate <= endDate && p.ExpenseDate >= startDate)
+            .Sum(s => s.ExpenseAmount);
     }
 
     public DbResponse Delete(int id)

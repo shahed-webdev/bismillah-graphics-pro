@@ -86,6 +86,26 @@ public class ExpenseCore : Core, IExpenseCore
         }
     }
 
+    public Task<List<ExpenseCategoryWiseViewModel>> CategoryWiseExpenseAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return Task.FromResult(_db.Expense.CategoryWiseExpense(branchId, sDate, eDate));
+    }
+
+    public Task<DbResponse<decimal>> TotalExpenseAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(new DbResponse<decimal>(true, "Success",
+                _db.Expense.TotalExpense(branchId, sDate, eDate)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
+
     public Task<DbResponse<ExpenseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName)
     {
         try

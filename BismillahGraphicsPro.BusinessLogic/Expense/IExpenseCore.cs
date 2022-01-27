@@ -8,6 +8,8 @@ public interface IExpenseCore
     Task<DbResponse<ExpenseViewModel>> AddAsync(string userName, ExpenseAddModel model);
     Task<DataResult<ExpenseViewModel>> ListAsync(string userName, DataRequest request);
     Task<DbResponse> DeleteAsync(int id);
+    Task<List<ExpenseCategoryWiseViewModel>> CategoryWiseExpenseAsync(string userName, DateTime? sDate, DateTime? eDate);
+    Task<DbResponse<decimal>> TotalExpenseAsync(string userName, DateTime? sDate, DateTime? eDate);
 
     Task<DbResponse<ExpenseCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName);
     Task<DbResponse> CategoryEditAsync(ExpenseCategoryCrudModel model);
