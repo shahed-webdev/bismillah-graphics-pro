@@ -23,4 +23,5 @@ public interface ISellingRepository
 
     decimal TotalDue(int branchId, DateTime? sDate, DateTime? eDate);
     decimal TotalPaid(int branchId, DateTime? sDate, DateTime? eDate);
+    decimal TotalSale(int branchId, DateTime? sDate, DateTime? eDate);
 }

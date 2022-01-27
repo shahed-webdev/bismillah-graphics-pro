@@ -21,5 +21,6 @@ public interface IPurchaseRepository
     DbResponse<PurchaseDueViewModel> GetSupplierWiseDue(int supplierId, DateTime? sDate, DateTime? eDate);
     decimal TotalDue(int branchId, DateTime? sDate, DateTime? eDate);
     decimal TotalPaid(int branchId, DateTime? sDate, DateTime? eDate);
+    decimal TotalPurchase(int branchId, DateTime? sDate, DateTime? eDate);
 
 }

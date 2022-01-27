@@ -272,4 +272,13 @@ public class PurchaseRepository : Repository, IPurchaseRepository
             .Where(p => p.BranchId == branchId && p.PaidDate <= endDate && p.PaidDate >= startDate)
             .Sum(s => s.PaidAmount);
     }
+
+    public decimal TotalPurchase(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+        return Db.Purchases
+            .Where(p => p.BranchId == branchId && p.PurchaseDate <= endDate && p.PurchaseDate >= startDate)
+            .Sum(s => s.PurchaseTotalPrice);
+    }
 }

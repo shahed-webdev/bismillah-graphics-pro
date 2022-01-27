@@ -213,4 +213,18 @@ public class SellingCore : Core, ISellingCore
             return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
+    public Task<DbResponse<decimal>> GetTotalSaleAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(new DbResponse<decimal>(true, "Success",
+                _db.Selling.TotalSale(branchId, sDate, eDate)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }

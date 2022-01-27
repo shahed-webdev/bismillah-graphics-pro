@@ -218,4 +218,18 @@ public class PurchaseCore : Core, IPurchaseCore
             return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
+    public Task<DbResponse<decimal>> GetTotalPurchaseAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(new DbResponse<decimal>(true, "Success",
+                _db.Purchase.TotalPurchase(branchId, sDate, eDate)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<decimal>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }

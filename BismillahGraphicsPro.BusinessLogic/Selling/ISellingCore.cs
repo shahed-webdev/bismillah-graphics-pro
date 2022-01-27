@@ -16,4 +16,5 @@ public interface ISellingCore
     Task<DbResponse<SellingDueViewModel>> GetVendorWiseDueAsync(int vendorId, DateTime? sDate, DateTime? eDate);
     Task<DbResponse<decimal>> GetTotalDueAsync(string userName, DateTime? sDate, DateTime? eDate);
     Task<DbResponse<decimal>> GetTotalPaidAsync(string userName, DateTime? sDate, DateTime? eDate);
+    Task<DbResponse<decimal>> GetTotalSaleAsync(string userName, DateTime? sDate, DateTime? eDate);
 }

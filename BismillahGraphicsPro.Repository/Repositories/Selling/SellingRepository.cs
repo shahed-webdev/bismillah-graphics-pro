@@ -272,4 +272,13 @@ public class SellingRepository : Repository, ISellingRepository
             .Where(p => p.BranchId == branchId && p.PaidDate <= endDate && p.PaidDate >= startDate)
             .Sum(s => s.PaidAmount);
     }
+
+    public decimal TotalSale(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+        return Db.Sellings
+            .Where(p => p.BranchId == branchId && p.SellingDate <= endDate && p.SellingDate >= startDate)
+            .Sum(s => s.SellingTotalPrice);
+    }
 }

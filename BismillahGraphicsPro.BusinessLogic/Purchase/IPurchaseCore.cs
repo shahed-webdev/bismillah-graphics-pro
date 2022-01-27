@@ -15,4 +15,5 @@ public interface IPurchaseCore
     Task<DbResponse<PurchaseDueViewModel>> GetSupplierWiseDueAsync(int supplierId, DateTime? sDate, DateTime? eDate);
     Task<DbResponse<decimal>> GetTotalDueAsync(string userName, DateTime? sDate, DateTime? eDate);
     Task<DbResponse<decimal>> GetTotalPaidAsync(string userName, DateTime? sDate, DateTime? eDate);
+    Task<DbResponse<decimal>> GetTotalPurchaseAsync(string userName, DateTime? sDate, DateTime? eDate);
 }
