@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Expense Report";
+    Layout = "_AdminLayout";
+}
+
+
+<div x-data="initData()" x-init="onDataInit()" class="mx-3">
+    <div class="row align-items-center mt-3">
+        <div class="col">
+            <h1 class="page-header">Expense Report: ৳<span x-text="totalAmount"></span></h1>
+        </div>
+        <div class="col-sm-6">
+            <form x-on:submit.prevent="finByDate">
+                <div class="d-flex">
+                    <input name="fromDate" :value="pickedDates.fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
+                    <input name="toDate" :value="pickedDates.toDate" class="form-control datepicker mx-3" placeholder="To Date" type="text">
+                    <div>
+                        <button class="btn btn-custom-bg btn-md my-0" type="submit">Find</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+    <div class="card card-body mt-4">
+        <table id="data-table" class="table table-sm">
+            <thead>
+            <tr>
+                <th>Expense Date</th>
+                <th>Expense For</th>
+                <th>Payment Method</th>
+                <th>Expense Amount</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        //data table
+        const dataTable = {
+            table: null,
+            filter: [],
+            init: function() {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Expense/GetExpense",
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = dataTable.filter;
+                        }
+                    },
+                    columns:
+                    [
+                        { data: "ExpenseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                        { data: "ExpenseFor" },
+                        { data: "AccountName" },
+                        { data: "ExpenseAmount", "render": function(data) { return `${data}/-` } }
+                    ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [0, 3] },
+                        //{ 'sortable': false, 'targets': [4] },
+                        //{ 'className': "text-center", "targets": [4] },
+                        { 'className': "text-right", "targets": [3] }
+                    ]
+                });
+            },
+            operand: {
+                Equal: 0,
+                NotEqual: 1,
+                GreaterThan: 2,
+                LessThan: 3,
+                GreaterThanOrEqual: 4,
+                LessThanOrEqual: 5,
+                Contains: 6,
+                StartsWith: 7,
+                EndsWith: 8
+            },
+            getData: function() {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
+        }
+
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                expenseCategory:[],
+                totalAmount: 0,
+                pickedDates: {
+                    fromDate: moment().startOf("month").format("DD MMMM, YYYY"),
+                    toDate: moment().endOf("month").format("DD MMMM, YYYY")
+                },
+
+
+                //date function init
+                onDataInit() {
+                    this.getTableData();
+
+                    const self = this.pickedDates;
+
+                    $('.datepicker').pickadate({
+                        onSet: function(context) {
+                            self[this.component.$node[0].name] = moment(context.select).format("D, MMM YYYY");
+                        }
+                    });
+                },
+
+                //get expense category
+                async getCategory(from,to) {
+                    try {
+                        const response = await fetch(`/expense/GetCategoryExpense?from=${from}&to=${to}`);
+                        const responseData = await response.json();
+                        this.expenseCategory = responseData.Data;
+
+                    } catch (error) {
+                        console.log(error);
+                    }
+                },
+
+
+                //get total paid amount
+                async getTotal(from,to) {
+                    try {
+                        const response = await fetch(`/expense/GetTotal?from=${from}&to=${to}`);
+                        const responseData = await response.json();
+                        this.totalAmount = responseData.Data;
+
+                    } catch (error) {
+                        console.log(error);
+                    }
+                },
+
+
+                //data table get data
+                getTableData() {
+                    const { fromDate, toDate } = this.pickedDates;
+
+                    dataTable.filter.push({ Field: "ExpenseDate", Value: fromDate, Operand: dataTable.operand.GreaterThanOrEqual });
+                    dataTable.filter.push({ Field: "ExpenseDate", Value: toDate, Operand: dataTable.operand.LessThanOrEqual });
+                    dataTable.getData();
+
+
+                    this.getCategory(fromDate, toDate);
+                    this.getTotal(fromDate, toDate);
+
+                    console.log(this.expenseCategory)
+                },
+
+
+                //bill find by date
+                finByDate() {
+                    this.getTableData();
+                }
+            };
+        }
+    </script>
+}

@@ -37,7 +37,10 @@
                     serverSide: true,
                     ajax: {
                         url: "/Product/GetProducts",
-                        type: "POST"
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = dataTable.filter;
+                        }
                     },
                     columns:
                     [

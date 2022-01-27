@@ -47,7 +47,7 @@
             <div class="col-sm-6 col-lg-4">
                 <div x-init="dateInit()" class="form-group">
                     <label>Expense Date</label>
-                    <input x-model="formData.ExpenseDate" type="text" class="form-control datepicker" required>
+                    <input :value="pickedDate" type="text" class="form-control datepicker" required>
                 </div>
             </div>
             <div class="pt-4">
@@ -113,6 +113,7 @@
         function initData() {
             return {
                 loading: false,
+                pickedDate: moment(new Date()).format("D, MMM YYYY"),
 
                 //bind dropdown list
                 categories: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.categoryDropdown))'),
@@ -122,11 +123,9 @@
 
                 //date function init
                 dateInit() {
-                    this.formData.ExpenseDate = moment(new Date()).format("D, MMM YYYY");
-
                     $('.datepicker').pickadate({
                         onSet: context => {
-                            this.formData.ExpenseDate = moment(context.select).format("D, MMM YYYY");
+                            this.pickedDate = moment(context.select).format("D, MMM YYYY");
                         }
                     })
                 },
@@ -136,24 +135,24 @@
                     this.loading = true;
 
                     try {
-                        const model = { ...this.formData, ExpenseDate: new Date(this.formData.ExpenseDate) };
+                        const model = { ...this.formData, ExpenseDate: new Date(this.pickedDate) };
+                        console.log(model)
+                        //const options = {
+                        //    method: 'POST',
+                        //    headers: { "Content-Type": "application/json" },
+                        //    body: JSON.stringify(model)
+                        //};
 
-                        const options = {
-                            method: 'POST',
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(model)
-                        };
+                        //const response = await fetch("/Expense/PostExpense", options);
+                        //const responseData = await response.json();
 
-                        const response = await fetch("/Expense/PostExpense", options);
-                        const responseData = await response.json();
+                        //if (responseData.IsSuccess) {
+                        //    this.formData = {};
+                        //    dataTable.getData();
+                        //}
 
-                        if (responseData.IsSuccess) {
-                            this.formData = {};
-                            dataTable.getData();
-                        }
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                        this.loading = false;
+                        //$.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        //this.loading = false;
 
                     } catch (error) {
                         console.log(error);

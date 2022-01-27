@@ -201,6 +201,9 @@ namespace BismillahGraphicsPro.Web.Controllers
         #endregion
 
 
+        #region Report
+
+
         //payment report
         public IActionResult PaymentReport()
         {
@@ -212,6 +215,13 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> GetPaymentData(DataRequest request)
         {
             var response = await _purchaseCore.PaymentListAsync(User.Identity.Name, request);
+            return Json(response);
+        }
+
+        //get total paid
+        public async Task<IActionResult> GetPaid(DateTime from, DateTime to)
+        {
+            var response = await _purchaseCore.GetTotalPaidAsync(User.Identity.Name, from, to);
             return Json(response);
         }
 
@@ -229,5 +239,8 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = await _purchaseCore.GetTotalDueAsync(User.Identity.Name, null, null);
             return Json(response);
         }
+
+
+        #endregion
     }
 }
