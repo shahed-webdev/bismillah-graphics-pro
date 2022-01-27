@@ -10,6 +10,7 @@ public interface ISellingRepository
     int GetReceiptSn(int branchId);
     DbResponse<int> Add(int branchId, int registrationId, int sellingSn, int receiptSn, SellingAddModel model);
     DbResponse<SellingReceiptViewModel> Get(int id);
+    List<int> GetYears(int branchId);
     DbResponse<int> Edit(SellingEditModel model);
     DbResponse<decimal> UpdateDiscountAndPaid(List<SellingDuePayRecord> bills);
     DataResult<SellingRecordViewModel> List(int branchId, DataRequest request);
@@ -24,4 +25,7 @@ public interface ISellingRepository
     decimal TotalDue(int branchId, DateTime? sDate, DateTime? eDate);
     decimal TotalPaid(int branchId, DateTime? sDate, DateTime? eDate);
     decimal TotalSale(int branchId, DateTime? sDate, DateTime? eDate);
+
+    decimal YearlyAmount(int branchId, int year);
+    List<MonthlyAmount> MonthlyAmounts(int branchId, int year);
 }

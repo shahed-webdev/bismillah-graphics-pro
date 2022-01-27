@@ -91,7 +91,22 @@ public class SellingRepository : Repository, ISellingRepository
             : new DbResponse<SellingReceiptViewModel>(true, $"{Selling!.SellingSn} Get Successfully",
                 Selling);
     }
+    public List<int> GetYears(int branchId)
+    {
+        var years = Db.Sellings.Where(e => e.BranchId == branchId)
+            .GroupBy(e => new
+            {
+                e.SellingDate.Year
+            })
+            .Select(g => g.Key.Year)
+            .OrderBy(o => o)
+            .ToList();
 
+        var currentYear = DateTime.Now.Year;
+
+        if (!years.Contains(currentYear)) years.Add(currentYear);
+        return years;
+    }
     public DbResponse<int> Edit(SellingEditModel model)
     {
         var selling = Db.Sellings
@@ -280,5 +295,25 @@ public class SellingRepository : Repository, ISellingRepository
         return Db.Sellings
             .Where(p => p.BranchId == branchId && p.SellingDate <= endDate && p.SellingDate >= startDate)
             .Sum(s => s.SellingTotalPrice);
+    }
+    public decimal YearlyAmount(int branchId, int year)
+    {
+        return Db.Sellings.Where(s => s.BranchId == branchId && s.SellingDate.Year == year).Sum(s => s.SellingTotalPrice - s.SellingDiscountAmount);
+    }
+    public List<MonthlyAmount> MonthlyAmounts(int branchId, int year)
+    {
+        var months = Db.Sellings.Where(s => s.BranchId == branchId && s.SellingDate.Year == year)
+            .GroupBy(e => new
+            {
+                number = e.SellingDate.Month
+            })
+            .Select(g => new MonthlyAmount
+            {
+                MonthNumber = g.Key.number,
+                Amount = Math.Round(g.Sum(s => s.SellingTotalPrice - s.SellingDiscountAmount), 2)
+            })
+            .ToList();
+
+        return months;
     }
 }

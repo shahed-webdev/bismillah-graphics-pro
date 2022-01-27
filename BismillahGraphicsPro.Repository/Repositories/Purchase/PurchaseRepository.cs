@@ -95,7 +95,22 @@ public class PurchaseRepository : Repository, IPurchaseRepository
             : new DbResponse<PurchaseReceiptViewModel>(true, $"{purchase!.PurchaseSn} Get Successfully",
                 purchase);
     }
+    public List<int> GetYears(int branchId)
+    {
+        var years = Db.Purchases.Where(e => e.BranchId == branchId)
+            .GroupBy(e => new
+            {
+                e.PurchaseDate.Year
+            })
+            .Select(g => g.Key.Year)
+            .OrderBy(o => o)
+            .ToList();
 
+        var currentYear = DateTime.Now.Year;
+
+        if (!years.Contains(currentYear)) years.Add(currentYear);
+        return years;
+    }
     public DbResponse<int> Edit(PurchaseEditModel model)
     {
         var purchase = Db.Purchases
