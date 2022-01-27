@@ -15,11 +15,11 @@ public class ExpenseRepository : Repository, IExpenseRepository
 
     public DbResponse<ExpenseViewModel> Add(ExpenseAddModel model)
     {
-        var Expense = _mapper.Map<Expense>(model);
-        Db.Expenses.Add(Expense);
+        var expense = _mapper.Map<Expense>(model);
+        Db.Expenses.Add(expense);
         Db.SaveChanges();
-
-        var expenseView = _mapper.Map<ExpenseViewModel>(Db.Expenses.Find(Expense.ExpenseId));
+        
+        var expenseView = _mapper.Map<ExpenseViewModel>(Db.Expenses.Find(expense.ExpenseId));
 
         return new DbResponse<ExpenseViewModel>(true, $"{model.ExpenseAmount} Added Successfully", expenseView);
     }

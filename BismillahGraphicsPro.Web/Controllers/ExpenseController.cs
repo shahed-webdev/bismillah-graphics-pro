@@ -107,5 +107,28 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         #endregion
+
+
+        //expense report view
+        public IActionResult Report()
+        {
+            return View();
+        }
+
+        //get category
+        public async Task<IActionResult> GetCategoryExpense(DateTime from, DateTime to)
+        {
+            var response =await _expenseCore.CategoryWiseExpenseAsync(User.Identity.Name,from,to);
+            return Json(response);
+        } 
+        
+        
+        //get total expense
+        public async Task<IActionResult> GetTotal(DateTime from, DateTime to)
+        {
+            var response =await _expenseCore.TotalExpenseAsync(User.Identity.Name,from,to);
+            return Json(response);
+        }
+
     }
 }

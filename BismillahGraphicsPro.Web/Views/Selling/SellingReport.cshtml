@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Selling Payment Report";
+    ViewData["Title"] = "Sales Report";
     Layout = "_AdminLayout";
 }
 
 
 <div x-data="initData()" class="row align-items-center mt-3">
     <div class="col">
-        <h1 class="page-header">Payment Report: ৳<span x-text="totalPaid"></span></h1>
+        <h1 class="page-header">Sales Report: ৳<span x-text="totalAmount"></span></h1>
     </div>
     <div x-init="onDataInit()" class="col-sm-6">
         <form x-on:submit.prevent="finByDate">
@@ -25,10 +25,12 @@
     <table id="data-table" class="table table-sm">
         <thead>
             <tr>
-                <th>Paid Date</th>
+                <th>Invoice</th>
                 <th>Vendor</th>
-                <th>Receipt</th>
-                <th class="text-right">Paid Amount</th>
+                <th>Amount</th>
+                <th>Paid</th>
+                <th>Due</th>
+                <th>Date</th>
             </tr>
         </thead>
     </table>
@@ -38,6 +40,7 @@
 
 @section Scripts {
     <script>
+
         //data table
         const dataTable = {
             table: null,
@@ -47,7 +50,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "/selling/GetPaymentData",
+                        url: "/Selling/GetRecordsData",
                         type: "POST",
                         data: function(d) {
                             d.filters = dataTable.filter;
@@ -55,26 +58,23 @@
                     },
                     columns:
                     [
-                        {
-                            data: "PaidDate",
-                            "render": function(data, type, row) {
-                                return moment(data).format("D MMM, YYYY");
-                            }
-                        },
+                        { data: "SellingSn", "render": function(data, type, row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
                         { data: "VendorCompanyName" },
+                        { data: "SellingTotalPrice" },
+                        { data: "SellingPaidAmount" },
                         {
-                            data: "ReceiptSn",
+                            data: "SellingDueAmount",
                             "render": function(data, type, row) {
-                                return `<a class="blue-text" href="/selling/paymentReceipt/${row.SellingReceiptId}">${data}</a>`;
+                                return data ? `<a class="blue-text" href="/selling/DueCollectionSingle/${row.SellingId}">${data}</a>` : data;
                             }
                         },
-                        { data: "PaidAmount", "render": function(data) { return `৳${data}` } },
+                        { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
                     ],
                     columnDefs: [
-                        //{ 'searchable': false, 'targets': [7, 8] },
-                        //{ 'sortable': false, 'targets': [7, 8] },
-                        { 'className': "text-center", "targets": [0, 2] },
-                        { 'className': "text-right", "targets": [3] }
+                        { 'searchable': false, 'targets': [0, 5] },
+                        //{ 'sortable': false, 'targets': [6] },
+                        { 'className': "text-center", "targets": [0, 5] },
+                        { 'className': "text-right", "targets": [2, 3, 4] }
                     ]
                 });
             },
@@ -98,35 +98,33 @@
         function initData() {
             return {
                 loading: false,
-                totalPaid: 0,
+                totalAmount: 0,
                 pickedDates: {
                     fromDate: moment().startOf("month").format("DD MMMM, YYYY"),
                     toDate: moment().endOf("month").format("DD MMMM, YYYY")
                 },
 
                 //get total paid amount
-                async getTotalDue(from,to) {
+                async getTotal(from, to) {
                     try {
-                        const response = await fetch(`/selling/GetPaid?from=${from}&to=${to}`);
+                        const response = await fetch(`/selling/GetTotalSales?from=${from}&to=${to}`);
                         const responseData = await response.json();
-                        this.totalPaid = responseData.Data;
+                        this.totalAmount = responseData.Data;
 
                     } catch (error) {
                         console.log(error);
                     }
                 },
 
-
                 //data table get data
                 getTableData() {
                     const { fromDate, toDate } = this.pickedDates;
 
-                    dataTable.filter.push({ Field: "PaidDate", Value: fromDate, Operand: dataTable.operand.GreaterThanOrEqual });
-                    dataTable.filter.push({ Field: "PaidDate", Value: toDate, Operand: dataTable.operand.LessThanOrEqual });
+                    dataTable.filter.push({ Field: "SellingDate", Value: fromDate, Operand: dataTable.operand.GreaterThanOrEqual });
+                    dataTable.filter.push({ Field: "SellingDate", Value: toDate, Operand: dataTable.operand.LessThanOrEqual });
                     dataTable.getData();
 
-
-                    this.getTotalDue(fromDate, toDate);
+                    this.getTotal(fromDate, toDate);
                 },
 
                 //date function init
