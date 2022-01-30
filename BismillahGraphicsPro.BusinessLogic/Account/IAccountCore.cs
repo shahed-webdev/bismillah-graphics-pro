@@ -11,7 +11,9 @@ public interface IAccountCore
     DbResponse<AccountViewModel> Get(int id);
     List<AccountViewModel> List(string userName);
     List<DDL> ListDdl(string userName);
+    Task<DbResponse<DailyCashModel>> DailyCashReportAsync(string userName, DateTime? date);
     //-------Log
+    Task<BalanceSheetReportModel> BalanceSheetAsync(string userName, int accountId, DateTime? sDate, DateTime? eDate);
     Task<DataResult<AccountLogViewModel>> LogListAsync(string userName, DataRequest request);
     //-------Deposit & Withdraw
     DbResponse<AccountDepositViewModel> Deposit(string userName,AccountDepositViewModel model);

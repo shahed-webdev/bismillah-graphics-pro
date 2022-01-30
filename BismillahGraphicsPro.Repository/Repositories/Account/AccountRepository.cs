@@ -6,7 +6,7 @@ using JqueryDataTables;
 
 namespace BismillahGraphicsPro.Repository;
 
-public class AccountRepository: Repository, IAccountRepository
+public class AccountRepository : Repository, IAccountRepository
 {
     public AccountRepository(ApplicationDbContext db, IMapper mapper) : base(db, mapper)
     {
@@ -20,7 +20,6 @@ public class AccountRepository: Repository, IAccountRepository
         var accountViewModel = _mapper.Map<AccountViewModel>(account);
 
         return new DbResponse<AccountViewModel>(true, $"{model.AccountName} Created Successfully", accountViewModel);
-
     }
 
     public DbResponse Edit(AccountViewModel model)
@@ -30,7 +29,6 @@ public class AccountRepository: Repository, IAccountRepository
         Db.Accounts.Update(account);
         Db.SaveChanges();
         return new DbResponse(true, $"{account.AccountName} Updated Successfully");
-
     }
 
     public DbResponse Delete(int id)
@@ -39,7 +37,6 @@ public class AccountRepository: Repository, IAccountRepository
         Db.Accounts.Remove(account!);
         Db.SaveChanges();
         return new DbResponse(true, $"{account.AccountName} Deleted Successfully");
-
     }
 
     public DbResponse<AccountViewModel> Get(int id)
@@ -48,7 +45,6 @@ public class AccountRepository: Repository, IAccountRepository
             .ProjectTo<AccountViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
         return new DbResponse<AccountViewModel>(true, $"{account!.AccountName} Get Successfully", account);
-
     }
 
     public bool IsExistName(int branchId, string name)
@@ -93,6 +89,7 @@ public class AccountRepository: Repository, IAccountRepository
                 label = m.AccountName
             }).ToList();
     }
+
     public void BalanceAdd(int id, decimal amount)
     {
         var account = Db.Accounts.Find(id);
@@ -118,8 +115,8 @@ public class AccountRepository: Repository, IAccountRepository
         Db.SaveChanges();
         model.AccountDepositId = accountDeposit.AccountDepositId;
 
-        return new DbResponse<AccountDepositViewModel>(true, $"{model.DepositAmount} Amount Deposited Successfully", model);
-
+        return new DbResponse<AccountDepositViewModel>(true, $"{model.DepositAmount} Amount Deposited Successfully",
+            model);
     }
 
     public DataResult<AccountDepositViewModel> DepositList(DataRequest request)
@@ -137,8 +134,8 @@ public class AccountRepository: Repository, IAccountRepository
         Db.SaveChanges();
         model.AccountWithdrawId = accountWithdraw.AccountWithdrawId;
 
-        return new DbResponse<AccountWithdrawViewModel>(true, $"{model.WithdrawAmount} Amount Deposited Successfully", model);
-
+        return new DbResponse<AccountWithdrawViewModel>(true, $"{model.WithdrawAmount} Amount Deposited Successfully",
+            model);
     }
 
     public DataResult<AccountWithdrawViewModel> WithdrawList(DataRequest request)
@@ -147,5 +144,67 @@ public class AccountRepository: Repository, IAccountRepository
             .ProjectTo<AccountWithdrawViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.WithdrawDate)
             .ToDataResult(request);
+    }
+
+    public BalanceSheetReportModel BalanceSheet(int branchId, int accountId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+
+        var prevAdded = Db.AccountLogs
+            .Where(p => p.BranchId == branchId && p.AccountId == accountId && p.IsAdded && p.LogDate < startDate)
+            .Sum(s => s.Amount);
+
+        var prevSubtracted = Db.AccountLogs
+            .Where(p => p.BranchId == branchId && p.AccountId == accountId && !p.IsAdded && p.LogDate < startDate)
+            .Sum(s => s.Amount);
+
+        var added = Db.AccountLogs
+            .Where(p => p.BranchId == branchId && p.AccountId == accountId && p.IsAdded && p.LogDate <= endDate &&
+                        p.LogDate >= startDate)
+            .Sum(s => s.Amount);
+
+        var subtracted = Db.AccountLogs
+            .Where(p => p.BranchId == branchId && p.AccountId == accountId && !p.IsAdded && p.LogDate <= endDate &&
+                        p.LogDate >= startDate)
+            .Sum(s => s.Amount);
+
+
+        var currentBalance = Db.Accounts.Find(accountId)?.Balance ?? 0;
+
+
+        var balanceSheet = new BalanceSheetReportModel
+        {
+            CurrentBalance = currentBalance,
+            OpeningBalance = prevAdded - prevSubtracted,
+            ClosingBalance = (prevAdded + added) - (prevSubtracted + subtracted),
+            AddedBalance = added,
+            SubtractedBalance = subtracted
+        };
+
+        return balanceSheet;
+    }
+
+    public DailyCashModel DailyCashReport(int branchId, DateTime? date)
+    {
+        var getDate = date ?? DateTime.UtcNow.AddHours(6);
+        var dailyCash = new DailyCashModel
+        {
+            DailyExpenses = Db.Expenses
+                .Where(e => e.BranchId == branchId && e.ExpenseDate == getDate)
+                .ProjectTo<ExpenseViewModel>(_mapper.ConfigurationProvider)
+                .ToList(),
+            DailyIncomes = Db.SellingPaymentReceipts.Where(m => m.BranchId == branchId && m.PaidDate == getDate)
+                .ProjectTo<SellingPaymentViewModel>(_mapper.ConfigurationProvider)
+                .ToList()
+        };
+
+        dailyCash.ExpenseDaily = dailyCash.DailyExpenses.Sum(e => e.ExpenseAmount);
+        dailyCash.IncomeDaily = dailyCash.DailyIncomes.Sum(e => e.PaidAmount);
+        dailyCash.NetDaily = dailyCash.IncomeDaily - dailyCash.ExpenseDaily;
+
+
+        return dailyCash;
     }
 }

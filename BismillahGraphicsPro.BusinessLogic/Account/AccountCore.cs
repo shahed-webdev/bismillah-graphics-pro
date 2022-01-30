@@ -6,16 +6,16 @@ using JqueryDataTables;
 
 namespace BismillahGraphicsPro.BusinessLogic;
 
-public class AccountCore: Core,IAccountCore
+public class AccountCore : Core, IAccountCore
 {
     public AccountCore(IUnitOfWork db, IMapper mapper) : base(db, mapper)
     {
     }
+
     public DbResponse<AccountViewModel> Add(string accountName, string userName)
     {
         try
         {
-
             if (string.IsNullOrEmpty(accountName))
                 return new DbResponse<AccountViewModel>(false, "Invalid Data");
 
@@ -29,7 +29,6 @@ public class AccountCore: Core,IAccountCore
                 return new DbResponse<AccountViewModel>(false, $" {model.AccountName} already Exist");
 
             return _db.Account.Add(model);
-
         }
         catch (Exception e)
         {
@@ -52,7 +51,6 @@ public class AccountCore: Core,IAccountCore
 
 
             return _db.Account.Edit(model);
-
         }
         catch (Exception e)
         {
@@ -71,7 +69,6 @@ public class AccountCore: Core,IAccountCore
                 return new DbResponse(false, "Failed, already exist in products");
 
             return _db.Account.Delete(id);
-
         }
         catch (Exception e)
         {
@@ -87,7 +84,6 @@ public class AccountCore: Core,IAccountCore
                 return new DbResponse<AccountViewModel>(false, "No data Found");
 
             return _db.Account.Get(id);
-
         }
         catch (Exception e)
         {
@@ -105,6 +101,29 @@ public class AccountCore: Core,IAccountCore
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return _db.Account.ListDdl(branchId);
+    }
+
+    public Task<DbResponse<DailyCashModel>> DailyCashReportAsync(string userName, DateTime? date)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(new DbResponse<DailyCashModel>(true, "Success",
+                _db.Account.DailyCashReport(branchId, date)));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<DailyCashModel>(false,
+                $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
+
+
+    public Task<BalanceSheetReportModel> BalanceSheetAsync(string userName, int accountId, DateTime? sDate,
+        DateTime? eDate)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return Task.FromResult(_db.Account.BalanceSheet(branchId, accountId, sDate, eDate));
     }
 
     public Task<DataResult<AccountLogViewModel>> LogListAsync(string userName, DataRequest request)
@@ -147,7 +166,6 @@ public class AccountCore: Core,IAccountCore
             }
 
             return accountDepositResponse;
-
         }
         catch (Exception e)
         {
@@ -194,7 +212,6 @@ public class AccountCore: Core,IAccountCore
             }
 
             return withdrawResponse;
-
         }
         catch (Exception e)
         {

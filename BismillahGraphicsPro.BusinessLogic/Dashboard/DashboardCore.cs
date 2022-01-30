@@ -43,14 +43,7 @@ public class DashboardCore : Core, IDashboardCore
 
         return Task.FromResult(dashboardModel);
     }
-
-    public Task<List<MonthIncomeExpenseViewModel>> GetMonthlyNetReports(string userName, int? year)
-    {
-        var getYear = year ?? DateTime.Now.Year;
-        var branchId = _db.Registration.BranchIdByUserName(userName);
-        return Task.FromResult(GetMonthlyReports(branchId, getYear));
-    }
-
+    
     private List<MonthIncomeExpenseViewModel> GetMonthlyReports(int branchId, int year)
     {
         var months = new AllMonth();

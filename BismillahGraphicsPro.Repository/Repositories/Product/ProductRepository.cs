@@ -88,7 +88,7 @@ public class ProductRepository : Repository, IProductRepository
 
     public Task<List<ProductViewModel>> SearchAsync(int branchId, string key)
     {
-        return Db.Products.Where(p =>p.BranchId == branchId && p.ProductName.Contains(key))
+        return Db.Products.Where(p => p.BranchId == branchId && p.ProductName.Contains(key))
             .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.ProductName)
             .Take(5)
@@ -111,5 +111,25 @@ public class ProductRepository : Repository, IProductRepository
         product.Stock -= stock;
         Db.Products.Update(product);
         Db.SaveChanges();
+    }
+
+    public List<ProductReportModel> SaleReport(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+        var report = Db.Products
+            .Include(p => p.SellingLists)
+            .Select(p => new ProductReportModel
+            {
+                ProductId = p.ProductId,
+                ProductName = p.ProductName,
+                SoldQuantity = p.SellingLists
+                    .Where(l => l.Selling.SellingDate >= startDate && l.Selling.SellingDate <= endDate)
+                    .Sum(l => l.SellingQuantity)
+            });
+        return report.Where(p => p.SoldQuantity > 0)
+            .OrderByDescending(p => p.SoldQuantity)
+            .ToList();
     }
 }

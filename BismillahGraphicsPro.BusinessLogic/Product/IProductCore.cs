@@ -19,4 +19,5 @@ public interface IProductCore
     Task<DbResponse<ProductCategoryCrudModel>> CategoryGetAsync(int id);
     Task<List<ProductCategoryCrudModel>> CategoryListAsync(string userName);
     Task<List<DDL>> CategoryDdlAsync(string userName);
+    Task<List<ProductReportModel>> SaleReportAsync(string userName, DateTime? sDate, DateTime? eDate);
 }
