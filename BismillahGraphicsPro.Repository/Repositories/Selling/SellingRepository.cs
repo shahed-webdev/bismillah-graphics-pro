@@ -91,6 +91,43 @@ public class SellingRepository : Repository, ISellingRepository
             : new DbResponse<SellingReceiptViewModel>(true, $"{Selling!.SellingSn} Get Successfully",
                 Selling);
     }
+
+    public DbResponse<int> Delete(int branchId, int id)
+    {
+        var selling = Db.Sellings
+            .Include(s=>s.SellingLists)
+            .Include(s=>s.SellingPaymentRecords)
+            .ThenInclude(p=> p.SellingReceipt)
+            .FirstOrDefault(s=>s.BranchId == branchId && s.SellingId == id);
+
+        if (selling == null) return new DbResponse<int>(false, "data Not Found");
+
+        foreach (var paymentRecord in selling.SellingPaymentRecords)
+        {
+            if (paymentRecord.SellingReceipt.PaidAmount == paymentRecord.SellingPaidAmount)
+            {
+                Db.SellingPaymentReceipts.Remove(paymentRecord.SellingReceipt);
+            }
+            else
+            {
+                paymentRecord.SellingReceipt.PaidAmount -= paymentRecord.SellingPaidAmount;
+                Db.SellingPaymentReceipts.Update(paymentRecord.SellingReceipt);
+            }
+
+
+        }
+
+        var ids = selling.SellingPaymentRecords.Select(p => p.SellingPaymentRecordId).ToList();
+        var logs = Db.AccountLogs.Where(l => l.TableName == AccountLogTableName.SellingPaymentRecord && ids.Contains(l.TableId))
+            .ToList();
+
+        Db.Sellings.Remove(selling);
+        Db.AccountLogs.RemoveRange(logs);
+        Db.SaveChanges();
+
+        return new DbResponse<int>(true, $"{selling.SellingSn} Deleted Successfully", selling.VendorId);
+    }
+
     public List<int> GetYears(int branchId)
     {
         var years = Db.Sellings.Where(e => e.BranchId == branchId)

@@ -10,6 +10,7 @@ public interface ISellingRepository
     int GetReceiptSn(int branchId);
     DbResponse<int> Add(int branchId, int registrationId, int sellingSn, int receiptSn, SellingAddModel model);
     DbResponse<SellingReceiptViewModel> Get(int id);
+    DbResponse<int> Delete(int branchId, int id);
     List<int> GetYears(int branchId);
     DbResponse<int> Edit(SellingEditModel model);
     DbResponse<decimal> UpdateDiscountAndPaid(List<SellingDuePayRecord> bills);

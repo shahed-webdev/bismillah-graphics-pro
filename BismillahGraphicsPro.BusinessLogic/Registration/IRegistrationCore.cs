@@ -12,6 +12,8 @@ namespace BismillahGraphicsPro.BusinessLogic
         Task<DbResponse<BranchDetailsModel>> GetAsync(string userName);
         Task<DbResponse<IdentityUser>> BranchSignUpAsync(BranchCreateModel model);
         List<BranchListModel> BranchList();
+
+        Task<DbResponse> ResetAsync(string userName);
         //-----------Sub-Admin--------------------------
         Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model);
         List<SubAdminListModel> SubAdminList(string userName);
