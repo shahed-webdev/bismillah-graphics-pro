@@ -10,6 +10,8 @@ public interface IPurchaseRepository
     int GetReceiptSn(int branchId);
     DbResponse<int> Add(int branchId, int registrationId, int purchaseSn, int receiptSn, PurchaseAddModel model);
     DbResponse<PurchaseReceiptViewModel> Get(int branchId,int id);
+    DbResponse<int> Delete(int branchId, int id);
+    List<int> GetYears(int branchId);
     DbResponse<int> Edit(PurchaseEditModel model);
     DbResponse UpdateDiscountAndPaid(List<PurchaseDuePayRecord> bills);
     DataResult<PurchaseRecordViewModel> List(int branchId, DataRequest request);

@@ -10,7 +10,9 @@ namespace BismillahGraphicsPro.Repository;
 public class BranchRepository : Repository, IBranchRepository
 {
     private readonly RoleManager<IdentityRole> _roleManager;
-    public BranchRepository(ApplicationDbContext db, IMapper mapper, RoleManager<IdentityRole> roleManager) : base(db, mapper)
+
+    public BranchRepository(ApplicationDbContext db, IMapper mapper, RoleManager<IdentityRole> roleManager) : base(db,
+        mapper)
     {
         _roleManager = roleManager;
     }
@@ -21,6 +23,51 @@ public class BranchRepository : Repository, IBranchRepository
         registration.Type = UserType.Admin;
         Db.Registrations.Add(registration);
         Db.SaveChanges();
+    }
+
+    public DbResponse Reset(int branchId)
+    {
+        var branch = Db.Branches.Find(branchId);
+        if (branch == null) return new DbResponse(false, $"Data not found");
+
+        var accountLog = Db.AccountLogs.Where(l => l.BranchId == branchId).ToList();
+        var expenses = Db.Expenses.Where(e => e.BranchId == branchId).ToList();
+
+        var purchaseReceipts = Db.PurchasePaymentReceipts.Include(p => p.PurchasePaymentRecords)
+            .Where(e => e.BranchId == branchId).ToList();
+        var purchases = Db.Purchases.Include(p => p.PurchaseLists).Where(e => e.BranchId == branchId).ToList();
+
+        var sellingReceipts = Db.SellingPaymentReceipts.Include(p => p.SellingPaymentRecords)
+            .Where(e => e.BranchId == branchId).ToList();
+        var sellings = Db.Sellings.Include(p => p.SellingLists).Where(e => e.BranchId == branchId).ToList();
+
+
+        var vendors = Db.Vendors.Where(l => l.BranchId == branchId).ToList();
+        vendors.ForEach(v =>
+        {
+            v.TotalAmount = 0;
+            v.TotalDiscount = 0;
+            v.VendorPaid = 0;
+        });
+
+        var suppliers = Db.Suppliers.Where(l => l.BranchId == branchId).ToList();
+        suppliers.ForEach(v =>
+        {
+            v.TotalAmount = 0;
+            v.TotalDiscount = 0;
+            v.SupplierPaid = 0;
+        });
+
+        Db.AccountLogs.RemoveRange(accountLog);
+        Db.Expenses.RemoveRange(expenses);
+        Db.PurchasePaymentReceipts.RemoveRange(purchaseReceipts);
+        Db.Purchases.RemoveRange(purchases);
+        Db.SellingPaymentReceipts.RemoveRange(sellingReceipts);
+        Db.Sellings.RemoveRange(sellings);
+        Db.Vendors.UpdateRange(vendors);
+        Db.Suppliers.UpdateRange(suppliers);
+        Db.SaveChanges();
+        return new DbResponse(true, $"{branch.BranchName} data reset successfully");
     }
 
     public void AddSubAdmin(SubAdminCreateModel model, int branchId)
@@ -50,7 +97,7 @@ public class BranchRepository : Repository, IBranchRepository
             .Select(r =>
                 new DDL
                 {
-                    value = r.RegistrationId.ToString(), 
+                    value = r.RegistrationId.ToString(),
                     label = r.Name + " (" + r.UserName + ")"
                 }).ToList();
         ;
@@ -63,16 +110,15 @@ public class BranchRepository : Repository, IBranchRepository
             LinkId = l.LinkId,
         }).ToList();
         var registration = Db.Registrations
-            .Include(r=> r.PageLinkAssigns)
+            .Include(r => r.PageLinkAssigns)
             .FirstOrDefault(p => p.RegistrationId == registrationId);
         if (registration == null) return new DbResponse<string>(false, "Data not found");
-            registration.PageLinkAssigns = pAssigns;
+        registration.PageLinkAssigns = pAssigns;
 
-            Db.Registrations.Update(registration);
-            Db.SaveChanges();
+        Db.Registrations.Update(registration);
+        Db.SaveChanges();
         return new DbResponse<string>(true, "Assigned successfully", registration.UserName);
     }
-
 
 
     public List<BranchListModel> BranchList()
@@ -126,7 +172,6 @@ public class BranchRepository : Repository, IBranchRepository
 
     public List<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId)
     {
-
         var userDll = (from c in Db.PageLinkCategories
             select new PageCategoryWithPageModel
             {
@@ -140,8 +185,8 @@ public class BranchRepository : Repository, IBranchRepository
                         LinkId = l.LinkId,
                         Title = l.Title,
                         RoleName = r.Name,
-                        IsAssign = Db.PageLinkAssigns.Any(a => a.LinkId == l.LinkId && a.RegistrationId == registrationId)
-                            
+                        IsAssign = Db.PageLinkAssigns.Any(a =>
+                            a.LinkId == l.LinkId && a.RegistrationId == registrationId)
                     }).ToList()
             }).ToList();
         return userDll;

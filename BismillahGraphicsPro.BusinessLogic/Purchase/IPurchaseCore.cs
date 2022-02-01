@@ -7,6 +7,7 @@ public interface IPurchaseCore
 {
     Task<DbResponse<int>> AddAsync(string userName, PurchaseAddModel model);
     Task<DbResponse<PurchaseReceiptViewModel>> GetAsync(string userName, int id);
+    Task<DbResponse> DeleteAsync(string userName, int id);
     Task<DbResponse<int>> EditAsync(PurchaseEditModel model);
     Task<DataResult<PurchaseRecordViewModel>> ListAsync(string userName, DataRequest request);
     Task<DataResult<PurchasePaymentViewModel>> PaymentListAsync(string userName, DataRequest request);

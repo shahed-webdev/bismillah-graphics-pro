@@ -78,6 +78,27 @@ public class PurchaseCore : Core, IPurchaseCore
                 new DbResponse<PurchaseReceiptViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+    public Task<DbResponse> DeleteAsync(string userName, int id)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            var deleteResponse = _db.Purchase.Delete(branchId, id);
+            if (!deleteResponse.IsSuccess) return Task.FromResult(new DbResponse(deleteResponse.IsSuccess, deleteResponse.Message));
+
+            var supplierId = deleteResponse.Data;
+
+            _db.Supplier.UpdatePaidDue(supplierId);
+
+            return Task.FromResult(new DbResponse(true, deleteResponse.Message));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(
+                new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
+
 
     public Task<DbResponse<int>> EditAsync(PurchaseEditModel model)
     {

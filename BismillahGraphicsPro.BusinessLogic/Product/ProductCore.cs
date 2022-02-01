@@ -185,4 +185,10 @@ public class ProductCore : Core, IProductCore
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return Task.FromResult(_db.ProductCategory.ListDdl(branchId));
     }
+
+    public Task<List<ProductReportModel>> SaleReportAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return Task.FromResult(_db.Product.SaleReport(branchId, sDate, eDate));
+    }
 }

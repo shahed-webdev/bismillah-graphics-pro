@@ -95,6 +95,21 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             }
         }
 
+        public Task<DbResponse> ResetAsync(string userName)
+        {
+            try
+            {
+                var branchId = _db.Registration.BranchIdByUserName(userName);
+                return Task.FromResult(_db.Branch.Reset(branchId));
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(
+                    new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            }
+           
+        }
+
         public async Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model)
         {
             try

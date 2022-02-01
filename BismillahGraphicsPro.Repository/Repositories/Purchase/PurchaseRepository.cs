@@ -96,6 +96,57 @@ public class PurchaseRepository : Repository, IPurchaseRepository
                 purchase);
     }
 
+    public DbResponse<int> Delete(int branchId, int id)
+    {
+        var purchase = Db.Purchases
+            .Include(s => s.PurchaseLists)
+            .Include(s => s.PurchasePaymentRecords)
+            .ThenInclude(p => p.PurchaseReceipt)
+            .FirstOrDefault(s => s.BranchId == branchId && s.PurchaseId == id);
+
+        if (purchase == null) return new DbResponse<int>(false, "data Not Found");
+
+        foreach (var paymentRecord in purchase.PurchasePaymentRecords)
+        {
+            if (paymentRecord.PurchaseReceipt.PaidAmount == paymentRecord.PurchasePaidAmount)
+            {
+                Db.PurchasePaymentReceipts.Remove(paymentRecord.PurchaseReceipt);
+            }
+            else
+            {
+                paymentRecord.PurchaseReceipt.PaidAmount -= paymentRecord.PurchasePaidAmount;
+                Db.PurchasePaymentReceipts.Update(paymentRecord.PurchaseReceipt);
+            }
+
+
+        }
+
+        var ids = purchase.PurchasePaymentRecords.Select(p => p.PurchasePaymentRecordId).ToList();
+        var logs = Db.AccountLogs.Where(l => l.TableName == AccountLogTableName.PurchasePaymentRecord && ids.Contains(l.TableId))
+            .ToList();
+
+        Db.Purchases.Remove(purchase);
+        Db.AccountLogs.RemoveRange(logs);
+        Db.SaveChanges();
+
+        return new DbResponse<int>(true, $"{purchase.PurchaseSn} Deleted Successfully", purchase.SupplierId);
+    }
+    public List<int> GetYears(int branchId)
+    {
+        var years = Db.Purchases.Where(e => e.BranchId == branchId)
+            .GroupBy(e => new
+            {
+                e.PurchaseDate.Year
+            })
+            .Select(g => g.Key.Year)
+            .OrderBy(o => o)
+            .ToList();
+
+        var currentYear = DateTime.Now.Year;
+
+        if (!years.Contains(currentYear)) years.Add(currentYear);
+        return years;
+    }
     public DbResponse<int> Edit(PurchaseEditModel model)
     {
         var purchase = Db.Purchases

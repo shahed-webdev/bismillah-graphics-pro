@@ -18,4 +18,5 @@ public interface IProductRepository
     Task<List<ProductViewModel>> SearchAsync(int branchId, string key);
     void AddStock(int productId, decimal stock);
     void SubtractStock(int productId, decimal stock);
+    List<ProductReportModel> SaleReport(int branchId, DateTime? sDate, DateTime? eDate);
 }

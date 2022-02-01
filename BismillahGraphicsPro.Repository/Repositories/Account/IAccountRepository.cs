@@ -25,4 +25,6 @@ public interface IAccountRepository
     DbResponse<AccountWithdrawViewModel> Withdraw(AccountWithdrawViewModel model);
     DataResult<AccountWithdrawViewModel> WithdrawList(DataRequest request);
 
+    BalanceSheetReportModel BalanceSheet(int branchId, int accountId, DateTime? sDate, DateTime? eDate);
+    DailyCashModel DailyCashReport(int branchId, DateTime? date);
 }

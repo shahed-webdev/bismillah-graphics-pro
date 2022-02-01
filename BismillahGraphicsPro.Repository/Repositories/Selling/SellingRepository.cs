@@ -92,6 +92,58 @@ public class SellingRepository : Repository, ISellingRepository
                 Selling);
     }
 
+    public DbResponse<int> Delete(int branchId, int id)
+    {
+        var selling = Db.Sellings
+            .Include(s=>s.SellingLists)
+            .Include(s=>s.SellingPaymentRecords)
+            .ThenInclude(p=> p.SellingReceipt)
+            .FirstOrDefault(s=>s.BranchId == branchId && s.SellingId == id);
+
+        if (selling == null) return new DbResponse<int>(false, "data Not Found");
+
+        foreach (var paymentRecord in selling.SellingPaymentRecords)
+        {
+            if (paymentRecord.SellingReceipt.PaidAmount == paymentRecord.SellingPaidAmount)
+            {
+                Db.SellingPaymentReceipts.Remove(paymentRecord.SellingReceipt);
+            }
+            else
+            {
+                paymentRecord.SellingReceipt.PaidAmount -= paymentRecord.SellingPaidAmount;
+                Db.SellingPaymentReceipts.Update(paymentRecord.SellingReceipt);
+            }
+
+
+        }
+
+        var ids = selling.SellingPaymentRecords.Select(p => p.SellingPaymentRecordId).ToList();
+        var logs = Db.AccountLogs.Where(l => l.TableName == AccountLogTableName.SellingPaymentRecord && ids.Contains(l.TableId))
+            .ToList();
+
+        Db.Sellings.Remove(selling);
+        Db.AccountLogs.RemoveRange(logs);
+        Db.SaveChanges();
+
+        return new DbResponse<int>(true, $"{selling.SellingSn} Deleted Successfully", selling.VendorId);
+    }
+
+    public List<int> GetYears(int branchId)
+    {
+        var years = Db.Sellings.Where(e => e.BranchId == branchId)
+            .GroupBy(e => new
+            {
+                e.SellingDate.Year
+            })
+            .Select(g => g.Key.Year)
+            .OrderBy(o => o)
+            .ToList();
+
+        var currentYear = DateTime.Now.Year;
+
+        if (!years.Contains(currentYear)) years.Add(currentYear);
+        return years;
+    }
     public DbResponse<int> Edit(SellingEditModel model)
     {
         var selling = Db.Sellings
@@ -280,5 +332,25 @@ public class SellingRepository : Repository, ISellingRepository
         return Db.Sellings
             .Where(p => p.BranchId == branchId && p.SellingDate <= endDate && p.SellingDate >= startDate)
             .Sum(s => s.SellingTotalPrice);
+    }
+    public decimal YearlyAmount(int branchId, int year)
+    {
+        return Db.Sellings.Where(s => s.BranchId == branchId && s.SellingDate.Year == year).Sum(s => s.SellingTotalPrice - s.SellingDiscountAmount);
+    }
+    public List<MonthlyAmount> MonthlyAmounts(int branchId, int year)
+    {
+        var months = Db.Sellings.Where(s => s.BranchId == branchId && s.SellingDate.Year == year)
+            .GroupBy(e => new
+            {
+                number = e.SellingDate.Month
+            })
+            .Select(g => new MonthlyAmount
+            {
+                MonthNumber = g.Key.number,
+                Amount = Math.Round(g.Sum(s => s.SellingTotalPrice - s.SellingDiscountAmount), 2)
+            })
+            .ToList();
+
+        return months;
     }
 }
