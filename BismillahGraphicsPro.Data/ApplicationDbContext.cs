@@ -421,7 +421,7 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.PurchaseLists)
                     .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_PurchaseList_Product");
 
                 entity.HasOne(d => d.Purchase)
@@ -503,12 +503,13 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Purchase)
                     .WithMany(p => p.PurchasePaymentRecords)
                     .HasForeignKey(d => d.PurchaseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_PurchasePaymentRecord_Purchase");
 
                 entity.HasOne(d => d.PurchaseReceipt)
                     .WithMany(p => p.PurchasePaymentRecords)
                     .HasForeignKey(d => d.PurchaseReceiptId)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_PurchasePaymentRecord_PurchasePaymentReceipt");
             });
 
@@ -632,7 +633,7 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.SellingLists)
                     .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_SellingList_Product");
 
                 entity.HasOne(d => d.Selling)
@@ -712,13 +713,13 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Selling)
                     .WithMany(p => p.SellingPaymentRecords)
                     .HasForeignKey(d => d.SellingId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_SellingPaymentRecord_Selling");
 
                 entity.HasOne(d => d.SellingReceipt)
                     .WithMany(p => p.SellingPaymentRecords)
                     .HasForeignKey(d => d.SellingReceiptId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_SellingPaymentRecord_SellingPaymentReceipt");
             });
 
