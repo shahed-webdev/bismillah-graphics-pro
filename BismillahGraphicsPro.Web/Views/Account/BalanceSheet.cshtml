@@ -10,7 +10,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label>Account</label>
-                    <select x-ref="accountId" class="form-control">
+                    <select x-ref="accountId" class="form-control" required>
                         <option value="">[ SELECT ]</option>
                         <template x-for="account in accounts" :key="account.value">
                             <option :value="account.value" x-text="account.label"></option>
@@ -35,47 +35,219 @@
             </div>
         </div>
     </form>
+
+    <h5 class="font-weight-bold">
+        Current Balance: ৳<span x-text="data.CurrentBalance || 0"></span>
+    </h5>
+
+    <div class="row mt-4">
+        <div class="col-lg-3 col-sm-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="far fa-money-bill-alt fa-lg success-color p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Opening Balance</small></p>
+                    <h5 class="font-weight-bold mb-0">
+                        ৳<span x-text="data.OpeningBalance || 0"></span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="far fa-money-bill-alt fa-lg deep-purple z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Closing Balance</small></p>
+                    <h5 class="font-weight-bold mb-0">
+                        ৳<span x-text="data.ClosingBalance || 0"></span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="far fa-money-bill-alt fa-lg cyan darken-2 z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Balance Added</small></p>
+                    <h5 class="font-weight-bold mb-0">
+                        ৳<span x-text="data.AddedBalance || 0"></span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 mb-4">
+            <div class="media white z-depth-1 rounded">
+                <i class="far fa-money-bill-alt fa-lg pink z-depth-1 p-4 rounded-left text-white mr-3"></i>
+                <div class="media-body p-1">
+                    <p class="text-uppercase text-muted mb-1"><small>Balance Subtracted</small></p>
+                    <h5 class="font-weight-bold mb-0">
+                        ৳<span x-text="data.SubtractedBalance || 0"></span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mt-3">Added Balance Details</h5>
+    <div class="card card-body mb-5">
+        <table id="add-data-table" class="table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Account</th>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Transaction By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <h5>Subtracted Balance Details</h5>
+    <div class="card card-body mb-5">
+        <table id="subtract-data-table" class="table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Account</th>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Transaction By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 
 
 @section Scripts {
-<script>
-    $(function() {
-        $('.datepicker').pickadate();
-    });
+    <script>
+        $(function() {
+            $('.datepicker').pickadate();
+        });
 
+        //data table options
+        const tableOptions = {
+            filter: [],
+            operand: {
+                Equal: 0,
+                NotEqual: 1,
+                GreaterThan: 2,
+                LessThan: 3,
+                GreaterThanOrEqual: 4,
+                LessThanOrEqual: 5,
+                Contains: 6,
+                StartsWith: 7,
+                EndsWith: 8
+            },
+            columns: [
+                { data: "Amount" },
+                { data: "AccountName" },
+                { data: "Type" },
+                { data: "Details" },
+                { data: "LogByUserName" },
+                { data: "LogDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
+            ],
+            columnDefs: [
+                { 'className': "text-center", "targets": [1, 2, 3, 4, 5] },
+                { 'className': "text-right", "targets": [0] }
+            ]
+        }
 
-    //alpine js code
-    function initData() {
-        return {
-            loading: false,
+        //data table1
+        const dataTable = {
+            addedTable: null,
+            subtractedTable: null,
+            init: function() {
+                //added Table
+                this.addedTable = $("#add-data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Account/GetTransactionLogData",
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = [...tableOptions.filter,{ Field: "IsAdded", Value: true, Operand: tableOptions.operand.Equal }];
+                        }
+                    },
+                    columns: tableOptions.columns,
+                    columnDefs: tableOptions.columnDefs
+                });
+                
 
-            //dropdown list
-            accounts: [],
-
-            //get dropdown data
-            async getDropdownData() {
-                //get account
-                const accountResponse = await fetch("/common/getAccount");
-                const account = await accountResponse.json();
-                this.accounts = account;
+                //subtracted Table
+                this.subtractedTable = $("#subtract-data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Account/GetTransactionLogData",
+                        type: "POST",
+                        data: function(d) {
+                            d.filters = tableOptions.filter;
+                        }
+                    },
+                    columns: tableOptions.columns,
+                    columnDefs: tableOptions.columnDefs
+                });
             },
 
-            async find() {
-                const accountId = this.$refs.accountId.value;
-                const from = this.$refs.fromDate.value;
-                const to = this.$refs.toDate.value;
-
-                try {
-                    const response = await fetch(`/account/GetBalanceSheet?accountId${accountId}&from=${from}&to=${to}`);
-                    const responseData = await response.json();
-                    //this.totalPaid = responseData.Data;
-                    console.log(responseData);
-                } catch (error) {
-                    console.log(error);
-                }
+            getData: function() {
+                this.addedTable ? this.addedTable.ajax.reload() : this.init();
+                this.subtractedTable ? this.subtractedTable.ajax.reload() : this.init();
             }
         };
-    }
-</script>
+
+
+
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                data: {},
+
+                //dropdown list
+                accounts: [],
+
+                //get dropdown data
+                async getDropdownData() {
+                    //get account
+                    const accountResponse = await fetch("/common/getAccount");
+                    const account = await accountResponse.json();
+                    this.accounts = account;
+                },
+
+                async find() {
+                    const accountId = this.$refs.accountId.value;
+                    const from = this.$refs.fromDate.value;
+                    const to = this.$refs.toDate.value;
+
+                    if (!from || !to) {
+                        return  $.notify("select date", "error");
+                    }
+
+                    try {
+                        const response = await fetch(`/account/GetBalanceSheet?accountId=${accountId}&from=${from}&to=${to}`);
+                        const responseData = await response.json();
+                        this.data = responseData;
+
+                        tableOptions.filter = [];
+                        tableOptions.filter.push(
+                            { Field: "AccountId", Value: accountId, Operand: tableOptions.operand.Equal },
+                            { Field: "LogDate", Value: from, Operand: tableOptions.operand.GreaterThanOrEqual },
+                            { Field: "LogDate", Value: to, Operand: tableOptions.operand.LessThanOrEqual }
+                        );
+                        
+                        dataTable.getData();
+
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            };
+        }
+    </script>
 }

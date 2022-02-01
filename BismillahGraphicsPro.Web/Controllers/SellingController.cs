@@ -141,6 +141,14 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+
+        //Delete Bill
+        public async Task<IActionResult> DeleteBill(int id)
+        {
+            var response = await _sellingCore.DeleteAsync(User.Identity.Name, id);
+            return Json(response);
+        }
+
         #endregion
 
 

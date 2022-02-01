@@ -139,11 +139,18 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = await _purchaseCore.EditAsync(model);
             return Json(response);
         }
+
+        public async Task<IActionResult> DeleteBill(int id)
+        {
+            var response = await _purchaseCore.DeleteAsync(User.Identity.Name, id);
+            return Json(response);
+        }
+
         #endregion
 
 
         #region Pay Due
-        
+
         //pay due single view
         public async Task<IActionResult> PayDueSingle(int? id)
         {

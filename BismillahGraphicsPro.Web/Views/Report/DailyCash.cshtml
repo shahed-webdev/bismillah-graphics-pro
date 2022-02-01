@@ -1,0 +1,128 @@
+﻿@model DailyCashModel
+
+@{
+    ViewData["Title"] = "DailyCash";
+    Layout = "_AdminLayout";
+}
+
+<div class="m-0 m-md-4">
+    <div class="row mb-4">
+        <div class="col-lg-5">
+            <h3 class="page-header">Daily Cash Report</h3>
+        </div>
+        
+        <div class="col-lg-7 d-print-none">
+            <div class="form-inline justify-content-end">
+                <div class="md-form m-0">
+                    <form action="/Report/DailyCash" method="post">
+                        <input id="formDate" name="date" value="@ViewBag.date" class="form-control datepicker" placeholder="Form Date" type="text" />
+                        <button id="find" class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-12 mb-4">
+            <div class="card mt-3">
+                <div class="">
+                    <i class="far fa-money-bill-alt fa-lg success-color z-depth-2 p-4 ml-3 mt-n3 rounded text-white"></i>
+                    <div class="float-right text-right p-3">
+                        <p class="text-uppercase text-muted mb-1"><small>INCOME</small></p>
+                        <h4 class="font-weight-bold mb-0">@Model.IncomeDaily.ToString("N")</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card mt-3">
+                <div class="">
+                    <i class="fas fa-chart-line fa-lg red z-depth-2 p-4 ml-3 mt-n3 rounded text-white"></i>
+                    <div class="float-right text-right p-3">
+                        <p class="text-uppercase text-muted mb-1"><small>EXPENSE</small></p>
+                        <h4 class="font-weight-bold mb-0">@Model.ExpenseDaily.ToString("N")</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card mt-3">
+                <div class="">
+                    <i class="fas fa-chart-pie fa-lg purple z-depth-2 p-4 ml-3 mt-n3 rounded text-white"></i>
+                    <div class="float-right text-right p-3">
+                        <p class="text-uppercase text-muted mb-1"><small>NET</small></p>
+                        <h4 class="font-weight-bold mb-0 @(@Model.NetDaily < 0 ?"text-danger":"")">@Model.NetDaily.ToString("N")</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="my-4 font-weight-bold">Income Details</h4>
+    <div class="card card-body">
+        <table class="table table-sm text-center">
+            <thead>
+            <tr>
+                <th><strong>Date</strong></th>
+                <th><strong>Bill No</strong></th>
+                <th class="text-left"><strong>Vendor</strong></th>
+                <th class="text-right"><strong>Received</strong></th>
+                <th><strong>P.Method</strong></th>
+                <th><strong>Received By</strong></th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var income in Model.DailyIncomes)
+                {
+                    <tr>
+                        <td>@income.PaidDate.ToString("d MMM yyyy")</td>
+                        <td>
+                            <a target="_blank" class="blue-text" href="/Selling/Receipt/@income.SellingReceiptId">@income.ReceiptSn</a>
+                        </td>
+                        <td class="text-left">@income.VendorCompanyName</td>
+                        <td class="text-right">@income.PaidAmount.ToString("N")</td>
+                        <td>@income.AccountName</td>
+                        <td>@income.PaidByUserName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <h4 class="mb-4 mt-5 font-weight-bold">Expense Details</h4>
+    <div class="card card-body">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th><strong>Category</strong></th>
+                    <th><strong>Expense For</strong></th>
+                    <th class="text-right"><strong>Amount</strong></th>
+                    <th class="text-center"><strong>Date</strong></th>
+                    <th class="text-center"><strong>P.Method</strong></th>
+                </tr>
+            </thead>
+            @foreach (var expense in Model.DailyExpenses)
+            {
+                <tr>
+                    <td>@expense.CategoryName</td>
+                    <td>@expense.ExpenseFor</td>
+                    <td class="text-right">@expense.ExpenseAmount.ToString("N")</td>
+                    <td class="text-center">@expense.ExpenseDate.ToString("d MMM yyyy")</td>
+                    <td class="text-center">@expense.AccountName</td>
+                </tr>
+            }
+        </table>  
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function () {
+            $('.datepicker').pickadate();
+        });
+    </script>
+}

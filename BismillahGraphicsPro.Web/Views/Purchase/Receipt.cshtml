@@ -157,6 +157,10 @@
     </div>
 </div>
 
+<form id="deleteForm" class="d-print-none">
+    <button type="submit" class="btn btn-danger mx-0 mt-4">Delete Bill</button>
+</form>
+
 
 @section scripts{
     <script>
@@ -297,6 +301,23 @@
                 error: error => console.log(error)
             });
         }
+
+
+        //delete Bill
+        const deleteForm = document.getElementById("deleteForm");
+        deleteForm.addEventListener("submit",
+            function(evt) {
+                evt.preventDefault();
+
+                $.ajax({
+                    url: '/purchase/DeleteBill/@Model.PurchaseId',
+                    success: function(response) {
+                        if (response.IsSuccess)
+                            location.href = "/purchase/records";
+                    },
+                    error: error => console.log(error)
+                });
+            });
     </script>
 }
 

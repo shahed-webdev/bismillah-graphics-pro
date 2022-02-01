@@ -1,0 +1,120 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Net Summery";
+    Layout = "_AdminLayout";
+}
+
+<div class="m-0 m-sm-2">
+    <div class="container-fluid">
+        <section class="mb-5">
+            <div class="row">
+                <div class="col">
+                    <h3 class="mb-3">Net Summery</h3>
+                </div>
+                <div class="col-md-4 text-right">
+                    @Html.DropDownList("selectYear", new SelectList(ViewBag.yearDropdown,"value","label",@DateTime.Now.Year), new { @class = "mdb-select" })
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5 pb-4">
+            <div class="row">
+                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                    <div class="card card-cascade cascading-admin-card">
+                        <div class="admin-up">
+                            <i class="far fa-money-bill-alt lime darken-3 z-depth-2"></i>
+                            <div class="data">
+                                <h6 class="text-uppercase mt-3 mb-0 font-weight-bold grey-text">Sales</h6>
+                                <p class="mb-2"><span class="current-year"></span></p>
+                                <h5 class="font-weight-bold dark-grey-text mb-3">৳@Model.SaleYearly.ToString("N")</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                    <div class="card card-cascade cascading-admin-card">
+                        <div class="admin-up">
+                            <i class="fas fa-chart-bar red accent-2 z-depth-2"></i>
+                            <div class="data">
+                                <h6 class="text-uppercase mt-3 mb-0 font-weight-bold grey-text">Expense</h6>
+                                <p class="mb-2"><span class="current-year"></span></p>
+                                <h5 class="font-weight-bold dark-grey-text mb-3">৳@Model.ExpenseYearly.ToString("N")</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-md-0 mb-4">
+                    <div class="card card-cascade cascading-admin-card">
+                        <div class="admin-up">
+                            <i class="fas fa-chart-pie grey darken-3 z-depth-2"></i>
+                            <div class="data">
+                                <h6 class="text-uppercase mt-3 mb-0 font-weight-bold grey-text">Net</h6>
+                                <p class="mb-2"><span class="current-year"></span></p>
+                                <h5 class="font-weight-bold @(Model.NetYearly >= 0 ? "dark-grey-text" : "red-text") mb-3">৳@Model.NetYearly.ToString("N")</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-0">
+                    <div class="card card-cascade cascading-admin-card">
+                        <div class="admin-up">
+                            <i class="fas fa-chart-line indigo darken-4 z-depth-2"></i>
+                            <div class="data">
+                                <h6 class="text-uppercase mt-3 mb-0 font-weight-bold grey-text">Total Due</h6>
+                                <p class="mb-2">All Years</p>
+                                <h5 class="font-weight-bold dark-grey-text mb-3">৳@Model.TotalDue.ToString("N")</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <div class="card card-body card-cascade narrower">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><strong>Month</strong></th>
+                            <th class="text-right"><strong>Income</strong></th>
+                            <th class="text-right"><strong>Expense</strong></th>
+                            <th class="text-right"><strong>Net</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.MonthlyReports)
+                        {
+                            <tr>
+                                <td><strong>@item.Month</strong></td>
+                                <td class="text-right">@item.Income.ToString("N")/-</td>
+                                <td class="text-right">@item.Expense.ToString("N")/-</td>
+                                <td class="text-right @(item.Income-item.Expense >= 0 ? "" : "red-text")">@((item.Income-item.Expense).ToString("N"))/-</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        // select Init
+        $(function () {
+            $('.mdb-select').materialSelect();
+            $(".current-year").text(`YEAR: ${$("#selectYear").val()}`);
+        });
+
+        //year selected value
+        $("#selectYear").change(function () {
+            const year = $(this).children("option:selected").val();
+            location.href = `/Report/Net/${year}`;
+        });
+    </script>
+}
+

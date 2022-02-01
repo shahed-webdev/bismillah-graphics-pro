@@ -9,7 +9,7 @@ public class AccountLogViewModel
     public int RegistrationId { get; set; }
     public string LogByUserName { get; set; }
     public string AccountName { get; set; }
-    public bool? IsAdded { get; set; }
+    public bool IsAdded { get; set; }
     public decimal Amount { get; set; }
     public string? Details { get; set; }
     public string Type { get; set; }
