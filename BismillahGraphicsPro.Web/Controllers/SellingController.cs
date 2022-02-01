@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class SellingController : Controller
     {
         private readonly IVendorCore _vendorCore;
@@ -23,6 +23,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Vendor
 
+        [Authorize(Roles = "Admin, Vendors")]
         public IActionResult Vendors()
         {
             return View();
@@ -35,11 +36,11 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             return Json(data);
         }
-            
+
 
         //post vendor
         [HttpPost]
-        public async Task< IActionResult> PostVendor([FromBody] VendorAddModel model)
+        public async Task<IActionResult> PostVendor([FromBody] VendorAddModel model)
         {
             var response = await _vendorCore.AddAsync(User.Identity.Name, model);
 
@@ -51,7 +52,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> GetVendorById(int? id)
         {
             if (!id.HasValue) return NotFound();
-        
+
             var response = await _vendorCore.GetAsync(id.GetValueOrDefault());
             return Json(response);
         }
@@ -77,7 +78,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         #region Selling
-
+        
+        [Authorize(Roles = "Admin, Selling")]
         public IActionResult Index()
         {
             return View();
@@ -155,6 +157,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Due Collection
 
         //due Collection single view
+        [Authorize(Roles = "Admin, SellingDueCollectionSingle")]
         public async Task<IActionResult> DueCollectionSingle(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -175,22 +178,23 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //due Collection multiple view
-        public async Task<IActionResult> DueCollectionMultiple(int id, DateTime? from, DateTime? to)
+        [Authorize(Roles = "Admin, SellingDueCollectionMultiple")]
+        public async Task<IActionResult> DueCollectionMultiple(int? id)
         {
-            var now = DateTime.Now;
-            var startDate = from ?? new DateTime(now.Year, now.Month, 1);
-            var endDate = to ?? startDate.AddMonths(1).AddDays(-1);
+            if (!id.HasValue) return RedirectToAction("Vendors");
 
-            var model = await _sellingCore.GetVendorWiseDueAsync(id, startDate, endDate);
+            var model = await _sellingCore.GetVendorWiseDueAsync(id.GetValueOrDefault(), null, null);
             ViewBag.dueModel = model.Data;
 
-            //for ajax call
-            if (from != null || to != null)
-            {
-                return Json(model);
-            }
-
             return View();
+        }
+
+
+        //get due bills by dates
+        public async Task<IActionResult> GetDueBills(int id, DateTime? from, DateTime? to)
+        {
+            var model = await _sellingCore.GetVendorWiseDueAsync(id, from, to);
+            return Json(model);
         }
 
 
@@ -211,12 +215,14 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             return View(model.Data);
         }
+
         #endregion
 
 
         #region Report
 
         //payment report
+        [Authorize(Roles = "Admin, SellingPaymentReport")]
         public IActionResult PaymentReport()
         {
             return View();
@@ -238,7 +244,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //due report
+        //due report view
+        [Authorize(Roles = "Admin, SellingDueReport")]
         public IActionResult DueReport()
         {
             return View();
@@ -253,7 +260,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //payment report
+        //payment report view
+        [Authorize(Roles = "Admin, SellingReport")]
         public IActionResult SellingReport()
         {
             return View();

@@ -17,10 +17,10 @@
                 <div class="col-sm-7">
                     <div class="row">
                         <div class="col">
-                            <input x-ref="fromDate" :value="moment().format('D MMMM, YYYY')" class="form-control datepicker" placeholder="Form Date" type="text">
+                            <input x-ref="fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
                         </div>
                         <div class="col">
-                            <input x-ref="toDate" :value="moment().endOf('month').format('D MMMM, YYYY')" class="form-control datepicker" placeholder="To Date" type="text">
+                            <input x-ref="toDate" class="form-control datepicker" placeholder="To Date" type="text">
                         </div>
                         <div>
                             <button class="btn btn-custom-bg btn-md my-0" type="submit">Search</button>
@@ -115,7 +115,6 @@
     function initData() {
         return {
             loading: false,
-            pickedDates: { fromDate: '', toDate: '', PaidDate: "" },
             model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
 
             //dropdown list
@@ -139,7 +138,7 @@
                 const id = this.model.SupplierId;
 
 
-                const response = await fetch(`/purchase/PayDueMultiple?id=${id}&from=${fromDate}&to=${toDate}`);
+                const response = await fetch(`/purchase/GetDueBills?id=${id}&from=${fromDate}&to=${toDate}`);
                 const responseData = await response.json();
 
                 if (responseData.IsSuccess)

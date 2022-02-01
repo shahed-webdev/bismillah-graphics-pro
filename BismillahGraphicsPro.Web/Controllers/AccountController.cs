@@ -1,10 +1,12 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
 using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
+   [Authorize]
     public class AccountController : Controller
     {
         private readonly IAccountCore _account;
@@ -17,6 +19,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Account
 
         //account view
+        [Authorize(Roles = "Admin, Account")]
         public IActionResult Index()
         {
             return View();
@@ -56,15 +59,10 @@ namespace BismillahGraphicsPro.Web.Controllers
         #endregion
 
 
-        //get Withdraw
-        //public IActionResult GetWithdraw()
-        //{
-        //    var response = _account.List(User.Identity.Name);
-        //    return Json(response);
-        //}
-
         #region Deposit
+
         //deposit view
+        [Authorize(Roles = "Admin, Account")]
         public IActionResult Deposit(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -92,7 +90,9 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         #region Withdraw
+
         //withdraw view
+        [Authorize(Roles = "Admin, Account")]
         public IActionResult Withdraw(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -119,9 +119,10 @@ namespace BismillahGraphicsPro.Web.Controllers
         #endregion
 
 
-        #region TransactionLog
+        #region Transaction Log
 
         //TransactionLog view
+        [Authorize(Roles = "Admin, TransactionLog")]
         public IActionResult TransactionLog()
         {
             return View();
@@ -140,6 +141,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Balance Sheet
 
         //Balance Sheet view
+        [Authorize(Roles = "Admin, BalanceSheet")]
         public IActionResult BalanceSheet()
         {
             return View();

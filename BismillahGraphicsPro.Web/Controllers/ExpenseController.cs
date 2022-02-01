@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
 
     public class ExpenseController : Controller
     {
@@ -24,6 +24,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Expense
 
         //expense view
+        [Authorize(Roles = "Admin, Expense")]
         public async Task<IActionResult> Index()
         {
             //category dropdown list
@@ -67,7 +68,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Category
 
-        //**category view**//
+        //category view
+        [Authorize(Roles = "Admin, Expense")]
         public IActionResult Category()
         {
             return View();
@@ -109,7 +111,10 @@ namespace BismillahGraphicsPro.Web.Controllers
         #endregion
 
 
+        #region Report
+
         //expense report view
+        [Authorize(Roles = "Admin, ExpenseReport")]
         public IActionResult Report()
         {
             return View();
@@ -130,5 +135,6 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+        #endregion
     }
 }

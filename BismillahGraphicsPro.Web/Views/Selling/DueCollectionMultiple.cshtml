@@ -115,7 +115,6 @@
         function initData() {
             return {
                 loading: false,
-                pickedDates: { fromDate: '', toDate: '', PaidDate: "" },
                 model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
 
                 //dropdown list
@@ -139,7 +138,7 @@
                     const toDate = this.$refs.toDate.value;
                     const id = this.model.VendorId;
 
-                    const response = await fetch(`/Selling/DueCollectionMultiple?id=${id}&from=${fromDate}&to=${toDate}`);
+                    const response = await fetch(`/Selling/GetDueBills?id=${id}&from=${fromDate}&to=${toDate}`);
                     const responseData = await response.json();
 
                     if (responseData.IsSuccess)

@@ -24,6 +24,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Supplier
 
+        //supplier view
+        [Authorize(Roles = "Admin, Suppliers")]
         public IActionResult Suppliers()
         {
             return View();
@@ -77,6 +79,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Purchase
 
+        //Purchase view
+        [Authorize(Roles = "Admin, Purchase")]
         public IActionResult Index()
         {
             return View();
@@ -152,6 +156,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Pay Due
 
         //pay due single view
+        [Authorize(Roles = "Admin, PurchasePayDueSingle")]
         public async Task<IActionResult> PayDueSingle(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -171,22 +176,23 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //pay due multiple view
-        public async Task<IActionResult> PayDueMultiple(int id, DateTime? from, DateTime? to)
+        [Authorize(Roles = "Admin, PurchasePayDueMultiple")]
+        public async Task<IActionResult> PayDueMultiple(int? id)
         {
-            var now = DateTime.Now;
-            var startDate = from ?? new DateTime(now.Year, now.Month, 1);
-            var endDate = to ?? startDate.AddMonths(1).AddDays(-1);
+            if (!id.HasValue) return RedirectToAction("Suppliers");
 
-            var model = await _purchaseCore.GetSupplierWiseDueAsync(id, startDate, endDate);
+            var model = await _purchaseCore.GetSupplierWiseDueAsync(id.GetValueOrDefault(), null, null);
             ViewBag.dueModel = model.Data;
-           
-            //for ajax call
-            if (from != null || to != null)
-            {
-                return Json(model);
-            }
-
+            
             return View();
+        }
+
+
+        //get due bills by dates
+        public async Task<IActionResult> GetDueBills(int id, DateTime? from, DateTime? to)
+        {
+            var model = await _purchaseCore.GetSupplierWiseDueAsync(id, from, to);
+            return Json(model);
         }
 
 
@@ -215,7 +221,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Report
 
 
-        //payment report
+        //payment report view
+        [Authorize(Roles = "Admin, PurchasePaymentReport")]
         public IActionResult PaymentReport()
         {
             return View();
@@ -238,7 +245,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
 
-        //due report
+        //due report view
+        [Authorize(Roles = "Admin, PurchaseDueReport")]
         public IActionResult DueReport()
         {
             return View();

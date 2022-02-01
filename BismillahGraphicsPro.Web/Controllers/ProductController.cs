@@ -22,6 +22,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Measurement unit
 
         //view Measurement unit
+        [Authorize(Roles = "Admin, MeasurementUnit")]
         public IActionResult MeasurementUnit()
         {
             return View();
@@ -63,8 +64,9 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         #region Product Category
-       
+
         //view product Category
+        [Authorize(Roles = "Admin, ProductCategory")]
         public IActionResult Category()
         {
             return View();
@@ -109,6 +111,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Product
 
         //view product
+        [Authorize(Roles = "Admin, Products")]
         public async Task<IActionResult> Index()
         {
             ViewBag.productCategory = await _productCore.CategoryDdlAsync(User.Identity.Name);
@@ -160,6 +163,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //view product
+        [Authorize(Roles = "Admin, StockReport")]
         public IActionResult StockReport()
         {
             return View();

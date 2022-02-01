@@ -19,6 +19,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
+        //daily cash view
+        [Authorize(Roles = "Admin, DailyCash")]
         public async Task<IActionResult> DailyCash()
         {
 
@@ -40,7 +42,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //product sales report
+        //product sales report view
+        [Authorize(Roles = "Admin, ProductSales")]
         public IActionResult ProductSales()
         {
             return View();
@@ -54,7 +57,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //net report
+        //net report view
+        [Authorize(Roles = "Admin, Net")]
         public async Task<IActionResult> Net(int? id)
         {
             ViewBag.yearDropdown = await _dashboard.GetYearsAsync(User.Identity.Name);

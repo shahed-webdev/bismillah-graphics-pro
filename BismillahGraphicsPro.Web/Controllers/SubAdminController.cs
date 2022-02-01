@@ -17,6 +17,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         //view sub admin
+        [Authorize(Roles = "Admin, SubAdminList")]
         public IActionResult Index()
         {
             var model = _registration.SubAdminList(User.Identity.Name);
@@ -25,6 +26,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //SignUp view
+        [Authorize(Roles = "Admin, SubAdminSignUp")]
         public IActionResult SignUp()
         {
             return View();
@@ -56,6 +58,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //page access view
+        [Authorize(Roles = "Admin, SubAdminPageAccess")]
         public IActionResult PageAccess()
         {
             ViewBag.SubAdmins =_registration.SubAdminDdl(User.Identity.Name);
