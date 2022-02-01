@@ -171,22 +171,22 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //pay due multiple view
-        public async Task<IActionResult> PayDueMultiple(int id, DateTime? from, DateTime? to)
+        public async Task<IActionResult> PayDueMultiple(int? id)
         {
-            var now = DateTime.Now;
-            var startDate = from ?? new DateTime(now.Year, now.Month, 1);
-            var endDate = to ?? startDate.AddMonths(1).AddDays(-1);
+            if (!id.HasValue) return RedirectToAction("Suppliers");
 
-            var model = await _purchaseCore.GetSupplierWiseDueAsync(id, startDate, endDate);
+            var model = await _purchaseCore.GetSupplierWiseDueAsync(id.GetValueOrDefault(), null, null);
             ViewBag.dueModel = model.Data;
-           
-            //for ajax call
-            if (from != null || to != null)
-            {
-                return Json(model);
-            }
-
+            
             return View();
+        }
+
+
+        //get due bills by dates
+        public async Task<IActionResult> GetDueBills(int id, DateTime? from, DateTime? to)
+        {
+            var model = await _purchaseCore.GetSupplierWiseDueAsync(id, from, to);
+            return Json(model);
         }
 
 

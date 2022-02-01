@@ -8,9 +8,12 @@ namespace BismillahGraphicsPro.Web.Controllers
     public class AdminController : Controller
     {
         private readonly IDashboardCore _dashboard;
-        public AdminController(IDashboardCore dashboard)
+        private readonly IRegistrationCore _registration;
+        
+        public AdminController(IDashboardCore dashboard, IRegistrationCore registration)
         {
             _dashboard = dashboard;
+            _registration = registration;
         }
 
         public async Task<IActionResult> Index(int? id)
@@ -19,6 +22,20 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = await _dashboard.GetAsync(User.Identity.Name, year:id);
 
             return View(response);
+        }
+
+
+        //reset data
+        public IActionResult Reset()
+        {
+            return View();
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> PostReset()
+        {
+            var response = await _registration.ResetAsync(User.Identity.Name);
+            return Json(response);
         }
     }
 }

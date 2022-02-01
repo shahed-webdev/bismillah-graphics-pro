@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Reset";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()" class="container">
+    <div class="row">
+        <div class="col">
+            <h4 class="red-text font-weight-bold mt-4">Will be deleted</h4>
+
+            <ul class="list-group list-group-flush red-text font-weight-bold">
+                <li class="list-group-item">Payment records</li>
+                <li class="list-group-item">Selling data</li>
+                <li class="list-group-item">Purchase data</li>
+                <li class="list-group-item">Transaction log</li>
+                <li class="list-group-item">Withdraw record</li>
+                <li class="list-group-item">Deposit record</li>
+                <li class="list-group-item">Expense data</li>
+            </ul>
+        </div>
+
+
+        <div class="col">
+            <h4 class="text-success font-weight-bold mt-4">Remain data</h4>
+
+            <ul class="list-group list-group-flush text-success font-weight-bold">
+                <li class="list-group-item">Suppliers</li>
+                <li class="list-group-item">Vendors</li>
+                <li class="list-group-item">All type of Category</li>
+                <li class="list-group-item">Account balance</li>
+                <li class="list-group-item">Product stock</li>
+                <li class="list-group-item">Measurement Unit</li>
+                <li class="list-group-item">Sub-admins</li>
+            </ul>
+        </div>
+    </div>
+
+    <form x-on:submit.prevent="postReset">
+        <input :disabled="loading" type="submit" class="btn btn-danger mt-5" value="RESET" />
+    </form>
+</div>
+
+@section Scripts {
+<script>
+
+    //alpine js code
+    function initData() {
+        return {
+            loading: false,
+
+           
+            async postReset() {
+                try {
+                    const options = {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" }
+                    }
+
+                    this.loading = true;
+
+                    const response = await fetch(`/admin/PostReset`,options);
+                    const responseData = await response.json();
+                   
+                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                    
+                    if(!responseData.IsSuccess)
+                       this.loading = false;
+
+                } catch (error) {
+                    this.loading = false;
+                    console.log(error);
+                }
+            }
+        };
+    }
+</script>
+}

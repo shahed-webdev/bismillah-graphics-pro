@@ -35,11 +35,11 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             return Json(data);
         }
-            
+
 
         //post vendor
         [HttpPost]
-        public async Task< IActionResult> PostVendor([FromBody] VendorAddModel model)
+        public async Task<IActionResult> PostVendor([FromBody] VendorAddModel model)
         {
             var response = await _vendorCore.AddAsync(User.Identity.Name, model);
 
@@ -51,7 +51,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> GetVendorById(int? id)
         {
             if (!id.HasValue) return NotFound();
-        
+
             var response = await _vendorCore.GetAsync(id.GetValueOrDefault());
             return Json(response);
         }
@@ -175,22 +175,22 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //due Collection multiple view
-        public async Task<IActionResult> DueCollectionMultiple(int id, DateTime? from, DateTime? to)
+        public async Task<IActionResult> DueCollectionMultiple(int? id)
         {
-            var now = DateTime.Now;
-            var startDate = from ?? new DateTime(now.Year, now.Month, 1);
-            var endDate = to ?? startDate.AddMonths(1).AddDays(-1);
+            if (!id.HasValue) return RedirectToAction("Vendors");
 
-            var model = await _sellingCore.GetVendorWiseDueAsync(id, startDate, endDate);
+            var model = await _sellingCore.GetVendorWiseDueAsync(id.GetValueOrDefault(), null, null);
             ViewBag.dueModel = model.Data;
 
-            //for ajax call
-            if (from != null || to != null)
-            {
-                return Json(model);
-            }
-
             return View();
+        }
+
+
+        //get due bills by dates
+        public async Task<IActionResult> GetDueBills(int id, DateTime? from, DateTime? to)
+        {
+            var model = await _sellingCore.GetVendorWiseDueAsync(id, from, to);
+            return Json(model);
         }
 
 
