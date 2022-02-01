@@ -11,19 +11,22 @@
         <table x-data="initData()" class="table">
             <thead>
                 <tr>
-                    <th scope="col">
+                    <th>
                         <strong>Branch Name</strong>
+                    </th> 
+                    <th>
+                        <strong>Username</strong>
                     </th>
-                    <th scope="col">
+                    <th>
                         <strong>Phone</strong>
                     </th>
-                    <th scope="col">
+                    <th>
                         <strong>Email</strong>
                     </th>
-                    <th scope="col">
+                    <th>
                         <strong>Address</strong>
                     </th>
-                    <th scope="col" style="width: 100px; text-align: center">
+                    <th style="width: 100px; text-align: center">
                         <strong>Active</strong>
                     </th>
                 </tr>
@@ -34,6 +37,7 @@
                 {
                     <tr>
                         <td>@item.BranchName</td>
+                        <td>@item.AdminUserName</td>
                         <td>@item.BranchPhone</td>
                         <td>@item.BranchEmail</td>
                         <td>@item.BranchAddress</td>

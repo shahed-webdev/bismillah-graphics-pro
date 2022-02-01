@@ -5,41 +5,98 @@
 
 
 <div x-data="initData()" class="container">
-    <h3 class="page-header my-3">Page Access</h3>
+    <h3 class="page-header mt-3">Page Access</h3>
 
-    <div class="card card-body">
-        <label>Sub-Admin</label>
-        <select class="form-control" x-on:change="onChangeSubAdmin">
-            <option value="">[ SELECT ]</option>
+    <div class="form-group w-50 my-3">
+        <select x-ref="registrationId" class="form-control" x-on:change="onChangeSubAdmin">
+            <option value="">[ SELECT SUB-ADMIN ]</option>
             <template x-for="item in subAdmins" :key="item.value">
                 <option :value="item.value" x-text="item.label"></option>
             </template>
         </select>
+    </div>
+
+    <template x-if="pageLinks.length">
+    <div class="card card-body">
+        <template x-for="item in pageLinks" :key="item.Category">
+            <table class="table table-sm table-bordered">
+                <thead>
+                <tr>
+                    <th><strong x-text="item.Category"></strong></th>
+                </tr>
+                </thead>
+                <tbody>
+                <template x-for="link in item.Links" :key="link.LinkId">
+                    <tr>
+                        <td>
+                            <input x-model="link.IsAssign" type="checkbox" class="form-check-input" :id="link.LinkId" :checked="link.IsAssign">
+                            <label x-text="link.Title" class="form-check-label" :for="link.LinkId"></label>
+                        </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </template>
 
         <div>
-            <button class="btn btn-custom-bg">Assign</button>
+            <button x-on:click="postAssign" class="btn btn-custom-bg mx-0">Assign</button>
         </div>
     </div>
+    </template>
 </div>
 
 
 @section Scripts {
-    <script>
-        function initData() {
-            return {
-                subAdmins: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.SubAdmins))'),
+<script>
+    function initData() {
+        return {
+            subAdmins: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.SubAdmins))'),
+            pageLinks:[],
 
-                async onChangeSubAdmin(evt) {
-                    const id = evt.target.value;
-                    if (!id) return;
-
-                    const response = await fetch(`/subAdmin/GetPageLinks/${id}`);
-                    const responseData = await response.json();
-
-                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+            //on change sub-admin
+            async onChangeSubAdmin(evt) {
+                const id = evt.target.value;
+                if (!id) {
+                    this.pageLinks=[]
+                    return;
                 }
+
+                const response = await fetch(`/subAdmin/GetPageLinks/${id}`);
+                const responseData = await response.json();
+                this.pageLinks = responseData;
+            },
+
+            //post assign
+            postAssign() {
+                const flatten = this.pageLinks.map(item => item.Links).flat();
+                const links = flatten.filter(item => item.IsAssign).map(item => {
+                    return {
+                        LinkId:item.LinkId,
+                        RoleName:item.RoleName
+                    }
+                });
+
+                const registrationId = this.$refs.registrationId.value;
+                if (!registrationId) return;
+
+                this.loading = true;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/subAdmin/PostPageAccess",
+                    data: {registrationId,links},
+                    success: response => {
+                        $.notify(response.Message, response.IsSuccess ? "success" : "error");
+                        this.loading = false;
+                    },
+                    error: error => {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                });
             }
         }
-    </script>
+    }
+</script>
 }
 

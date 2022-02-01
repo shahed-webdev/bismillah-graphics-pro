@@ -52,7 +52,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         [HttpPost]
         public IActionResult PostUserValidation(int registrationId)
         {
-            var response =  _registration.SubAdminToggleActivation(registrationId);
+            var response = _registration.SubAdminToggleActivation(registrationId);
             return Json(response);
         }
 
@@ -61,7 +61,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         [Authorize(Roles = "Admin, SubAdminPageAccess")]
         public IActionResult PageAccess()
         {
-            ViewBag.SubAdmins =_registration.SubAdminDdl(User.Identity.Name);
+            ViewBag.SubAdmins = _registration.SubAdminDdl(User.Identity.Name);
             return View();
         }
 
@@ -75,10 +75,11 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //post page links
-        //[HttpPost]
-        //public IActionResult PostPageAccess()
-        //{
-        //    return Json();
-        //}
+        [HttpPost]
+        public async Task<IActionResult> PostPageAccess(int registrationId, List<PageLinkAssignModel> links)
+        {
+            var response = await _registration.SubAdminAssignLinks(registrationId, links);
+            return Json(response);
+        }
     }
 }

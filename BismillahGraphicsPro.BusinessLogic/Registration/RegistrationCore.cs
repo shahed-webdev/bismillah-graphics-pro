@@ -175,7 +175,7 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
                 var user = await _userManager.FindByNameAsync(userNameResponse.Data);
                 var roleList = links.Select(l => l.RoleName).ToList();
 
-                roleList.Add("Sub-Admin");
+                roleList.Add("SubAdmin");
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 await _userManager.RemoveFromRolesAsync(user, userRoles.ToArray());

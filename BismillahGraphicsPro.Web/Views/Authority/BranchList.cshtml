@@ -5,25 +5,28 @@
     Layout = "_AuthorityLayout";
 }
 
-<div class="m-4">
-    <h1 class="page-header mb-5">Branch List</h1>
+<div class="m-md-4">
+    <h1 class="page-header mb-3">Branch List</h1>
     <div class="card card-body">
         <table x-data="initData()" class="table">
             <thead>
                 <tr>
-                    <th scope="col">
+                    <th>
                         <strong>Branch Name</strong>
                     </th>
-                    <th scope="col">
+                    <th>
+                        <strong>Username</strong>
+                    </th>
+                    <th>
                         <strong>Phone</strong>
                     </th>
                     <th scope="col">
                         <strong>Email</strong>
                     </th>
-                    <th scope="col">
+                    <th>
                         <strong>Address</strong>
                     </th>
-                    <th scope="col" style="width: 100px; text-align: center">
+                    <th style="width: 100px; text-align: center">
                         <strong>Active</strong>
                     </th>
                 </tr>
@@ -34,6 +37,7 @@
                 {
                     <tr>
                         <td>@item.BranchName</td>
+                        <td>@item.AdminUserName</td>
                         <td>@item.BranchPhone</td>
                         <td>@item.BranchEmail</td>
                         <td>@item.BranchAddress</td>
