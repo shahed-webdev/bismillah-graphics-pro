@@ -21,12 +21,35 @@
             </form>
         </div>
     </div>
-
     
-    <div class="card card-body mt-4">
+    <h6 class="font-weight-bold mt-4">Category Wise Expense</h6>
+    <div class="card card-body">
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th>Category</th>
+                <th class="text-right">Total Expense</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template x-for="item in expenseCategory" :key="item.ExpanseCategoryId">
+                <tr>
+                    <td x-text="item.CategoryName"></td>
+                    <td class="text-right">
+                        ৳<span x-text="item.TotalExpanse"></span>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+    </div>
+    
+    <h6 class="font-weight-bold mt-4">Expense Details</h6>
+    <div class="card card-body">
         <table id="data-table" class="table table-sm">
             <thead>
             <tr>
+                <th>Category</th>
                 <th>Expense Date</th>
                 <th>Expense For</th>
                 <th>Payment Method</th>
@@ -56,16 +79,17 @@
                     },
                     columns:
                     [
+                        { data: "CategoryName" },
                         { data: "ExpenseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
                         { data: "ExpenseFor" },
                         { data: "AccountName" },
-                        { data: "ExpenseAmount", "render": function(data) { return `${data}/-` } }
+                        { data: "ExpenseAmount", "render": function(data) { return `৳${data}` } }
                     ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [0, 3] },
+                        //{ 'searchable': false, 'targets': [0, 3] },
                         //{ 'sortable': false, 'targets': [4] },
                         //{ 'className': "text-center", "targets": [4] },
-                        { 'className': "text-right", "targets": [3] }
+                        { 'className': "text-right", "targets": [4] }
                     ]
                 });
             },
@@ -115,7 +139,7 @@
                     try {
                         const response = await fetch(`/expense/GetCategoryExpense?from=${from}&to=${to}`);
                         const responseData = await response.json();
-                        this.expenseCategory = responseData.Data;
+                        this.expenseCategory = responseData;
 
                     } catch (error) {
                         console.log(error);
@@ -147,8 +171,6 @@
 
                     this.getCategory(fromDate, toDate);
                     this.getTotal(fromDate, toDate);
-
-                    console.log(this.expenseCategory)
                 },
 
 

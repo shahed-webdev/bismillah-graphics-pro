@@ -44,57 +44,57 @@
 
         <div class="table-responsive mb-4">
             <table class="table table-sm table-bordered">
-             <thead>
-            <tr>
-                <th class="text-center"><strong>No.</strong></th>
-                <th><strong>Product Name</strong></th>
-                <th class="text-center"><strong>Description</strong></th>
-                <th class="text-center"><strong>Quantity</strong></th>
-                <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
-                <th class="text-right"><strong>Line&nbsp;Total</strong></th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                var index = 0;
-                foreach (var item in Model.SellingLists)
-                {
-                    index++;
+                <thead>
                     <tr>
-                        <td class="text-center">@index</td>
-                        <td>@item.ProductName</td>
-                        <td class="text-center">@item.Length x @item.Width</td>
-                        <td class="text-center">
-                            @item.SellingQuantity
-                            @item.MeasurementUnitName
-                        </td>
-                        <td class="text-right">@item.SellingUnitPrice/-</td>
-                        <td class="text-right">@item.SellingPrice?.ToString("0.00")/-</td>
+                        <th class="text-center"><strong>No.</strong></th>
+                        <th><strong>Product Name</strong></th>
+                        <th class="text-center"><strong>Description</strong></th>
+                        <th class="text-center"><strong>Quantity</strong></th>
+                        <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
+                        <th class="text-right"><strong>Line&nbsp;Total</strong></th>
                     </tr>
-                }
-            }
-            <tr>
-                <td colspan="4">
-                    <span id="amount-word"></span>
-                </td>
-                <td colspan="2">
-                    <div class="text-right">
-                        <h5>Total: <strong>@Model.SellingTotalPrice/-</strong></h5>
-                        @{
-                            var discount = Model.SellingDiscountAmount;
-
-                            if (discount > 0)
-                            {
-                                <h5>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h5>
-                            }
+                </thead>
+                <tbody>
+                    @{
+                        var index = 0;
+                        foreach (var item in Model.SellingLists)
+                        {
+                            index++;
+                            <tr>
+                                <td class="text-center">@index</td>
+                                <td>@item.ProductName</td>
+                                <td class="text-center">@item.Length x @item.Width</td>
+                                <td class="text-center">
+                                    @item.SellingQuantity
+                                    @item.MeasurementUnitName
+                                </td>
+                                <td class="text-right">@item.SellingUnitPrice/-</td>
+                                <td class="text-right">@item.SellingPrice?.ToString("0.00")/-</td>
+                            </tr>
                         }
+                    }
+                    <tr>
+                        <td colspan="4">
+                            <span id="amount-word"></span>
+                        </td>
+                        <td colspan="2">
+                            <div class="text-right">
+                                <h5>Total: <strong>@Model.SellingTotalPrice/-</strong></h5>
+                                @{
+                                    var discount = Model.SellingDiscountAmount;
 
-                        <h5>Paid: <strong> @Model.SellingPaidAmount/-</strong></h5>
-                        <h5>Due: <strong>@Model.SellingDueAmount/-</strong></h5>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
+                                    if (discount > 0)
+                                    {
+                                        <h5>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h5>
+                                    }
+                                }
+
+                                <h5>Paid: <strong> @Model.SellingPaidAmount/-</strong></h5>
+                                <h5>Due: <strong>@Model.SellingDueAmount/-</strong></h5>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
@@ -147,7 +147,7 @@
                         <label>Paid Amount</label>
                         <input x-model.number="model.PaidAmount" x-ref="totalPaid" type="number" step="0.01" min="0" max="@Model.SellingDueAmount" class="form-control" required />
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Payment Method</label>
                         <select x-model.number="model.AccountId" class="form-control" required>
@@ -159,7 +159,7 @@
                     </div>
                     <div class="form-group">
                         <label>Paid Date</label>
-                        <input x-model="model.PaidDate" type="text" class="form-control datepicker" />
+                        <input x-ref="datePicker" type="text" class="form-control datepicker" :value="moment().format('D MMMM, YYYY')">
                     </div>
                     <div class="form-group">
                         <label>Description</label>
@@ -177,6 +177,8 @@
 @section scripts {
     <script>
         $(function() {
+            $('.datepicker').pickadate();
+
             $("#amount-word").text(`Taka (in word): ${number2text(@Model.SellingTotalPrice)}`);
         });
 
@@ -266,65 +268,48 @@
                     const accountResponse = await fetch("/common/getAccount");
                     const account = await accountResponse.json();
                     this.accounts = account;
-
-                    this.dateInit();
                 },
 
                 model: {},
 
-                //date function init
-                dateInit() {
-                    this.model.PaidDate = moment(new Date()).format("D, MMM YYYY");
-
-                    $('.datepicker').pickadate({
-                        onSet: context => {
-                            this.model.PaidDate = moment(context.select).format("D, MMM YYYY");
-                        }
-                    })
-                },
-
                 //insert data
-                async insertData() {
+                insertData() {
                     this.loading = true;
 
-                    const { AccountId, PaidAmount, Description, PaidDate } = this.model;
+                    const { AccountId, PaidAmount, Description } = this.model;
 
-                    try {
-                        const model = {
-                            VendorId: @Model.VendorId,
-                            AccountId,
-                            PaidAmount,
-                            PaidDate: new Date(PaidDate),
-                            Description,
-                            Bills: [
-                                {
-                                    SellingId: @Model.SellingId,
-                                    SellingPaidAmount: PaidAmount
-                                }
-                            ]
-                        }
-
-                        const options = {
-                            method: 'POST',
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(model)
-                        };
-
-                        const response = await fetch("/Selling/PostSingleDue", options);
-                        const responseData = await response.json();
-
-                        if (responseData.IsSuccess) {
-                            this.model = {};
-                            location.href = "/Selling/records";
-                        }
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                        this.loading = false;
-
-                    } catch (error) {
-                        console.log(error);
-                        this.loading = false;
+                    const model = {
+                        VendorId: @Model.VendorId,
+                        AccountId,
+                        PaidAmount,
+                        PaidDate: this.$refs.datePicker.value,
+                        Description,
+                        Bills: [
+                            {
+                                SellingId: @Model.SellingId,
+                                SellingPaidAmount: PaidAmount
+                            }
+                        ]
                     }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Selling/PostSingleDue",
+                        data: model,
+                        success: response => {
+                            if (response.IsSuccess) {
+                                this.model = {};
+                                location.href = "/Selling/records";
+                            }
+
+                            $.notify(response.Message, response.IsSuccess ? "success" : "error");
+                            this.loading = false;
+                        },
+                        error: error => {
+                            console.log(error);
+                            this.loading = false;
+                        }
+                    });
                 }
             };
         }

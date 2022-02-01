@@ -85,7 +85,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post purchase
         [HttpPost]
-        public async Task<IActionResult> PostPurchase([FromBody] PurchaseAddModel model)
+        public async Task<IActionResult> PostPurchase(PurchaseAddModel model)
         {
             var response = await _purchaseCore.AddAsync(User.Identity.Name, model);
             return Json(response);
@@ -155,7 +155,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post single due
         [HttpPost]
-        public async Task<IActionResult> PostSingleDue([FromBody] PurchaseDuePayModel model)
+        public async Task<IActionResult> PostSingleDue(PurchaseDuePayModel model)
         {
             var response = await _purchaseCore.DuePayAsync(User.Identity.Name, model);
             return Json(response);
@@ -166,7 +166,11 @@ namespace BismillahGraphicsPro.Web.Controllers
         //pay due multiple view
         public async Task<IActionResult> PayDueMultiple(int id, DateTime? from, DateTime? to)
         {
-            var model = await _purchaseCore.GetSupplierWiseDueAsync(id, from,to);
+            var now = DateTime.Now;
+            var startDate = from ?? new DateTime(now.Year, now.Month, 1);
+            var endDate = to ?? startDate.AddMonths(1).AddDays(-1);
+
+            var model = await _purchaseCore.GetSupplierWiseDueAsync(id, startDate, endDate);
             ViewBag.dueModel = model.Data;
            
             //for ajax call
@@ -181,7 +185,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post multiple due
         [HttpPost]
-        public async Task<IActionResult> PostDues([FromBody] PurchaseDuePayModel model)
+        public async Task<IActionResult> PostDues(PurchaseDuePayModel model)
         {
             var response = await _purchaseCore.DuePayAsync(User.Identity.Name, model);
             return Json(response);

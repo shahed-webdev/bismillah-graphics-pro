@@ -107,12 +107,12 @@
                         <label>Description</label>
                         <input x-model="model.Description" type="text" class="form-control">
                     </div>
-                    <div x-init="dateInit()" class="form-group mt-2 mb-4">
+                    <div class="form-group mt-2 mb-4">
                         <label>Purchase Date</label>
-                        <input x-model="model.PurchaseDate" x-ref="datePicker" type="text" class="form-control">
+                        <input x-ref="datePicker" type="text" class="form-control datepicker" :value="moment().format('D MMMM, YYYY')">
                     </div>
                     <div x-init="findSupplier" class="form-group">
-                        <label>Supplier <a href="/Purchase/Suppliers" target="_blank">Add new</a></label>
+                        <label>Supplier <a href="/purchase/suppliers" target="_blank">Add new</a></label>
                         <input x-ref="findSupplier" x-on:keyup.debounce="resetSupplier" type="text" class="form-control" placeholder="find by name, phone" required>
                     </div>
                     <div>
@@ -132,6 +132,11 @@
 
 @section Scripts {
     <script>
+        $(function() {
+            $('.datepicker').pickadate();
+        });
+
+
         //get local store
         function getStore() {
             const store = localStorage.getItem("purchase-data");
@@ -178,16 +183,6 @@
                     this.measurementUnits = measurement;
                 },
 
-                //date function init
-                dateInit() {
-                    this.model.PurchaseDate = moment(new Date()).format("D, MMM YYYY");
-
-                    $(this.$refs.datePicker).pickadate({
-                        onSet: context => {
-                            this.model.PurchaseDate = moment(context.select).format("D, MMM YYYY");
-                        }
-                    })
-                },
 
                 //add product to list
                 addProductToList(product) {
@@ -286,57 +281,45 @@
                     this.Supplier = {};
                 },
 
-
                 //insert data
-                async insertData() {
+                insertData() {
                     if (!this.model.products.length)
                         return $.notify("Add Product!", "error");
 
                     if (!this.Supplier.SupplierId)
                         return $.notify("Select Supplier!", "error");
 
-                    try {
-                        const total = this.calculateTotal();
+                    const total = this.calculateTotal();
 
-                        const model = {
-                            ...this.model,
-                            SupplierId: this.Supplier.SupplierId,
-                            PurchaseTotalPrice: total,
-                            PurchaseDueAmount: (total - this.model.PurchaseDiscountAmount) - this.model.PurchasePaidAmount,
-                            PurchaseDate: new Date(this.model.PurchaseDate),
-                            PurchaseLists: this.model.products
-                        };
+                    const model = {
+                        ...this.model,
+                        SupplierId: this.Supplier.SupplierId,
+                        PurchaseTotalPrice: total,
+                        PurchaseDueAmount: (total - this.model.PurchaseDiscountAmount) - this.model.PurchasePaidAmount,
+                        PurchaseDate: this.$refs.datePicker.value,
+                        PurchaseLists: this.model.products
+                    };
 
-                        const options = {
-                            method: 'POST',
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(model)
-                        };
+                    this.loading = true;
 
-                        this.loading = true;
+                    $.ajax({
+                        type: "POST",
+                        url: "/purchase/postPurchase",
+                        data: model,
+                        success: response => {
+                            if (response.IsSuccess) {
+                                localStorage.removeItem("purchase-data");
+                                location.href = `/purchase/receipt/${response.Data}`;
+                            }
 
-                        const response = await fetch("/Purchase/PostPurchase", options);
-                        const responseData = await response.json();
-
-                        if (responseData.IsSuccess) {
-                            this.model = {
-                                PurchaseDiscountAmount: 0,
-                                PurchasePaidAmount: 0,
-                                products: []
-                            };
-
-                            localStorage.removeItem("purchase-data");
-
-                            location.href = `/purchase/receipt/${responseData.Data}`;
+                            $.notify(response.Message, response.IsSuccess ? "success" : "error");
+                            this.loading = false;
+                        },
+                        error: error => {
+                            console.log(error);
+                            this.loading = false;
                         }
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                        this.loading = false;
-
-                    } catch (error) {
-                        console.log(error);
-                        this.loading = false;
-                    }
+                    });
                 }
             };
         }

@@ -157,7 +157,7 @@
                     </div>
                     <div class="form-group">
                         <label>Paid Date</label>
-                        <input x-model="model.PaidDate" type="text" class="form-control datepicker" />
+                        <input x-ref="datePicker" type="text" class="form-control datepicker" :value="moment().format('D MMMM, YYYY')">
                     </div>
                     <div class="form-group">
                         <label>Description</label>
@@ -175,6 +175,8 @@
 @section scripts {
     <script>
         $(function() {
+            $('.datepicker').pickadate();
+
             $("#amount-word").text(`Taka (in word): ${number2text(@Model.PurchaseTotalPrice)}`);
         });
 
@@ -264,65 +266,43 @@
                     const accountResponse = await fetch("/common/getAccount");
                     const account = await accountResponse.json();
                     this.accounts = account;
-
-                    this.dateInit();
                 },
 
                 model: {},
 
-                //date function init
-                dateInit() {
-                    this.model.PaidDate = moment(new Date()).format("D, MMM YYYY");
-
-                    $('.datepicker').pickadate({
-                        onSet: context => {
-                            this.model.PaidDate = moment(context.select).format("D, MMM YYYY");
-                        }
-                    })
-                },
-
                 //insert data
-                async insertData() {
+                insertData() {
                     this.loading = true;
 
-                    const { AccountId, PaidAmount, Description, PaidDate } = this.model;
+                    const { AccountId, PaidAmount, Description } = this.model;
 
-                    try {
-                        const model = {
-                            SupplierId: @Model.SupplierId,
-                            AccountId,
-                            PaidAmount,
-                            PaidDate: new Date(PaidDate),
-                            Description,
-                            Bills: [
-                                {
-                                    PurchaseId: @Model.PurchaseId,
-                                    PurchasePaidAmount: PaidAmount
-                                }
-                            ]
-                        }
-
-                        const options = {
-                            method: 'POST',
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(model)
-                        };
-
-                        const response = await fetch("/purchase/PostSingleDue", options);
-                        const responseData = await response.json();
-
-                        if (responseData.IsSuccess) {
-                            this.model = {};
-                            location.href = "/purchase/records";
-                        }
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                        this.loading = false;
-
-                    } catch (error) {
-                        console.log(error);
-                        this.loading = false;
+                    const model = {
+                        SupplierId: @Model.SupplierId,
+                        AccountId,
+                        PaidAmount,
+                        PaidDate: this.$refs.datePicker.value,
+                        Description,
+                        Bills: [{PurchaseId: @Model.PurchaseId,PurchasePaidAmount: PaidAmount}]
                     }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/purchase/PostSingleDue",
+                        data: model,
+                        success: response => {
+                            if (response.IsSuccess) {
+                                this.model = {};
+                                location.href = "/purchase/records";
+                            }
+
+                            $.notify(response.Message, response.IsSuccess ? "success" : "error");
+                            this.loading = false;
+                        },
+                        error: error => {
+                            console.log(error);
+                            this.loading = false;
+                        }
+                    });
                 }
             };
         }

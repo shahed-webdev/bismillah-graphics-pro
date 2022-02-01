@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using BismillahGraphicsPro.Data;
 using BismillahGraphicsPro.BusinessLogic;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -29,7 +31,14 @@ builder.Services.ConfigureApplicationCookie(config =>
 
 
 builder.Services.AddDependencyInjection();
-builder.Services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+
+
+builder.Services.AddMvc().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
+
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

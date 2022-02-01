@@ -4,15 +4,15 @@
 }
 
 
-<div x-data="initData()" class="row align-items-center mt-4">
+<div x-data="initData()" x-init="getTableData()" class="row align-items-center mt-4">
     <div class="col">
         <h1 class="page-header">Payment Report: ৳<span x-text="totalPaid"></span></h1>
     </div>
-    <div x-init="onDataInit()" class="col-sm-6">
+    <div class="col-sm-6">
         <form x-on:submit.prevent="finByDate">
             <div class="d-flex">
-                <input name="fromDate" :value="pickedDates.fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
-                <input name="toDate" :value="pickedDates.toDate" class="form-control datepicker mx-3" placeholder="To Date" type="text">
+                <input x-ref="fromDate" :value="moment().format('D MMMM, YYYY')" class="form-control datepicker" placeholder="Form Date" type="text">
+                <input x-ref="toDate" :value="moment().endOf('month').format('D MMMM, YYYY')" class="form-control datepicker mx-3" placeholder="To Date" type="text">
                 <div>
                     <button class="btn btn-custom-bg btn-md my-0" type="submit">Find</button>
                 </div>
@@ -39,6 +39,11 @@
 
 @section Scripts {
     <script>
+        $(function() {
+            $('.datepicker').pickadate();
+        });
+
+
         //data table
         const dataTable = {
             table: null,
@@ -100,10 +105,6 @@
             return {
                 loading: false,
                 totalPaid: 0,
-                pickedDates: {
-                    fromDate: moment().startOf("month").format("DD MMMM, YYYY"),
-                    toDate: moment().endOf("month").format("DD MMMM, YYYY")
-                },
 
                 //get total paid amount
                 async getTotal(from,to) {
@@ -120,7 +121,8 @@
 
                 //data table get data
                 getTableData() {
-                    const { fromDate, toDate } = this.pickedDates;
+                    const fromDate = this.$refs.fromDate.value;
+                    const toDate = this.$refs.toDate.value;
 
                     dataTable.filter.push({ Field: "PaidDate", Value: fromDate, Operand: dataTable.operand.GreaterThanOrEqual });
                     dataTable.filter.push({ Field: "PaidDate", Value: toDate, Operand: dataTable.operand.LessThanOrEqual });
@@ -130,18 +132,6 @@
                     this.getTotal(fromDate, toDate);
                 },
 
-                //date function init
-                onDataInit() {
-                    this.getTableData();
-
-                    const self = this.pickedDates;
-
-                    $('.datepicker').pickadate({
-                        onSet: function(context) {
-                            self[this.component.$node[0].name] = moment(context.select).format("D, MMM YYYY");
-                        }
-                    });
-                },
 
                 //bill find by date
                 finByDate() {

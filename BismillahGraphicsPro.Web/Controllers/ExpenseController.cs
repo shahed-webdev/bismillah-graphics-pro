@@ -47,7 +47,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post expense
         [HttpPost]
-        public async Task<IActionResult> PostExpense([FromBody] ExpenseAddModel model)
+        public async Task<IActionResult> PostExpense(ExpenseAddModel model)
         {
             var response = await _expenseCore.AddAsync(User.Identity.Name,model);
             return Json(response);

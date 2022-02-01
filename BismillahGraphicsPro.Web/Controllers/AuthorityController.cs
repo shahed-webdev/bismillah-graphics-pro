@@ -18,7 +18,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var branchList = _registration.BranchList();
+            return View(branchList);
         }
 
         //Create Branch

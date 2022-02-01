@@ -86,7 +86,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post Selling
         [HttpPost]
-        public async Task<IActionResult> PostSelling([FromBody] SellingAddModel model)
+        public async Task<IActionResult> PostSelling(SellingAddModel model)
         {
             var response = await _sellingCore.AddAsync(User.Identity.Name, model);
             return Json(response);
@@ -133,13 +133,14 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //post update purchase
+        //post update Selling
         [HttpPut]
         public async Task<IActionResult> UpdateSelling([FromBody] SellingEditModel model)
         {
             var response = await _sellingCore.EditAsync(model);
             return Json(response);
         }
+
         #endregion
 
 
@@ -157,7 +158,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post single due Collection
         [HttpPost]
-        public async Task<IActionResult> PostSingleDue([FromBody] SellingDuePayModel model)
+        public async Task<IActionResult> PostSingleDue(SellingDuePayModel model)
         {
             var response = await _sellingCore.DueCollectionAsync(User.Identity.Name, model);
             return Json(response);
@@ -168,7 +169,11 @@ namespace BismillahGraphicsPro.Web.Controllers
         //due Collection multiple view
         public async Task<IActionResult> DueCollectionMultiple(int id, DateTime? from, DateTime? to)
         {
-            var model = await _sellingCore.GetVendorWiseDueAsync(id, from, to);
+            var now = DateTime.Now;
+            var startDate = from ?? new DateTime(now.Year, now.Month, 1);
+            var endDate = to ?? startDate.AddMonths(1).AddDays(-1);
+
+            var model = await _sellingCore.GetVendorWiseDueAsync(id, startDate, endDate);
             ViewBag.dueModel = model.Data;
 
             //for ajax call
@@ -183,7 +188,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post multiple due Collection
         [HttpPost]
-        public async Task<IActionResult> PostDues([FromBody] SellingDuePayModel model)
+        public async Task<IActionResult> PostDues(SellingDuePayModel model)
         {
             var response = await _sellingCore.DueCollectionAsync(User.Identity.Name, model);
             return Json(response);

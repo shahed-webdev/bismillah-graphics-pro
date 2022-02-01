@@ -129,9 +129,9 @@
                         <label>Description</label>
                         <input x-model="model.Description" type="text" class="form-control">
                     </div>
-                    <div x-init="dateInit()" class="form-group mt-2 mb-4">
+                    <div class="form-group mt-2 mb-4">
                         <label>Selling Date</label>
-                        <input x-model="model.SellingDate" x-ref="datePicker" type="text" class="form-control">
+                        <input x-ref="datePicker" type="text" class="form-control datepicker" :value="moment().format('D MMMM, YYYY')" />
                     </div>
 
                     <div class="mt-3">
@@ -146,172 +146,162 @@
 
 
 @section Scripts {
-<script>
-    //get local store
-    function getStore() {
-        const store = localStorage.getItem("Selling-data");
-        return store ? JSON.parse(store) : {};
-    }
+    <script>
+        $(function() {
+            $('.datepicker').pickadate();
+        });
 
-    //alpine js code
-    function initData() {
-        const {
-            SellingDiscountAmount = 0,
-            SellingPaidAmount = 0,
-            products = []
-        } = getStore();
+        //get local store
+        function getStore() {
+            const store = localStorage.getItem("Selling-data");
+            return store ? JSON.parse(store) : {};
+        }
 
-        return {
-            loading: false,
-            clearInput: "",
-            Vendor: {},
-            model: {
-                SellingDiscountAmount,
-                SellingPaidAmount,
-                products
-            },
+        //alpine js code
+        function initData() {
+            const {
+                SellingDiscountAmount = 0,
+                SellingPaidAmount = 0,
+                products = []
+            } = getStore();
 
-            //save data to local store
-            saveData() {
-                localStorage.setItem("Selling-data", JSON.stringify(this.model));
-            },
+            return {
+                loading: false,
+                clearInput: "",
+                Vendor: {},
+                model: {
+                    SellingDiscountAmount,
+                    SellingPaidAmount,
+                    products
+                },
 
-            //dropdown list
-            accounts: [],
-            measurementUnits: [],
+                //save data to local store
+                saveData() {
+                    localStorage.setItem("Selling-data", JSON.stringify(this.model));
+                },
 
-            //get dropdown data
-            async getDropdownData() {
-                //get account
-                const accountResponse = await fetch("/common/getAccount");
-                const account = await accountResponse.json();
-                this.accounts = account;
+                //dropdown list
+                accounts: [],
+                measurementUnits: [],
 
-                //get measurement
-                const measurementResponse = await fetch("/common/getMeasurementUnit");
-                const measurement = await measurementResponse.json();
-                this.measurementUnits = measurement;
-            },
+                //get dropdown data
+                async getDropdownData() {
+                    //get account
+                    const accountResponse = await fetch("/common/getAccount");
+                    const account = await accountResponse.json();
+                    this.accounts = account;
 
-            //date function init
-            dateInit() {
-                this.model.SellingDate = moment(new Date()).format("D, MMM YYYY");
+                    //get measurement
+                    const measurementResponse = await fetch("/common/getMeasurementUnit");
+                    const measurement = await measurementResponse.json();
+                    this.measurementUnits = measurement;
+                },
 
-                $(this.$refs.datePicker).pickadate({
-                    onSet: context => {
-                        this.model.SellingDate = moment(context.select).format("D, MMM YYYY");
+                //add product to list
+                addProductToList(product) {
+                    const data = { ...product, Length: 0, Width: 0, SellingUnitPrice: product.ProductPrice }
+                    const ifFound = this.model.products.some(item => item.ProductId === product.ProductId);
+
+                    if (ifFound) {
+                        $.notify(`${product.ProductName} already added!`, "error");
+                        return;
                     }
-                })
-            },
 
-            //add product to list
-            addProductToList(product) {
-                const data = { ...product,Length:0, Width:0, SellingUnitPrice: product.ProductPrice }
-                const ifFound = this.model.products.some(item => item.ProductId === product.ProductId);
+                    this.model.products.push(data);
+                    this.clearInput = "";
+                    this.$refs.findProduct.focus();
 
-                if (ifFound) {
-                    $.notify(`${product.ProductName} already added!`, "error");
-                    return;
-                }
+                    //save to local
+                    this.saveData();
+                },
 
-                this.model.products.push(data);
-                this.clearInput = "";
-                this.$refs.findProduct.focus();
+                //find product (autocomplete)
+                findProduct() {
+                    $(this.$refs.findProduct).typeahead({
+                        minLength: 1,
+                        displayText: item => {
+                            return item.ProductName;
+                        },
+                        afterSelect: function(item) {
+                            this.$element[0].value = item.ProductName;
+                        },
+                        source: (request, result) => {
+                            $.ajax({
+                                url: `/common/findProduct`,
+                                data: { prefix: request },
+                                success: response => result(response),
+                                error: err => console.log(err)
+                            });
+                        },
+                        updater: item => {
+                            this.addProductToList(item);
+                            return item;
+                        }
+                    })
+                },
 
-                //save to local
-                this.saveData();
-            },
+                //remove Data
+                removeProduct(id) {
+                    this.model.products = this.model.products.filter(item => item.ProductId !== id);
 
-            //find product (autocomplete)
-            findProduct() {
-                $(this.$refs.findProduct).typeahead({
-                    minLength: 1,
-                    displayText: item => {
-                        return item.ProductName;
-                    },
-                    afterSelect: function(item) {
-                        this.$element[0].value = item.ProductName;
-                    },
-                    source: (request, result) => {
-                        $.ajax({
-                            url: `/common/findProduct`,
-                            data: { prefix: request },
-                            success: response => result(response),
-                            error: err => console.log(err)
-                        });
-                    },
-                    updater: item => {
-                        this.addProductToList(item);
-                        return item;
+                    //save to local
+                    this.saveData();
+
+                    const total = this.calculateTotal();
+
+                    if (!total) {
+                        this.model.SellingDiscountAmount = 0
+                        this.model.SellingPaidAmount = 0
                     }
-                })
-            },
+                },
 
-            //remove Data
-            removeProduct(id) {
-                this.model.products = this.model.products.filter(item => item.ProductId !== id);
+                //sum total amount
+                totalAmount: 0,
+                calculateTotal() {
+                    const total = this.model.products.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
+                    this.totalAmount = total;
 
-                //save to local
-                this.saveData();
+                    return total || 0;
+                },
 
-                const total = this.calculateTotal();
+                //find Vendor (autocomplete)
+                findVendor() {
+                    $(this.$refs.findVendor).typeahead({
+                        minLength: 1,
+                        displayText: item => {
+                            return `${item.VendorName} ${item.VendorPhone}`;
+                        },
+                        afterSelect: function(item) {
+                            this.$element[0].value = item.VendorName;
+                        },
+                        source: (request, result) => {
+                            $.ajax({
+                                url: `/common/findVendor`,
+                                data: { prefix: request },
+                                success: response => result(response),
+                                error: err => console.log(err)
+                            });
+                        },
+                        updater: item => {
+                            this.Vendor = item;
+                            return item;
+                        }
+                    })
+                },
 
-                if (!total) {
-                    this.model.SellingDiscountAmount = 0
-                    this.model.SellingPaidAmount = 0
-                }
-            },
+                //reset Vendor
+                resetVendor() {
+                    this.Vendor = {};
+                },
 
-            //sum total amount
-            totalAmount: 0,
-            calculateTotal() {
-                const total = this.model.products.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
-                this.totalAmount = total;
+                //insert data
+                insertData() {
+                    if (!this.model.products.length)
+                        return $.notify("Add Product!", "error");
 
-                return total || 0;
-            },
+                    if (!this.Vendor.VendorId)
+                        return $.notify("Select Vendor!", "error");
 
-
-            //find Vendor (autocomplete)
-            findVendor() {
-                $(this.$refs.findVendor).typeahead({
-                    minLength: 1,
-                    displayText: item => {
-                        return `${item.VendorName} ${item.VendorPhone}`;
-                    },
-                    afterSelect: function(item) {
-                        this.$element[0].value = item.VendorName;
-                    },
-                    source: (request, result) => {
-                        $.ajax({
-                            url: `/common/findVendor`,
-                            data: { prefix: request },
-                            success: response => result(response),
-                            error: err => console.log(err)
-                        });
-                    },
-                    updater: item => {
-                        this.Vendor = item;
-                        return item;
-                    }
-                })
-            },
-
-            //reset Vendor
-            resetVendor() {
-                this.Vendor = {};
-            },
-
-
-            //insert data
-            async insertData() {
-                if (!this.model.products.length)
-                    return $.notify("Add Product!", "error");
-
-                if (!this.Vendor.VendorId)
-                    return $.notify("Select Vendor!", "error");
-
-                try {
                     const total = this.calculateTotal();
 
                     const model = {
@@ -322,12 +312,12 @@
                         SellingPaidAmount: this.model.SellingPaidAmount,
                         SellingDueAmount: (total - this.model.SellingDiscountAmount) - this.model.SellingPaidAmount,
                         Description: this.model.Description,
-                        SellingDate: new Date(this.model.SellingDate),
+                        SellingDate: this.$refs.datePicker.value,
                         SellingLists: this.model.products.map(item => {
                             return {
                                 ProductId: item.ProductId,
                                 MeasurementUnitId: item.MeasurementUnitId,
-                                SellingQuantity: item.Length*item.Width,
+                                SellingQuantity: item.Length * item.Width,
                                 SellingUnitPrice: item.SellingUnitPrice,
                                 Length: item.Length,
                                 Width: item.Width
@@ -335,38 +325,28 @@
                         })
                     };
 
-                    const options = {
-                        method: 'POST',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(model)
-                    };
-
                     this.loading = true;
 
-                    const response = await fetch("/Selling/PostSelling", options);
-                    const responseData = await response.json();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Selling/PostSelling",
+                        data: model,
+                        success: response => {
+                            if (response.IsSuccess) {
+                                localStorage.removeItem("Selling-data");
+                                location.href = `/Selling/receipt/${response.Data}`;
+                            }
 
-                    if (responseData.IsSuccess) {
-                        this.model = {
-                            SellingDiscountAmount: 0,
-                            SellingPaidAmount: 0,
-                            products: []
-                        };
-
-                        localStorage.removeItem("Selling-data");
-
-                        location.href = `/Selling/receipt/${responseData.Data}`;
-                    }
-
-                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                    this.loading = false;
-
-                } catch (error) {
-                    console.log(error);
-                    this.loading = false;
+                            $.notify(response.Message, response.IsSuccess ? "success" : "error");
+                            this.loading = false;
+                        },
+                        error: error => {
+                            console.log(error);
+                            this.loading = false;
+                        }
+                    });
                 }
-            }
-        };
-    }
-</script>
+            };
+        }
+    </script>
 }
