@@ -13,6 +13,9 @@ namespace BismillahGraphicsPro.Web.Controllers
             _account = account;
         }
 
+
+        #region Account
+
         //account view
         public IActionResult Index()
         {
@@ -50,14 +53,17 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+        #endregion
 
-        //get account
-        public IActionResult GetWithdraw()
-        {
-            var response = _account.List(User.Identity.Name);
-            return Json(response);
-        }
 
+        //get Withdraw
+        //public IActionResult GetWithdraw()
+        //{
+        //    var response = _account.List(User.Identity.Name);
+        //    return Json(response);
+        //}
+
+        #region Deposit
         //deposit view
         public IActionResult Deposit(int? id)
         {
@@ -82,7 +88,10 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+        #endregion
 
+
+        #region Withdraw
         //withdraw view
         public IActionResult Withdraw(int? id)
         {
@@ -107,6 +116,10 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+        #endregion
+
+
+        #region TransactionLog
 
         //TransactionLog view
         public IActionResult TransactionLog()
@@ -120,5 +133,25 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = await _account.LogListAsync(User.Identity.Name,request);
             return Json(response);
         }
+
+        #endregion
+
+
+        #region Balance Sheet
+
+        //Balance Sheet view
+        public IActionResult BalanceSheet()
+        {
+            return View();
+        }
+
+        //get transaction Log data-table
+        public async Task<IActionResult> GetBalanceSheet(int accountId, DateTime from, DateTime to)
+        {
+            var response = await _account.BalanceSheetAsync(User.Identity.Name, accountId, from, to);
+            return Json(response);
+        }
+
+        #endregion
     }
 }

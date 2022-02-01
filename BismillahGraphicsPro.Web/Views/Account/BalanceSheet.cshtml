@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Balance Sheet";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()" x-init="getDropdownData" class="mx-3">
+    <h1 class="page-header my-3">Balance Sheet</h1>
+    <form x-on:submit.prevent="find">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Account</label>
+                    <select x-ref="accountId" class="form-control">
+                        <option value="">[ SELECT ]</option>
+                        <template x-for="account in accounts" :key="account.value">
+                            <option :value="account.value" x-text="account.label"></option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>From Date</label>
+                    <input x-ref="fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>To Date</label>
+                    <input x-ref="toDate" class="form-control datepicker" placeholder="To Date" type="text">
+                </div>
+            </div>
+            <div class="col-sm-3 pt-4">
+                <button class="btn btn-custom-bg btn-md" type="submit">Find</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+<script>
+    $(function() {
+        $('.datepicker').pickadate();
+    });
+
+
+    //alpine js code
+    function initData() {
+        return {
+            loading: false,
+
+            //dropdown list
+            accounts: [],
+
+            //get dropdown data
+            async getDropdownData() {
+                //get account
+                const accountResponse = await fetch("/common/getAccount");
+                const account = await accountResponse.json();
+                this.accounts = account;
+            },
+
+            async find() {
+                const accountId = this.$refs.accountId.value;
+                const from = this.$refs.fromDate.value;
+                const to = this.$refs.toDate.value;
+
+                try {
+                    const response = await fetch(`/account/GetBalanceSheet?accountId${accountId}&from=${from}&to=${to}`);
+                    const responseData = await response.json();
+                    //this.totalPaid = responseData.Data;
+                    console.log(responseData);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        };
+    }
+</script>
+}
