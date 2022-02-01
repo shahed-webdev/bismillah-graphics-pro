@@ -177,7 +177,7 @@ public class BranchRepository : Repository, IBranchRepository
             {
                 Category = c.Category,
                 Links = (from l in Db.PageLinks
-                    join r in _roleManager.Roles.ToList()
+                    join r in _roleManager.Roles
                         on l.RoleId equals r.Id
                     where l.LinkCategoryId == c.LinkCategoryId
                     select new PageLinkViewModel
@@ -185,8 +185,7 @@ public class BranchRepository : Repository, IBranchRepository
                         LinkId = l.LinkId,
                         Title = l.Title,
                         RoleName = r.Name,
-                        IsAssign = Db.PageLinkAssigns.Any(a =>
-                            a.LinkId == l.LinkId && a.RegistrationId == registrationId)
+                        IsAssign = Db.PageLinkAssigns.Any(a =>a.LinkId == l.LinkId && a.RegistrationId == registrationId)
                     }).ToList()
             }).ToList();
         return userDll;
