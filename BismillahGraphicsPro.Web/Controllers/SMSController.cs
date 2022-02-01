@@ -1,8 +1,10 @@
 ﻿using JqueryDataTables;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
+    [Authorize]
     public class SMSController : Controller
     {
         public SMSController()
@@ -12,6 +14,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         // Vendor view
+        [Authorize(Roles = "Admin, SMSVendor")]
         public IActionResult Vendor()
         {
             return View();
@@ -27,6 +30,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         // Single SMS view
+        [Authorize(Roles = "Admin, SMSSingle")]
         public IActionResult Single()
         {
             return View();
@@ -41,6 +45,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         // Sent Record view
+        [Authorize(Roles = "Admin, SentRecord")]
         public IActionResult SentRecord()
         {
             return View();

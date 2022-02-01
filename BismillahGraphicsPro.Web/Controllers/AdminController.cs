@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
-    [Authorize(Roles = "Admin,SubAdmin")]
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly IDashboardCore _dashboard;
@@ -16,6 +16,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             _registration = registration;
         }
 
+        [Authorize(Roles = "Admin, SubAdmin")]
         public async Task<IActionResult> Index(int? id)
         {
             ViewBag.yearDropdown = await _dashboard.GetYearsAsync(User.Identity.Name);
@@ -26,6 +27,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //reset data
+        [Authorize(Roles = "Admin, Reset")]
         public IActionResult Reset()
         {
             return View();

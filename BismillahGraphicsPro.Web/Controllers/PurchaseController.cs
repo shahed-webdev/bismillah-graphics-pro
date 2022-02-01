@@ -24,6 +24,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Supplier
 
+        //supplier view
+        [Authorize(Roles = "Admin, Suppliers")]
         public IActionResult Suppliers()
         {
             return View();
@@ -77,6 +79,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Purchase
 
+        //Purchase view
+        [Authorize(Roles = "Admin, Purchase")]
         public IActionResult Index()
         {
             return View();
@@ -152,6 +156,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Pay Due
 
         //pay due single view
+        [Authorize(Roles = "Admin, PurchasePayDueSingle")]
         public async Task<IActionResult> PayDueSingle(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -171,6 +176,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //pay due multiple view
+        [Authorize(Roles = "Admin, PurchasePayDueMultiple")]
         public async Task<IActionResult> PayDueMultiple(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Suppliers");
@@ -215,7 +221,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Report
 
 
-        //payment report
+        //payment report view
+        [Authorize(Roles = "Admin, PurchasePaymentReport")]
         public IActionResult PaymentReport()
         {
             return View();
@@ -238,7 +245,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
 
-        //due report
+        //due report view
+        [Authorize(Roles = "Admin, PurchaseDueReport")]
         public IActionResult DueReport()
         {
             return View();

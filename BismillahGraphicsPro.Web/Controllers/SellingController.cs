@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class SellingController : Controller
     {
         private readonly IVendorCore _vendorCore;
@@ -23,6 +23,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         #region Vendor
 
+        [Authorize(Roles = "Admin, Vendors")]
         public IActionResult Vendors()
         {
             return View();
@@ -77,7 +78,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         #region Selling
-
+        
+        [Authorize(Roles = "Admin, Selling")]
         public IActionResult Index()
         {
             return View();
@@ -155,6 +157,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Due Collection
 
         //due Collection single view
+        [Authorize(Roles = "Admin, SellingDueCollectionSingle")]
         public async Task<IActionResult> DueCollectionSingle(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -175,6 +178,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //due Collection multiple view
+        [Authorize(Roles = "Admin, SellingDueCollectionMultiple")]
         public async Task<IActionResult> DueCollectionMultiple(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Vendors");
@@ -211,12 +215,14 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             return View(model.Data);
         }
+
         #endregion
 
 
         #region Report
 
         //payment report
+        [Authorize(Roles = "Admin, SellingPaymentReport")]
         public IActionResult PaymentReport()
         {
             return View();
@@ -238,7 +244,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //due report
+        //due report view
+        [Authorize(Roles = "Admin, SellingDueReport")]
         public IActionResult DueReport()
         {
             return View();
@@ -253,7 +260,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
 
-        //payment report
+        //payment report view
+        [Authorize(Roles = "Admin, SellingReport")]
         public IActionResult SellingReport()
         {
             return View();
