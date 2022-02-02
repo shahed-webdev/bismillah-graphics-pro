@@ -50,5 +50,68 @@ namespace BismillahGraphicsPro.Repository
             Db.SaveChanges();
             return new DbResponse(true, $"{registration.UserName} Updated Successfully");
         }
+
+        public List<SideNavbarModel> GetSideNavbar(string userName)
+        {
+            if (string.IsNullOrEmpty(userName)) return new List<SideNavbarModel>();
+
+            var registration = Db.Registrations.FirstOrDefault(r => r.UserName == userName);
+            if (registration == null) return new List<SideNavbarModel>();
+
+            if (registration.Type == UserType.Admin)
+            {
+                var menu = (from p in Db.PageLinkCategories
+                    orderby p.Sn
+                    select new SideNavbarModel
+                    {
+                        LinkCategoryId = p.LinkCategoryId,
+                        Category = p.Category,
+                        IconClass = p.IconClass,
+                        Sn = p.Sn,
+                        Links = p.PageLinks.Select(l => new SideNavbarLinkModel
+                        {
+                            LinkId = l.LinkId,
+                            Sn = l.Sn,
+                            Action = l.Action,
+                            Controller = l.Controller,
+                            IconClass = l.IconClass,
+                            Title = l.Title
+                        }).OrderBy(l => l.Sn).ToList()
+                    }).ToList();
+                return menu;
+            }
+            else
+            {
+                var menu = (from p in Db.PageLinkAssigns
+                    join c in Db.PageLinkCategories
+                        on p.Link.LinkCategory.LinkCategoryId equals c.LinkCategoryId
+                    where p.RegistrationId == registration.RegistrationId
+                    orderby p.Link.LinkCategory.Sn
+                    select new SideNavbarModel
+                    {
+                        LinkCategoryId = c.LinkCategoryId,
+                        Category = c.Category,
+                        IconClass = c.IconClass,
+                        Sn = c.Sn
+                    }).Distinct().ToList();
+
+                foreach (var item in menu)
+                {
+                    item.Links = Db.PageLinkAssigns
+                        .Where(l => l.Link.LinkCategoryId == item.LinkCategoryId &&
+                                    l.RegistrationId == registration.RegistrationId).Select(l => new SideNavbarLinkModel
+                        {
+                            LinkId = l.Link.LinkId,
+                            Sn = l.Link.Sn,
+                            Action = l.Link.Action,
+                            Controller = l.Link.Controller,
+                            IconClass = l.Link.IconClass,
+                            Title = l.Link.Title
+                        }).ToList();
+                }
+
+                return menu;
+            }
+        }
     }
 }

@@ -114,6 +114,11 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             return Task.CompletedTask;
         }
 
+        public Task<List<SideNavbarModel>> GetSideNavbarAsync(string userName)
+        {
+            return Task.FromResult(_db.Registration.GetSideNavbar(userName));
+        }
+
         public Task<DbResponse> ResetAsync(string userName)
         {
             try

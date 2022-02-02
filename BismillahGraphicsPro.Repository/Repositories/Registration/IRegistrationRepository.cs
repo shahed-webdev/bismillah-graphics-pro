@@ -10,5 +10,6 @@ namespace BismillahGraphicsPro.Repository
         UserType UserTypeByUserName(string userName);
         void PasswordChanged(string userName, string password);
         DbResponse Edit(string userName, RegistrationEditModel model);
+        List<SideNavbarModel> GetSideNavbar(string userName);
     }
 }

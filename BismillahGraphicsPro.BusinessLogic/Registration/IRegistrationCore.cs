@@ -15,7 +15,7 @@ namespace BismillahGraphicsPro.BusinessLogic
         List<BranchListModel> BranchList();
 
         Task PasswordChangedAsync(string userName, string password);
-
+        Task<List<SideNavbarModel>> GetSideNavbarAsync(string userName);
         Task<DbResponse> ResetAsync(string userName);
         //-----------Sub-Admin--------------------------
         Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model);
