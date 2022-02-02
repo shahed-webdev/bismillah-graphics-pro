@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BismillahGraphicsPro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220121145728_SeedRoleData")]
+    [Migration("20220202055403_SeedRoleData")]
     partial class SeedRoleData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,8 +114,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
-                    b.Property<bool?>("IsAdded")
-                        .IsRequired()
+                    b.Property<bool>("IsAdded")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("((1))");
@@ -1204,17 +1203,10 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "25205E51-C7F6-43E5-927A-8074AF61B966",
-                            ConcurrencyStamp = "25205E51-C7F6-43E5-927A-8074AF61B966",
-                            Name = "Authority",
-                            NormalizedName = "AUTHORITY"
-                        },
-                        new
-                        {
-                            Id = "e202e807-4b4f-4c78-983a-2ad06e3f7012",
-                            ConcurrencyStamp = "e202e807-4b4f-4c78-983a-2ad06e3f7012",
-                            Name = "AccountCreate",
-                            NormalizedName = "ACCOUNTCREATE"
+                            Id = "fb76a482-3d73-4e28-9155-581a1a2cbea4",
+                            ConcurrencyStamp = "fb76a482-3d73-4e28-9155-581a1a2cbea4",
+                            Name = "Account",
+                            NormalizedName = "ACCOUNT"
                         },
                         new
                         {
@@ -1225,6 +1217,181 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
+                            Id = "25205E51-C7F6-43E5-927A-8074AF61B966",
+                            ConcurrencyStamp = "25205E51-C7F6-43E5-927A-8074AF61B966",
+                            Name = "Authority",
+                            NormalizedName = "AUTHORITY"
+                        },
+                        new
+                        {
+                            Id = "1d844081-a5fc-4674-a767-4e835e591740",
+                            ConcurrencyStamp = "1d844081-a5fc-4674-a767-4e835e591740",
+                            Name = "BalanceSheet",
+                            NormalizedName = "BALANCESHEET"
+                        },
+                        new
+                        {
+                            Id = "293de564-7caf-4686-9aea-f2dbc69b9072",
+                            ConcurrencyStamp = "293de564-7caf-4686-9aea-f2dbc69b9072",
+                            Name = "DailyCash",
+                            NormalizedName = "DAILYCASH"
+                        },
+                        new
+                        {
+                            Id = "f1fb596e-fc07-46f8-ae1d-ebbde38e5994",
+                            ConcurrencyStamp = "f1fb596e-fc07-46f8-ae1d-ebbde38e5994",
+                            Name = "Expense",
+                            NormalizedName = "EXPENSE"
+                        },
+                        new
+                        {
+                            Id = "cc64a971-f6e8-4811-8c3f-a9e2e944e21e",
+                            ConcurrencyStamp = "cc64a971-f6e8-4811-8c3f-a9e2e944e21e",
+                            Name = "ExpenseReport",
+                            NormalizedName = "EXPENSEREPORT"
+                        },
+                        new
+                        {
+                            Id = "4b48934d-ef26-4289-a038-e7313736126f",
+                            ConcurrencyStamp = "4b48934d-ef26-4289-a038-e7313736126f",
+                            Name = "MeasurementUnit",
+                            NormalizedName = "MEASUREMENTUNIT"
+                        },
+                        new
+                        {
+                            Id = "878cad39-1257-44cb-9c2d-21da49e4e34d",
+                            ConcurrencyStamp = "878cad39-1257-44cb-9c2d-21da49e4e34d",
+                            Name = "Net",
+                            NormalizedName = "NET"
+                        },
+                        new
+                        {
+                            Id = "d4d25cbe-c54b-4982-ac79-a45c562faf8d",
+                            ConcurrencyStamp = "d4d25cbe-c54b-4982-ac79-a45c562faf8d",
+                            Name = "Products",
+                            NormalizedName = "PRODUCTS"
+                        },
+                        new
+                        {
+                            Id = "c5f489f6-6f53-473b-9c47-d087ce3e9cd5",
+                            ConcurrencyStamp = "c5f489f6-6f53-473b-9c47-d087ce3e9cd5",
+                            Name = "ProductSales",
+                            NormalizedName = "PRODUCTSALES"
+                        },
+                        new
+                        {
+                            Id = "492d5817-5fd2-4342-8f84-4d5798aa5e01",
+                            ConcurrencyStamp = "492d5817-5fd2-4342-8f84-4d5798aa5e01",
+                            Name = "Purchase",
+                            NormalizedName = "PURCHASE"
+                        },
+                        new
+                        {
+                            Id = "3eb3b3a9-51d9-4dd8-b9d9-7ed710ca6fce",
+                            ConcurrencyStamp = "3eb3b3a9-51d9-4dd8-b9d9-7ed710ca6fce",
+                            Name = "PurchaseDueReport",
+                            NormalizedName = "PURCHASEDUEREPORT"
+                        },
+                        new
+                        {
+                            Id = "0c03d7ba-96df-46cd-97bb-328de8edebed",
+                            ConcurrencyStamp = "0c03d7ba-96df-46cd-97bb-328de8edebed",
+                            Name = "PurchasePayDueMultiple",
+                            NormalizedName = "PURCHASEPAYDUEMULTIPLE"
+                        },
+                        new
+                        {
+                            Id = "216787ad-3c2d-4756-9067-779321626951",
+                            ConcurrencyStamp = "216787ad-3c2d-4756-9067-779321626951",
+                            Name = "PurchasePayDueSingle",
+                            NormalizedName = "PURCHASEPAYDUESINGLE"
+                        },
+                        new
+                        {
+                            Id = "632f139d-4827-413e-8ede-45d3ba8f9724",
+                            ConcurrencyStamp = "632f139d-4827-413e-8ede-45d3ba8f9724",
+                            Name = "PurchasePaymentReport",
+                            NormalizedName = "PURCHASEPAYMENTREPORT"
+                        },
+                        new
+                        {
+                            Id = "59adebcb-f095-45a4-bae0-cc574d810106",
+                            ConcurrencyStamp = "59adebcb-f095-45a4-bae0-cc574d810106",
+                            Name = "Reset",
+                            NormalizedName = "RESET"
+                        },
+                        new
+                        {
+                            Id = "d8a9c270-f027-4078-a71c-1d6c7372ff53",
+                            ConcurrencyStamp = "d8a9c270-f027-4078-a71c-1d6c7372ff53",
+                            Name = "Selling",
+                            NormalizedName = "SELLING"
+                        },
+                        new
+                        {
+                            Id = "726bc8ab-e678-4b7f-a9e6-636ae673bd63",
+                            ConcurrencyStamp = "726bc8ab-e678-4b7f-a9e6-636ae673bd63",
+                            Name = "SellingDueCollectionMultiple",
+                            NormalizedName = "SELLINGDUECOLLECTIONMULTIPLE"
+                        },
+                        new
+                        {
+                            Id = "fe0aa59a-d691-4bcb-bad4-07fba932e7ac",
+                            ConcurrencyStamp = "fe0aa59a-d691-4bcb-bad4-07fba932e7ac",
+                            Name = "SellingDueCollectionSingle",
+                            NormalizedName = "SELLINGDUECOLLECTIONSINGLE"
+                        },
+                        new
+                        {
+                            Id = "d28f2f6f-eea6-415e-afec-52cacafe7c7d",
+                            ConcurrencyStamp = "d28f2f6f-eea6-415e-afec-52cacafe7c7d",
+                            Name = "SellingDueReport",
+                            NormalizedName = "SELLINGDUEREPORT"
+                        },
+                        new
+                        {
+                            Id = "48f381bf-e07a-4846-b336-b395d9e755ea",
+                            ConcurrencyStamp = "48f381bf-e07a-4846-b336-b395d9e755ea",
+                            Name = "SellingPaymentReport",
+                            NormalizedName = "SELLINGPAYMENTREPORT"
+                        },
+                        new
+                        {
+                            Id = "06f359fa-68bf-40f6-a112-fc599511b145",
+                            ConcurrencyStamp = "06f359fa-68bf-40f6-a112-fc599511b145",
+                            Name = "SellingReport",
+                            NormalizedName = "SELLINGREPORT"
+                        },
+                        new
+                        {
+                            Id = "a3e4480c-f381-4b34-9ab8-b0f3db05b724",
+                            ConcurrencyStamp = "a3e4480c-f381-4b34-9ab8-b0f3db05b724",
+                            Name = "SentRecord",
+                            NormalizedName = "SENTRECORD"
+                        },
+                        new
+                        {
+                            Id = "299dd7bc-f8f4-42e2-b129-607d774bf983",
+                            ConcurrencyStamp = "299dd7bc-f8f4-42e2-b129-607d774bf983",
+                            Name = "SmsSingle",
+                            NormalizedName = "SMSSINGLE"
+                        },
+                        new
+                        {
+                            Id = "8382e629-ac39-46ed-816e-0fe9275e3554",
+                            ConcurrencyStamp = "8382e629-ac39-46ed-816e-0fe9275e3554",
+                            Name = "SmsVendor",
+                            NormalizedName = "SMSVENDOR"
+                        },
+                        new
+                        {
+                            Id = "bec93436-98fd-44fe-bcd3-00f3a9cf0b3a",
+                            ConcurrencyStamp = "bec93436-98fd-44fe-bcd3-00f3a9cf0b3a",
+                            Name = "StockReport",
+                            NormalizedName = "STOCKREPORT"
+                        },
+                        new
+                        {
                             Id = "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7",
                             ConcurrencyStamp = "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7",
                             Name = "SubAdmin",
@@ -1232,185 +1399,45 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            Id = "31f91532-c149-4248-a844-f7601c24b740",
-                            ConcurrencyStamp = "31f91532-c149-4248-a844-f7601c24b740",
-                            Name = "BalanceSheet",
-                            NormalizedName = "BALANCESHEET"
-                        },
-                        new
-                        {
-                            Id = "ae25c232-3435-4239-901d-0e2d3e4069c9",
-                            ConcurrencyStamp = "ae25c232-3435-4239-901d-0e2d3e4069c9",
-                            Name = "Deposit",
-                            NormalizedName = "DEPOSIT"
-                        },
-                        new
-                        {
-                            Id = "446d16c5-000c-4099-b553-23696a5284ec",
-                            ConcurrencyStamp = "446d16c5-000c-4099-b553-23696a5284ec",
-                            Name = "Expense",
-                            NormalizedName = "EXPENSE"
-                        },
-                        new
-                        {
-                            Id = "b1280e80-8ec6-48fb-8580-6f2e57db8d58",
-                            ConcurrencyStamp = "b1280e80-8ec6-48fb-8580-6f2e57db8d58",
-                            Name = "ExpenseCategory",
-                            NormalizedName = "EXPENSECATEGORY"
-                        },
-                        new
-                        {
-                            Id = "22b877e9-56c5-4281-92a7-d336cd4382a4",
-                            ConcurrencyStamp = "22b877e9-56c5-4281-92a7-d336cd4382a4",
-                            Name = "MeasurementUnit",
-                            NormalizedName = "MEASUREMENTUNIT"
-                        },
-                        new
-                        {
-                            Id = "3e0d4db7-80a0-49a9-8d8d-116cc5c9fc83",
-                            ConcurrencyStamp = "3e0d4db7-80a0-49a9-8d8d-116cc5c9fc83",
-                            Name = "NetSummery",
-                            NormalizedName = "NETSUMMERY"
-                        },
-                        new
-                        {
-                            Id = "897ea03e-f328-4a9e-91bc-247d9dcc6aa9",
-                            ConcurrencyStamp = "897ea03e-f328-4a9e-91bc-247d9dcc6aa9",
-                            Name = "PaymentSummery",
-                            NormalizedName = "PAYMENTSUMMERY"
-                        },
-                        new
-                        {
-                            Id = "5a52c2fc-6d6b-478f-9fce-ba46abaea1f2",
-                            ConcurrencyStamp = "5a52c2fc-6d6b-478f-9fce-ba46abaea1f2",
-                            Name = "Product",
-                            NormalizedName = "PRODUCT"
-                        },
-                        new
-                        {
-                            Id = "bbd6cebc-741d-4bfb-852b-204d5f623a86",
-                            ConcurrencyStamp = "bbd6cebc-741d-4bfb-852b-204d5f623a86",
-                            Name = "ProductCategory",
-                            NormalizedName = "PRODUCTCATEGORY"
-                        },
-                        new
-                        {
-                            Id = "a9c6f8da-3e48-47a9-b355-6107b297ae10",
-                            ConcurrencyStamp = "a9c6f8da-3e48-47a9-b355-6107b297ae10",
-                            Name = "ProductSummery",
-                            NormalizedName = "PRODUCTSUMMERY"
-                        },
-                        new
-                        {
-                            Id = "9d037f79-ec3e-481d-8e4f-acf86a3a2f5c",
-                            ConcurrencyStamp = "9d037f79-ec3e-481d-8e4f-acf86a3a2f5c",
-                            Name = "PurchaseRecord",
-                            NormalizedName = "PURCHASERECORD"
-                        },
-                        new
-                        {
-                            Id = "bc6a04f9-6984-4755-8573-016047310f8e",
-                            ConcurrencyStamp = "bc6a04f9-6984-4755-8573-016047310f8e",
-                            Name = "ReportDailyCash",
-                            NormalizedName = "REPORTDAILYCASH"
-                        },
-                        new
-                        {
-                            Id = "7210cd36-9476-4a49-ad86-f2bfb88c4e6d",
-                            ConcurrencyStamp = "7210cd36-9476-4a49-ad86-f2bfb88c4e6d",
-                            Name = "ReportExpense",
-                            NormalizedName = "REPORTEXPENSE"
-                        },
-                        new
-                        {
-                            Id = "93c4b0d6-0d82-410f-adb1-fb4aba413a8e",
-                            ConcurrencyStamp = "93c4b0d6-0d82-410f-adb1-fb4aba413a8e",
-                            Name = "ReportIncome",
-                            NormalizedName = "REPORTINCOME"
-                        },
-                        new
-                        {
-                            Id = "aceacd97-893e-464a-9f94-9e19d8984764",
-                            ConcurrencyStamp = "aceacd97-893e-464a-9f94-9e19d8984764",
-                            Name = "ReportSelling",
-                            NormalizedName = "REPORTSELLING"
-                        },
-                        new
-                        {
-                            Id = "5c8eda73-94a0-49e6-b4ad-63282d09e3a7",
-                            ConcurrencyStamp = "5c8eda73-94a0-49e6-b4ad-63282d09e3a7",
-                            Name = "ReportVendor",
-                            NormalizedName = "REPORTVENDOR"
-                        },
-                        new
-                        {
-                            Id = "27c3d924-cac0-4aae-8076-eb395964d547",
-                            ConcurrencyStamp = "27c3d924-cac0-4aae-8076-eb395964d547",
-                            Name = "SellingRecord",
-                            NormalizedName = "SELLINGRECORD"
-                        },
-                        new
-                        {
-                            Id = "5d0106d1-8900-4630-aec2-0b016f55d092",
-                            ConcurrencyStamp = "5d0106d1-8900-4630-aec2-0b016f55d092",
-                            Name = "Withdraw",
-                            NormalizedName = "WITHDRAW"
-                        },
-                        new
-                        {
-                            Id = "60482875-1078-4F65-BBBE-5C68836045A6",
-                            ConcurrencyStamp = "60482875-1078-4F65-BBBE-5C68836045A6",
-                            Name = "TransactionLogs",
-                            NormalizedName = "TRANSACTIONLOGS"
-                        },
-                        new
-                        {
-                            Id = "D68419DF-4B85-4704-89F7-AC889C750493",
-                            ConcurrencyStamp = "D68419DF-4B85-4704-89F7-AC889C750493",
-                            Name = "Selling",
-                            NormalizedName = "SELLING"
-                        },
-                        new
-                        {
-                            Id = "9EB47A31-EFC6-43D4-B204-538FC3F280F3",
-                            ConcurrencyStamp = "9EB47A31-EFC6-43D4-B204-538FC3F280F3",
-                            Name = "Sms",
-                            NormalizedName = "SMS"
-                        },
-                        new
-                        {
-                            Id = "D093C085-938C-4A7E-84B8-9CA5559850AE",
-                            ConcurrencyStamp = "D093C085-938C-4A7E-84B8-9CA5559850AE",
+                            Id = "1bb0d758-5506-43f5-b6a0-a6b3b4ee8129",
+                            ConcurrencyStamp = "1bb0d758-5506-43f5-b6a0-a6b3b4ee8129",
                             Name = "SubAdminList",
                             NormalizedName = "SUBADMINLIST"
                         },
                         new
                         {
-                            Id = "54DAEA5E-86D7-4EBE-9191-A170B37CD883",
-                            ConcurrencyStamp = "54DAEA5E-86D7-4EBE-9191-A170B37CD883",
+                            Id = "058e2f01-67eb-4dcb-8eab-99402d0c3643",
+                            ConcurrencyStamp = "058e2f01-67eb-4dcb-8eab-99402d0c3643",
                             Name = "SubAdminPageAccess",
                             NormalizedName = "SUBADMINPAGEACCESS"
                         },
                         new
                         {
-                            Id = "86DD9E91-0928-497A-B226-FA346F7EA656",
-                            ConcurrencyStamp = "86DD9E91-0928-497A-B226-FA346F7EA656",
+                            Id = "415afdc1-04c0-4e7c-8a38-3daeab8f2e10",
+                            ConcurrencyStamp = "415afdc1-04c0-4e7c-8a38-3daeab8f2e10",
                             Name = "SubAdminSignUp",
                             NormalizedName = "SUBADMINSIGNUP"
                         },
                         new
                         {
-                            Id = "3DC9AC78-8A93-498A-8D04-D69C0294B4C4",
-                            ConcurrencyStamp = "3DC9AC78-8A93-498A-8D04-D69C0294B4C4",
-                            Name = "Supplier",
-                            NormalizedName = "SUPPLIER"
+                            Id = "cb683688-df12-4127-979b-d6b1fd8eddda",
+                            ConcurrencyStamp = "cb683688-df12-4127-979b-d6b1fd8eddda",
+                            Name = "Suppliers",
+                            NormalizedName = "SUPPLIERS"
                         },
                         new
                         {
-                            Id = "70453879-6A75-48B8-8ED2-8B86DEC40798",
-                            ConcurrencyStamp = "70453879-6A75-48B8-8ED2-8B86DEC40798",
-                            Name = "Vendor",
-                            NormalizedName = "VENDOR"
+                            Id = "4120700d-198a-4817-9987-37077ba86160",
+                            ConcurrencyStamp = "4120700d-198a-4817-9987-37077ba86160",
+                            Name = "TransactionLog",
+                            NormalizedName = "TRANSACTIONLOG"
+                        },
+                        new
+                        {
+                            Id = "29a30973-7b5c-4a18-80ed-ab222e548f1e",
+                            ConcurrencyStamp = "29a30973-7b5c-4a18-80ed-ab222e548f1e",
+                            Name = "Vendors",
+                            NormalizedName = "VENDORS"
                         });
                 });
 
@@ -1745,12 +1772,14 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasOne("BismillahGraphicsPro.Data.PageLink", "Link")
                         .WithMany("PageLinkAssigns")
                         .HasForeignKey("LinkId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_PageLinkAssign_PageLink");
 
                     b.HasOne("BismillahGraphicsPro.Data.Registration", "Registration")
                         .WithMany("PageLinkAssigns")
                         .HasForeignKey("RegistrationId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_PageLinkAssign_Registration");
 
@@ -1833,12 +1862,14 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasOne("BismillahGraphicsPro.Data.Product", "Product")
                         .WithMany("PurchaseLists")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_PurchaseList_Product");
 
                     b.HasOne("BismillahGraphicsPro.Data.Purchase", "Purchase")
                         .WithMany("PurchaseLists")
                         .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_PurchaseList_Purchase");
 
@@ -1903,12 +1934,14 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasOne("BismillahGraphicsPro.Data.Purchase", "Purchase")
                         .WithMany("PurchasePaymentRecords")
                         .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_PurchasePaymentRecord_Purchase");
 
                     b.HasOne("BismillahGraphicsPro.Data.PurchasePaymentReceipt", "PurchaseReceipt")
                         .WithMany("PurchasePaymentRecords")
                         .HasForeignKey("PurchaseReceiptId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .HasConstraintName("FK_PurchasePaymentRecord_PurchasePaymentReceipt");
 
                     b.Navigation("Account");
@@ -1974,12 +2007,14 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasOne("BismillahGraphicsPro.Data.Product", "Product")
                         .WithMany("SellingLists")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_SellingList_Product");
 
                     b.HasOne("BismillahGraphicsPro.Data.Selling", "Selling")
                         .WithMany("SellingLists")
                         .HasForeignKey("SellingId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_SellingList_Selling");
 
@@ -2044,12 +2079,14 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasOne("BismillahGraphicsPro.Data.Selling", "Selling")
                         .WithMany("SellingPaymentRecords")
                         .HasForeignKey("SellingId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_SellingPaymentRecord_Selling");
 
                     b.HasOne("BismillahGraphicsPro.Data.SellingPaymentReceipt", "SellingReceipt")
                         .WithMany("SellingPaymentRecords")
                         .HasForeignKey("SellingReceiptId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
                         .HasConstraintName("FK_SellingPaymentRecord_SellingPaymentReceipt");
 

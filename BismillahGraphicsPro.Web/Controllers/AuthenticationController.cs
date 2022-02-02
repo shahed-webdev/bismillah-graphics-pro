@@ -113,6 +113,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             await _signInManager.RefreshSignInAsync(user);
 
+            await _registration.PasswordChangedAsync(user.UserName, model.NewPassword);
+
             return RedirectToAction("ChangePassword", "Authentication", new { Message = "Your password has been changed." });
         }
 

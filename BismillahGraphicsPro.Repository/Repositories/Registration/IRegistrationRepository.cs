@@ -7,5 +7,6 @@ namespace BismillahGraphicsPro.Repository
         int BranchIdByUserName(string userName);
         int RegistrationIdByUserName(string userName);
         UserType UserTypeByUserName(string userName);
+        void PasswordChanged(string userName, string password);
     }
 }

@@ -95,6 +95,12 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             }
         }
 
+        public Task PasswordChangedAsync(string userName, string password)
+        {
+            _db.Registration.PasswordChanged(userName, password);
+            return Task.CompletedTask;
+        }
+
         public Task<DbResponse> ResetAsync(string userName)
         {
             try
@@ -175,7 +181,7 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
                 var user = await _userManager.FindByNameAsync(userNameResponse.Data);
                 var roleList = links.Select(l => l.RoleName).ToList();
 
-                roleList.Add("SubAdmin");
+                roleList.Add(UserType.SubAdmin.ToString());
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 await _userManager.RemoveFromRolesAsync(user, userRoles.ToArray());

@@ -282,7 +282,7 @@ namespace BismillahGraphicsPro.Data
                 entity.HasOne(d => d.Registration)
                     .WithMany(p => p.PageLinkAssigns)
                     .HasForeignKey(d => d.RegistrationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasConstraintName("FK_PageLinkAssign_Registration");
             });
 
@@ -822,6 +822,8 @@ namespace BismillahGraphicsPro.Data
             });
             base.OnModelCreating(modelBuilder);
             modelBuilder.SeedRoleData();
+            modelBuilder.SeedLinkCategoryData();
+            modelBuilder.SeedLinkData();
         }
     }
 }
