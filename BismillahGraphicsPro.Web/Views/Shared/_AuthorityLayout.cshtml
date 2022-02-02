@@ -45,7 +45,7 @@
     </header>
 
     <div id="sidedrawer" class="d-print-none z-depth-1">
-        <Partial Name="_AdminLoginPartial" />
+        @await Component.InvokeAsync("Profile")
         <ul id="menuItem">
             <li>
                 <strong>
