@@ -21,7 +21,8 @@ namespace BismillahGraphicsPro.BusinessLogic
         Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model);
         List<SubAdminListModel> SubAdminList(string userName);
         List<DDL> SubAdminDdl(string userName);
-        Task<List<PageCategoryWithPageModel>> SubAdminPageLinksAsync(string userName);
+        List<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId);
+        //Task<List<PageCategoryWithPageModel>> SubAdminPageLinksAsync(string userName);
         Task<DbResponse> SubAdminAssignLinks(int registrationId, List<PageLinkAssignModel> links);
         DbResponse SubAdminToggleActivation(int registrationId);
         bool IsSubAdminActive(string userName);

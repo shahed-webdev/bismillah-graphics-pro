@@ -175,11 +175,15 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             return _db.Branch.SubAdminDdl(branchId);
         }
 
-        public Task<List<PageCategoryWithPageModel>> SubAdminPageLinksAsync(string userName)
+        public List<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId)
         {
-            var registrationId = _db.Registration.RegistrationIdByUserName(userName);
-            return Task.FromResult(_db.Branch.SubAdminPageLinks(registrationId));
+            return _db.Branch.SubAdminPageLinks(registrationId);
         }
+        //public Task<List<PageCategoryWithPageModel>> SubAdminPageLinksAsync(string userName)
+        //{
+        //    var registrationId = _db.Registration.RegistrationIdByUserName(userName);
+        //    return Task.FromResult(_db.Branch.SubAdminPageLinks(registrationId));
+        //}
 
         public async Task<DbResponse> SubAdminAssignLinks(int registrationId, List<PageLinkAssignModel> links)
         {
