@@ -16,7 +16,7 @@ namespace BismillahGraphicsPro.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var model = await _registration.SubAdminPageLinksAsync(User.Identity.Name);
+            var model = await _registration.GetSideNavbarAsync(User.Identity.Name);
             return View("Default", model);
         }
     }

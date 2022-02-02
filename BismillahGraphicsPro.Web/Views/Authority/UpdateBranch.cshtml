@@ -1,4 +1,4 @@
-﻿@model BranchCreateModel
+﻿@model BranchEditModel
 @{
     ViewData["Title"] = "Update Branch";
     Layout = "_AuthorityLayout";
@@ -11,33 +11,34 @@
                 <strong class="dark-grey-text">Update Branch</strong>
             </h4>
 
-            <form asp-controller="Authority" asp-action="CreateBranch" method="post">
+            <form asp-controller="Authority" asp-action="UpdateBranch" method="post">
+                <input type="hidden" name="BranchId" value="@Model.BranchId" />
 
                 <div class="md-form">
-                    <label asp-for="Name">Branch Name</label>
-                    <input asp-for="Name" class="form-control" required>
-                    <span asp-validation-for="Name"></span>
+                    <label asp-for="BranchName">Branch Name</label>
+                    <input asp-for="BranchName" class="form-control" required>
+                    <span asp-validation-for="BranchName"></span>
                 </div>
 
                 <div class="md-form">
-                    <label asp-for="Phone">Mobile Number</label>
-                    <input type="text" asp-for="Phone" maxlength="11" class="form-control" required>
-                    <span asp-validation-for="Phone"></span>
+                    <label asp-for="BranchPhone">Mobile Number</label>
+                    <input type="text" asp-for="BranchPhone" maxlength="11" class="form-control" required>
+                    <span asp-validation-for="BranchPhone"></span>
                 </div>
 
 
                 <div class="md-form">
-                    <label asp-for="Email">Email</label>
-                    <input asp-for="Email" type="email" class="form-control">
+                    <label asp-for="BranchEmail">Email</label>
+                    <input asp-for="BranchEmail" type="email" class="form-control">
                 </div>
 
                 <div class="md-form">
-                    <label asp-for="Address">Address</label>
-                    <input asp-for="Address" type="text" class="form-control">
+                    <label asp-for="BranchAddress">Address</label>
+                    <input asp-for="BranchAddress" type="text" class="form-control">
                 </div>
 
                 <div class="md-form">
-                    @Html.Hidden("Image")
+                    @Html.Hidden("InstitutionLogo")
                     <div class="file-field">
                         <div class="btn purple-gradient btn-rounded btn-sm">
                             <span><i class="fas fa-upload mr-2" aria-hidden="true"></i>Choose Logo</span>
@@ -85,7 +86,7 @@
 
         
 
-        $('#Image').val('');
+        $('#InstitutionLogo').val('');
         $uploadCrop = $('#upload-demo').croppie(opt);
 
         $('#upload').on('change', function () {
@@ -94,7 +95,7 @@
 
         $('#doneButton').on('click', function () {
             $uploadCrop.croppie('result', { type: 'base64' }).then(function (res) {
-                $('#Image').val(res.split(',')[1]);
+                $('#InstitutionLogo').val(res.split(',')[1]);
                 $('#upload-demo').hide();
                 $('#doneButton').hide();
                 $('#prevImage').attr('src', res).addClass('img-thumbnail');
@@ -119,7 +120,7 @@
             reader.onload = function (e) {
                 $uploadCrop.croppie('bind', { url: e.target.result });
 
-                $('#Image').val('');
+                $('#InstitutionLogo').val('');
                 $('#upload-demo').show();
                 $('#doneButton').show();
                 $('#prevImage').attr('src', '').removeClass('img-thumbnail rounded-circle');

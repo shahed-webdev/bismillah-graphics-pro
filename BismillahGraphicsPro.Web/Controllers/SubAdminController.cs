@@ -67,11 +67,11 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //get page links
-        //public IActionResult GetPageLinks(int id)
-        //{
-        //    var response = _registration.SubAdminPageLinks(id);
-        //    return Json(response);
-        //}
+        public IActionResult GetPageLinks(int id)
+        {
+            var response = _registration.SubAdminPageLinks(id);
+            return Json(response);
+        }
 
 
         //post page links

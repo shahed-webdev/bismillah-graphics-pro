@@ -44,7 +44,7 @@
 
     <div id="sidedrawer" class="d-print-none z-depth-1">
         <Partial Name="_AdminLoginPartial" />
-        <Partial Name="_Side_navbar" />
+        @await Component.InvokeAsync("Sidebar")
     </div>
 
     <main id="content-wrapper">

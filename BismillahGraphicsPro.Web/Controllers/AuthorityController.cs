@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
-    [Authorize (Roles = "Authority")]
+    [Authorize(Roles = "Authority")]
     public class AuthorityController : Controller
     {
         private readonly IRegistrationCore _registration;
@@ -36,9 +36,9 @@ namespace BismillahGraphicsPro.Web.Controllers
             var response = await _registration.BranchSignUpAsync(model);
 
             if (response.IsSuccess) return RedirectToAction("BranchList");
-      
+
             ModelState.AddModelError("", response.Message);
-           
+
             return View(model);
         }
 
@@ -54,7 +54,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         public IActionResult PostBranchAccessControl(int branchId)
         {
             var response = _registration.ToggleBranchActivation(branchId);
-            
+
             return Json(response);
         }
 
@@ -63,15 +63,20 @@ namespace BismillahGraphicsPro.Web.Controllers
         public IActionResult UpdateBranch(int? id)
         {
             if (!id.HasValue) return RedirectToAction("BranchList");
-
+            //var model = _registration.GetAsync()
             return View();
         }
 
+
         //post update Branch
-        //[HttpPost]
-        //public IActionResult PostUpdateBranch()
-        //{
-        //    return Json();
-        //}
+        [HttpPost]
+        public async Task<IActionResult> UpdateBranch(BranchEditModel model)
+        {
+            var response = await _registration.EditBranchAsync(model);
+           
+            if(response.IsSuccess) return RedirectToAction("BranchList");
+
+            return View();
+        }
     }
 }
