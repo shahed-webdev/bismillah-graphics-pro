@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - Barkantaj Group</title>
     <link rel="icon" type="image/png" href="/images/fabicon.ico">
-    
+
     <!--alpine js-->
     <script defer src="https://unpkg.com/alpinejs@3.8.0/dist/cdn.min.js"></script>
 
@@ -26,6 +26,8 @@
     <link href="~/css/print-page.css" rel="stylesheet" />
     <!-- Custom style -->
     <link href="~/css/custom-layout.css?v=1.1.2" rel="stylesheet" />
+    <!-- image cropper -->
+    <link href="~/css/croper.css" rel="stylesheet" />
     <!-- others style-->
     @await RenderSectionAsync("Styles", false)
 </head>
@@ -104,8 +106,8 @@
     <script src="https://cdn.muicss.com/mui-latest/js/mui.min.js"></script>
     <script src="~/js/sidedrawer-links.js"></script>
     <script src="~/js/sidedrawer-show-hide.js"></script>
-    <!---global method-->
-    <script src="~/pages-js/global-methods.js"></script>
+    <!-- Image crop-er -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.4/croppie.min.js"></script>
     <!-- others js -->
     @await RenderSectionAsync("Scripts", false)
 

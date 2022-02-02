@@ -57,5 +57,21 @@ namespace BismillahGraphicsPro.Web.Controllers
             
             return Json(response);
         }
+
+
+        //update Branch
+        public IActionResult UpdateBranch(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("BranchList");
+
+            return View();
+        }
+
+        //post update Branch
+        //[HttpPost]
+        //public IActionResult PostUpdateBranch()
+        //{
+        //    return Json();
+        //}
     }
 }
