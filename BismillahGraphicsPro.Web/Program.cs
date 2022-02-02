@@ -27,6 +27,7 @@ builder.Services.ConfigureApplicationCookie(config =>
 {
     config.Cookie.Name = "Identity.Cookie";
     config.LoginPath = "/Authentication/Login";
+    config.AccessDeniedPath= "/Authentication/AccessDenied";
 });
 
 

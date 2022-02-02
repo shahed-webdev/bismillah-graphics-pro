@@ -1,4 +1,5 @@
 ﻿using BismillahGraphicsPro.BusinessLogic;
+using BismillahGraphicsPro.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,14 +13,16 @@ namespace BismillahGraphicsPro.Web.Controllers
         private readonly IProductCore _productCore;
         private readonly ISupplierCore _supplierCore;
         private readonly IVendorCore _vendorCore;
+        private readonly IRegistrationCore _registration;
 
-        public CommonController(IMeasurementUnitCore measurementUnit, IAccountCore account, IProductCore productCore, ISupplierCore supplierCore, IVendorCore vendorCore)
+        public CommonController(IMeasurementUnitCore measurementUnit, IAccountCore account, IProductCore productCore, ISupplierCore supplierCore, IVendorCore vendorCore, IRegistrationCore registration)
         {
             _measurementUnit = measurementUnit;
             _account = account;
             _productCore = productCore;
             _supplierCore = supplierCore;
             _vendorCore = vendorCore;
+            _registration = registration;
         }
 
 
@@ -65,9 +68,22 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //profile update(authority, admin, sub-admin)
-        public IActionResult UpdateProfile()
+        public async Task<IActionResult> UpdateProfile()
         {
-            return View();
+            var model =await _registration.GetUserAsync(User.Identity.Name);
+            return View(model.Data);
+        }
+
+        //post update Branch
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(RegistrationEditModel model)
+        {
+            var response = await _registration.EditAsync(User.Identity.Name,model);
+
+            if (!response.IsSuccess) return View();
+
+            var isAdmin = User.IsInRole("Admin");
+            return isAdmin? RedirectToAction("Index","Admin") : RedirectToAction("Index","Authority");
         }
     }
 }

@@ -1,8 +1,60 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Sent Record";
     Layout = "_AdminLayout";
 }
 
-<h1>SentRecord</h1>
+
+<h1 class="page-header mb-3">Sent Record</h1>
+
+<div class="card card-body">
+    <table id="data-table" class="table table-bordered table-sm text-center">
+        <thead>
+            <tr>
+                <th><strong>Phone Number</strong></th>
+                <th><strong>Text SMS</strong></th>
+                <th><strong>Text Count</strong></th>
+                <th><strong>SMS Count</strong></th>
+                <th><strong>Date</strong></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+@section scripts{
+<script>
+    $(function() {
+        dataTable.getData()
+    });
+
+    var dataTable = {
+        table: null,
+        init: function() {
+            dataTable.table = $("#data-table").DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "/SMS/GetSentRecordData",
+                    type: "POST"
+                },
+                columns:
+                [
+                    { data: "PhoneNumber" },
+                    { data: "TextSMS" },
+                    { data: "TextCount" },
+                    { data: "SMSCount" },
+                    { data: "Date", "render": function(data) { return moment(data).format('D MMM YYYY') } }
+                ],
+                columnDefs: [
+                    { 'searchable': false, 'targets': [0, 1, 2, 3, 4] }
+                ]
+            });
+        },
+        getData: function() {
+            dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+        }
+    }
+</script>
+}
+
 

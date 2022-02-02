@@ -60,11 +60,12 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //update Branch
-        public IActionResult UpdateBranch(int? id)
+        public async Task<IActionResult> UpdateBranch(int? id)
         {
             if (!id.HasValue) return RedirectToAction("BranchList");
-            //var model = _registration.GetAsync()
-            return View();
+            var model =await _registration.GetBranchAsync(id.GetValueOrDefault());
+           
+            return View(model.Data);
         }
 
 
