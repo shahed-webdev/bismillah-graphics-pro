@@ -25,10 +25,14 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark z-depth-0">
             <div class="container">
-                <a class="navbar-brand" href="/Home">Barkantaj Group</a>
+                <a class="navbar-brand py-0" href="/Home">
+                    <img src="/images/logo.png" alt="Barkantaj Group" style="height: 45px;margin-right: 10px" />
+                    Barkantaj Group
+                </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapse-nav" aria-controls="collapse-nav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="collapse-nav">
                     <ul id="left-menu" class="navbar-nav ml-auto">
                         <li class="nav-item">
@@ -40,7 +44,7 @@
                         <li class="nav-item">
                             <a class="nav-link waves-effect" href="#contact-section">Contact</a>
                         </li>
-                        <partial name="_DefaultLoginPartial" />
+                        <partial name="_DefaultLoginPartial"/>
                     </ul>
                 </div>
             </div>

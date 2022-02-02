@@ -1,0 +1,25 @@
+﻿@model IEnumerable<PageCategoryWithPageModel>
+
+<ul id="menuItem">
+    <li>
+        <strong>
+            <span class="fas fa-tachometer-alt"></span>
+            <a class="links" href="/admin">Dashboard</a>
+        </strong>
+    </li>
+    @foreach (var item in Model)
+    {
+        <li>
+            <strong>
+                <span class=""></span>
+                <i class="fas fa-caret-right"></i>@item.Category
+            </strong>
+            <ul class="sub-menu">
+                @foreach (var link in item.Links)
+                {
+                    <li><a class="links" href="/account">@link.Title</a></li>
+                }
+            </ul>
+        </li>
+    }
+</ul>

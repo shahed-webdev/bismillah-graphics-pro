@@ -55,11 +55,19 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+
         //find vendor autocomplete
         public async Task<IActionResult> FindVendor(string prefix)
         {
             var response = await _vendorCore.SearchAsync(User.Identity.Name, prefix);
             return Json(response);
+        }
+
+
+        //profile update(authority, admin, sub-admin)
+        public IActionResult UpdateProfile()
+        {
+            return View();
         }
     }
 }

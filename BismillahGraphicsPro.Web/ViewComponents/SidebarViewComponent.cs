@@ -5,19 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace BismillahGraphicsPro.Web.ViewComponents
 {
     [Authorize]
-    public class BranchInfoViewComponent : ViewComponent
+    public class SidebarViewComponent : ViewComponent
     {
         private readonly IRegistrationCore _registration;
 
-        public BranchInfoViewComponent(IRegistrationCore registration)
+        public SidebarViewComponent(IRegistrationCore registration)
         {
             _registration = registration;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var model = await _registration.GetAsync(User.Identity.Name);
-            return View("Default", model.Data);
+            var model = await _registration.SubAdminPageLinksAsync(User.Identity.Name);
+            return View("Default", model);
         }
     }
 }
