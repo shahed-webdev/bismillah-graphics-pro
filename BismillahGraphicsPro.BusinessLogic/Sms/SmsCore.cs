@@ -11,14 +11,14 @@ public class SmsCore : Core, ISmsCore
     {
     }
 
-    public Task<DbResponse> SendMultipleToVendorAsync(SmsSendMultipleModel model)
+    public Task<DbResponse> SendMultipleToVendorAsync(string userName, SmsSendMultipleModel model)
     {
         try
         {
             if (string.IsNullOrEmpty(model.TextSms))
                 return Task.FromResult(new DbResponse(false, "No text to send"));
-
-            return Task.FromResult(_db.Sms.SendMultipleToVendor(model));
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(_db.Sms.SendMultipleToVendor(branchId, model));
         }
         catch (Exception e)
         {
@@ -26,14 +26,14 @@ public class SmsCore : Core, ISmsCore
         }
     }
 
-    public Task<DbResponse> SendSingleSmsAsync(SmsSendSingleModel model)
+    public Task<DbResponse> SendSingleSmsAsync(string userName, SmsSendSingleModel model)
     {
         try
         {
             if (string.IsNullOrEmpty(model.TextSms))
                 return Task.FromResult(new DbResponse(false, "No text to send"));
-
-            return Task.FromResult(_db.Sms.SendSingleSms(model));
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(_db.Sms.SendSingleSms(branchId, model));
         }
         catch (Exception e)
         {
@@ -41,9 +41,10 @@ public class SmsCore : Core, ISmsCore
         }
     }
 
-    public Task<DataResult<SmsSendRecordViewModel>> SendRecordsAsync(DataRequest request)
+    public Task<DataResult<SmsSendRecordViewModel>> SendRecordsAsync(string userName, DataRequest request)
     {
-        return Task.FromResult(_db.Sms.SendRecords(request));
+        var branchId = _db.Registration.BranchIdByUserName(userName);
+        return Task.FromResult(_db.Sms.SendRecords(branchId, request));
     }
 
     public Task<DbResponse<int>> SmsBalanceAsync()

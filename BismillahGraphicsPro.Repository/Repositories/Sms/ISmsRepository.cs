@@ -5,8 +5,8 @@ namespace BismillahGraphicsPro.Repository;
 
 public interface ISmsRepository
 {
-    DbResponse SendMultipleToVendor(SmsSendMultipleModel model);
-    DbResponse SendSingleSms(SmsSendSingleModel model);
-    DataResult<SmsSendRecordViewModel> SendRecords(DataRequest request);
+    DbResponse SendMultipleToVendor(int branchId, SmsSendMultipleModel model);
+    DbResponse SendSingleSms(int branchId, SmsSendSingleModel model);
+    DataResult<SmsSendRecordViewModel> SendRecords(int branchId, DataRequest request);
     DbResponse<int> SmsBalance();
 }

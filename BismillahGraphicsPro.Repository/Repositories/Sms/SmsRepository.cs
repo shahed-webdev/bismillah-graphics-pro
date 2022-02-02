@@ -13,7 +13,7 @@ public class SmsRepository : Repository, ISmsRepository
     {
     }
 
-    public DbResponse SendMultipleToVendor(SmsSendMultipleModel model)
+    public DbResponse SendMultipleToVendor(int branchId, SmsSendMultipleModel model)
     {
         var massageLength = SmsValidator.MassageLength(model.TextSms);
         var smsCount = SmsValidator.TotalSmsCount(model.TextSms);
@@ -33,6 +33,7 @@ public class SmsRepository : Repository, ISmsRepository
 
         var smsRecord = model.Vendors.Select(v => new SmsSendRecord
         {
+            BranchId = branchId,
             PhoneNumber = v.SmsNumber,
             TextSms = model.TextSms,
             TextCount = massageLength,
@@ -46,7 +47,7 @@ public class SmsRepository : Repository, ISmsRepository
         return new DbResponse(true, "SMS send Successfully");
     }
 
-    public DbResponse SendSingleSms(SmsSendSingleModel model)
+    public DbResponse SendSingleSms(int branchId, SmsSendSingleModel model)
     {
         var massageLength = SmsValidator.MassageLength(model.TextSms);
         var smsCount = SmsValidator.TotalSmsCount(model.TextSms);
@@ -61,7 +62,8 @@ public class SmsRepository : Repository, ISmsRepository
         if (!smsProvider.IsSuccess) return new DbResponse(false, smsProvider.Error);
 
         var smsRecord = new SmsSendRecord
-        {
+        { 
+            BranchId = branchId,
             PhoneNumber = model.PhoneNumber,
             TextSms = model.TextSms,
             TextCount = massageLength,
@@ -74,9 +76,9 @@ public class SmsRepository : Repository, ISmsRepository
         return new DbResponse(true, "SMS send Successfully");
     }
 
-    public DataResult<SmsSendRecordViewModel> SendRecords(DataRequest request)
+    public DataResult<SmsSendRecordViewModel> SendRecords(int branchId, DataRequest request)
     {
-        return Db.SmsSendRecords
+        return Db.SmsSendRecords.Where(s=> s.BranchId == branchId)
             .ProjectTo<SmsSendRecordViewModel>(_mapper.ConfigurationProvider)
             .OrderByDescending(a => a.Date)
             .ToDataResult(request);
