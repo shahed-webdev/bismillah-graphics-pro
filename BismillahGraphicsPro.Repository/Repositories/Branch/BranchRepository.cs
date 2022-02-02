@@ -57,6 +57,7 @@ public class BranchRepository : Repository, IBranchRepository
             .Where(e => e.BranchId == branchId).ToList();
         var sellings = Db.Sellings.Include(p => p.SellingLists).Where(e => e.BranchId == branchId).ToList();
 
+        var smsRecords = Db.SmsSendRecords.Where(e => e.BranchId == branchId).ToList();
 
         var vendors = Db.Vendors.Where(l => l.BranchId == branchId).ToList();
         vendors.ForEach(v =>
@@ -80,6 +81,7 @@ public class BranchRepository : Repository, IBranchRepository
         Db.Purchases.RemoveRange(purchases);
         Db.SellingPaymentReceipts.RemoveRange(sellingReceipts);
         Db.Sellings.RemoveRange(sellings);
+        Db.SmsSendRecords.RemoveRange(smsRecords);
         Db.Vendors.UpdateRange(vendors);
         Db.Suppliers.UpdateRange(suppliers);
         Db.SaveChanges();
