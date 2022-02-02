@@ -10,6 +10,7 @@
     <ProjectReference Include="..\BismillahGraphicsPro.Data\BismillahGraphicsPro.Data.csproj" />
     <ProjectReference Include="..\BismillahGraphicsPro.ViewModel\BismillahGraphicsPro.ViewModel.csproj" />
     <ProjectReference Include="..\JqueryDataTables\JqueryDataTables.csproj" />
+    <ProjectReference Include="..\SmsServices\SmsServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

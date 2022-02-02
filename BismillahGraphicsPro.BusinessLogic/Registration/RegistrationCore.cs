@@ -52,7 +52,7 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             }
         }
 
-        public Task<DbResponse<BranchDetailsModel>> GetAsync(string userName)
+        public Task<DbResponse<BranchDetailsModel>> GetBranchAsync(string userName)
         {
             try
             {
@@ -63,6 +63,32 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             {
                 return Task.FromResult(
                     new DbResponse<BranchDetailsModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            }
+        }
+
+        public Task<DbResponse<BranchDetailsModel>> GetBranchAsync(int branchId)
+        {
+            try
+            {
+                return Task.FromResult(_db.Branch.Get(branchId));
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(
+                    new DbResponse<BranchDetailsModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            }
+        }
+
+        public Task<DbResponse<RegistrationEditModel>> GetUserAsync(string userName)
+        {
+            try
+            {
+                return Task.FromResult(_db.Registration.Get(userName));
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(
+                    new DbResponse<RegistrationEditModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
             }
         }
 

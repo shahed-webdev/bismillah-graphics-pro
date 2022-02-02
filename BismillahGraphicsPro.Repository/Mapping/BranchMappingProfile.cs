@@ -15,6 +15,7 @@ namespace BismillahGraphicsPro.Repository
         {
             CreateMap<Branch, BranchListModel>().ReverseMap();
             CreateMap<Branch, BranchDetailsModel>().ReverseMap();
+            CreateMap<Branch, BranchEditModel>().ReverseMap();
         }
     }
 }
