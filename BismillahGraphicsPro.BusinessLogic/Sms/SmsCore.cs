@@ -17,6 +17,7 @@ public class SmsCore : Core, ISmsCore
         {
             if (string.IsNullOrEmpty(model.TextSms))
                 return Task.FromResult(new DbResponse(false, "No text to send"));
+           
             var branchId = _db.Registration.BranchIdByUserName(userName);
             return Task.FromResult(_db.Sms.SendMultipleToVendor(branchId, model));
         }

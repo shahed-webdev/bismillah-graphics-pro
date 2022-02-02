@@ -167,7 +167,7 @@
         $(function() {
             $("#amount-word").text(`Taka (in words): ${number2text(@Model.PurchaseTotalPrice)}`);
 
-            //getSMSBalance();
+            getSMSBalance();
         });
 
         //amount in word
@@ -246,10 +246,9 @@
             const balance = document.getElementById('smsBalance');
             balance.textContent = "loading.."
             $.ajax({
-                url: '/SMS/SmsBalance',
+                url: '/SMS/GetBalance',
                 type: "GET",
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
+                success: function(response) {
                     balance.textContent = `Remaining SMS: ${response}`;
                 },
                 error: error => console.log(error)
@@ -266,7 +265,7 @@
             if (!number) return;
 
             const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.PurchaseTotalPrice Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
-            const model = { PhoneNumber: number, TextSMS: text };
+            const model = { PhoneNumber: number, TextSms: text };
 
             send(model);
         });
@@ -283,7 +282,7 @@
             const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
 
             const text = `Dear Valued Supplier, The Order Amount Tk: @Model.PurchaseTotalPrice.${paid}${due}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
-            const model = { PhoneNumber: number, TextSMS: text };
+            const model = { PhoneNumber: number, TextSms: text };
 
             send(model);
         });
@@ -291,10 +290,9 @@
         //send to server
         function send(model) {
             $.ajax({
-                url: '/SMS/SingleSMS',
+                url: '/SMS/PostSingle',
                 type: "POST",
-                data: JSON.stringify(model),
-                contentType: "application/json; charset=utf-8",
+                data: model,
                 success: function(response) {
                     location.href = "/purchase";
                 },

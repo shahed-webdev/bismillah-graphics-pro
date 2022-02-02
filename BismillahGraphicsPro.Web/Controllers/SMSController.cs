@@ -1,4 +1,6 @@
-﻿using JqueryDataTables;
+﻿using BismillahGraphicsPro.BusinessLogic;
+using BismillahGraphicsPro.ViewModel;
+using JqueryDataTables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,30 +9,38 @@ namespace BismillahGraphicsPro.Web.Controllers
     [Authorize]
     public class SMSController : Controller
     {
-        public SMSController()
+        private readonly ISmsCore _sms;
+        public SMSController(ISmsCore sms)
         {
-            
+            _sms = sms;
         }
 
 
         // Vendor view
-        [Authorize(Roles = "Admin, SMSVendor")]
         public IActionResult Vendor()
         {
             return View();
         }
 
 
+        //Get Balance
+        public async Task<IActionResult> GetBalance()
+        {
+            var response = await _sms.SmsBalanceAsync();
+            return Json(response.Data);
+        }  
+
+        
         //POST: Vendor
         [HttpPost]
-        public IActionResult PostVendor()
+        public async Task<IActionResult> PostVendor(SmsSendMultipleModel model)
         {
-            return Json("");
+            var response = await _sms.SendMultipleToVendorAsync(User.Identity.Name, model);
+            return Json(response);
         }
 
 
         // Single SMS view
-        [Authorize(Roles = "Admin, SMSSingle")]
         public IActionResult Single()
         {
             return View();
@@ -39,13 +49,13 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //POST: Single SMS
         [HttpPost]
-        public IActionResult PostSingle()
+        public async Task<IActionResult> PostSingle(SmsSendSingleModel model)
         {
-            return Json("");
+            var response = await _sms.SendSingleSmsAsync(User.Identity.Name, model);
+            return Json(response);
         }
 
         // Sent Record view
-        [Authorize(Roles = "Admin, SentRecord")]
         public IActionResult SentRecord()
         {
             return View();
@@ -53,9 +63,10 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //sent data-table
-        public IActionResult SentRecordData(DataRequest request)
+        public async Task<IActionResult> SentRecordData(DataRequest request)
         {
-            return Json("");
+            var response = await _sms.SendRecordsAsync(User.Identity.Name, request);
+            return Json(response);
         }
 
     }
