@@ -23,6 +23,7 @@ namespace BismillahGraphicsPro.Repository
             Registration = new RegistrationRepository(_db, mapper);
             Selling = new SellingRepository(_db, mapper);
             Supplier = new SupplierRepository(_db, mapper);
+            Sms = new SmsRepository(_db, mapper);
             Vendor = new VendorRepository(_db, mapper);
         }
 
@@ -38,6 +39,7 @@ namespace BismillahGraphicsPro.Repository
         public IRegistrationRepository Registration { get; }
         public ISellingRepository Selling { get; }
         public ISupplierRepository Supplier { get; }
+        public ISmsRepository Sms { get; }
         public IVendorRepository Vendor { get; }
 
 
