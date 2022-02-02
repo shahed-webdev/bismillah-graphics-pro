@@ -13,7 +13,7 @@ namespace BismillahGraphicsPro.BusinessLogic
         Task<DbResponse> EditAsync(string userName, RegistrationEditModel model);
         Task<DbResponse<IdentityUser>> BranchSignUpAsync(BranchCreateModel model);
         List<BranchListModel> BranchList();
-
+        Task<DbResponse> EditBranchAsync(BranchEditModel model);
         Task PasswordChangedAsync(string userName, string password);
         Task<List<SideNavbarModel>> GetSideNavbarAsync(string userName);
         Task<DbResponse> ResetAsync(string userName);

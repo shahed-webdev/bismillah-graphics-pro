@@ -10,6 +10,7 @@ public interface IBranchRepository
     void Activate(int branchId);
     void Deactivate(int branchId);
     DbResponse<BranchDetailsModel> Get(int branchId);
+    DbResponse Edit(BranchEditModel model);
     DbResponse Reset(int branchId);
 
     //--------------Sub-Admin--------------------------------

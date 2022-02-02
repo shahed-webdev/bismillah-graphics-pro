@@ -108,6 +108,19 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             }
         }
 
+        public Task<DbResponse> EditBranchAsync(BranchEditModel model)
+        {
+            try
+            {
+                return Task.FromResult(_db.Branch.Edit(model));
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(
+                    new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            }
+        }
+
         public Task PasswordChangedAsync(string userName, string password)
         {
             _db.Registration.PasswordChanged(userName, password);

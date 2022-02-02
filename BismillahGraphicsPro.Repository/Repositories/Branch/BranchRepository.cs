@@ -25,6 +25,22 @@ public class BranchRepository : Repository, IBranchRepository
         Db.SaveChanges();
     }
 
+    public DbResponse Edit(BranchEditModel model)
+    {
+        var branch = Db.Branches.Find(model.BranchId);
+        if (branch == null) return new DbResponse(false, "data Not Found");
+        if (string.IsNullOrEmpty(model.BranchName)) return new DbResponse(false, "Invalid data");
+
+        branch.BranchName = model.BranchName;
+        branch.BranchAddress = model.BranchAddress;
+        branch.BranchPhone = model.BranchPhone;
+        branch.BranchEmail = model.BranchEmail;
+        branch.InstitutionLogo = model.InstitutionLogo;
+        Db.Branches.Update(branch);
+        Db.SaveChanges();
+        return new DbResponse(true, $"{branch.BranchName} Updated Successfully");
+    }
+
     public DbResponse Reset(int branchId)
     {
         var branch = Db.Branches.Find(branchId);
@@ -185,7 +201,8 @@ public class BranchRepository : Repository, IBranchRepository
                         LinkId = l.LinkId,
                         Title = l.Title,
                         RoleName = r.Name,
-                        IsAssign = Db.PageLinkAssigns.Any(a =>a.LinkId == l.LinkId && a.RegistrationId == registrationId)
+                        IsAssign = Db.PageLinkAssigns.Any(a =>
+                            a.LinkId == l.LinkId && a.RegistrationId == registrationId)
                     }).ToList()
             }).ToList();
         return userDll;
