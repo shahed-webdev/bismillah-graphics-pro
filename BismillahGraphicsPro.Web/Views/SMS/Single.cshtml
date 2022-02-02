@@ -36,9 +36,8 @@
 
     function getSMSBalance() {
         $.ajax({
-            url: '/SMS/SmsBalance',
+            url: '/SMS/GetBalance',
             type: "GET",
-            contentType: "application/json; charset=utf-8",
             success: function(response) {
                 document.getElementById('smsBalance').textContent = response;
             },
@@ -52,17 +51,17 @@
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        //if (!validate()) return;
 
-        let model = { PhoneNumber: form.inputMobile.value, TextSMS: form.inputSMS.value };
+        let model = { PhoneNumber: form.inputMobile.value, TextSms: form.inputSMS.value };
         $.ajax({
-            url: '/SMS/PostSingleSMS',
+            url: '/SMS/PostSingle',
             type: "POST",
-            data: JSON.stringify(model),
-            contentType: "application/json; charset=utf-8",
+            data: model,
             success: function (response) {
                 $.notify(response.Message, response.IsSuccess ? "success" : "error");
 
+                form.inputMobile.value = "";
+                form.inputSMS.value = "";
                 model={}
                 getSMSBalance();
             },

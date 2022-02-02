@@ -51,7 +51,7 @@
     //get sms balance
     function getSMSBalance() {
         $.ajax({
-            url: '/SMS/SmsBalance',
+            url: '/SMS/GetBalance',
             type: "GET",
             contentType: "application/json; charset=utf-8",
             success: function(response) {
@@ -119,33 +119,34 @@
         $('input[type=checkbox]', rows).not(":disabled").prop("checked", this.checked);
     });
 
-    //button click
+    //submit button click
     const form = document.getElementById("formSMS");
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        let model = { Vendors: [], TextSMS: form.inputSMS.value };
+        let model = { Vendors: [], TextSms: form.inputSMS.value };
         dataTable.table.$('input[type="checkbox"]').each(function() {
             if (this.checked) {
                 model.Vendors.push({ VendorId: $(this).data('id'), SmsNumber: this.value })
             }
         });
 
+
         if (!model.Vendors.length) 
-            return  $.notify("Select vendor to send SMS", "error");
+            return $.notify("Select vendor to send SMS", "error");
         
 
         $.ajax({
             url: '/SMS/PostVendor',
             type: "POST",
-            data: JSON.stringify(model),
-            contentType: "application/json; charset=utf-8",
+            data: model,
             success: function (response) {
                 $.notify(response.Message, response.IsSuccess ? "success" : "error");
 
                 $('input[type=checkbox]').prop("checked", false);
 
                 model =  { Vendors: [], TextSMS: "" };
+                form.inputSMS.value = "";
 
                 getSMSBalance();
             },
