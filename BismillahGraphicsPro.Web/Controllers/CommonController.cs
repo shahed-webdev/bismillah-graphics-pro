@@ -82,8 +82,8 @@ namespace BismillahGraphicsPro.Web.Controllers
 
             if (!response.IsSuccess) return View();
 
-            var isAdmin = User.IsInRole("Admin");
-            return isAdmin? RedirectToAction("Index","Admin") : RedirectToAction("Index","Authority");
+            var isAuthority = User.IsInRole("Authority");
+            return isAuthority ? RedirectToAction("Index", "Authority"): RedirectToAction("Index","Admin");
         }
     }
 }
