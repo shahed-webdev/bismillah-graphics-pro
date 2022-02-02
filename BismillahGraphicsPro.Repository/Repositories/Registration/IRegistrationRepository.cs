@@ -1,4 +1,5 @@
 ﻿using BismillahGraphicsPro.Data;
+using BismillahGraphicsPro.ViewModel;
 
 namespace BismillahGraphicsPro.Repository
 {
@@ -8,5 +9,6 @@ namespace BismillahGraphicsPro.Repository
         int RegistrationIdByUserName(string userName);
         UserType UserTypeByUserName(string userName);
         void PasswordChanged(string userName, string password);
+        DbResponse Edit(string userName, RegistrationEditModel model);
     }
 }

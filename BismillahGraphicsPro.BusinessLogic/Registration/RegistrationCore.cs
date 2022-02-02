@@ -66,6 +66,19 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             }
         }
 
+        public Task<DbResponse> EditAsync(string userName, RegistrationEditModel model)
+        {
+            try
+            {
+                return Task.FromResult(_db.Registration.Edit(userName, model));
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(
+                    new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+            }
+        }
+
         public async Task<DbResponse<IdentityUser>> BranchSignUpAsync(BranchCreateModel model)
         {
             try
@@ -113,7 +126,6 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
                 return Task.FromResult(
                     new DbResponse(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
             }
-           
         }
 
         public async Task<DbResponse<IdentityUser>> SubAdminSignUpAsync(string userName, SubAdminCreateModel model)
@@ -169,7 +181,7 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             return Task.FromResult(_db.Branch.SubAdminPageLinks(registrationId));
         }
 
-        public async Task<DbResponse> SubAdminAssignLinks(int registrationId,List<PageLinkAssignModel> links)
+        public async Task<DbResponse> SubAdminAssignLinks(int registrationId, List<PageLinkAssignModel> links)
         {
             try
             {
