@@ -43,7 +43,7 @@ public class SmsRepository : Repository, ISmsRepository
             SendDate = DateTime.Now
         }).ToList();
         Db.SmsSendRecords.AddRange(smsRecord);
-
+        Db.SaveChanges();
         return new DbResponse(true, "SMS send Successfully");
     }
 
@@ -72,7 +72,7 @@ public class SmsRepository : Repository, ISmsRepository
             SendDate = DateTime.Now
         };
         Db.SmsSendRecords.Add(smsRecord);
-
+        Db.SaveChanges();
         return new DbResponse(true, "SMS send Successfully");
     }
 
@@ -80,7 +80,6 @@ public class SmsRepository : Repository, ISmsRepository
     {
         return Db.SmsSendRecords.Where(s=> s.BranchId == branchId)
             .ProjectTo<SmsSendRecordViewModel>(_mapper.ConfigurationProvider)
-            .OrderByDescending(a => a.Date)
             .ToDataResult(request);
     }
 
