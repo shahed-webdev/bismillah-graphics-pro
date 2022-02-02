@@ -26,6 +26,7 @@ namespace BismillahGraphicsPro.Repository
             CreateMap<SubAdminCreateModel, Registration>()
                 .ForMember(d => d.Ps, opt => opt.MapFrom(c => c.Password));
             CreateMap<Registration, SubAdminListModel>().ReverseMap();
+            CreateMap<Registration, RegistrationEditModel>().ReverseMap();
         }
     }
 }

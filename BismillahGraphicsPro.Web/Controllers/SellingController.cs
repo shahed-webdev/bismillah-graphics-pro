@@ -101,7 +101,7 @@ namespace BismillahGraphicsPro.Web.Controllers
             if (!id.HasValue) return RedirectToAction("Records");
 
             //branch info
-            var branch = await _registration.GetAsync(User.Identity.Name);
+            var branch = await _registration.GetBranchAsync(User.Identity.Name);
             ViewBag.branchInfo = branch.Data;
 
             var model = await _sellingCore.GetAsync(id.GetValueOrDefault());

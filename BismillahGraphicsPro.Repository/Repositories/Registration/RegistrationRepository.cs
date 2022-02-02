@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BismillahGraphicsPro.Data;
 using System.Linq;
+using AutoMapper.QueryableExtensions;
 using BismillahGraphicsPro.ViewModel;
 
 namespace BismillahGraphicsPro.Repository
@@ -49,6 +50,18 @@ namespace BismillahGraphicsPro.Repository
             Db.Registrations.Update(registration);
             Db.SaveChanges();
             return new DbResponse(true, $"{registration.UserName} Updated Successfully");
+        }
+
+        public DbResponse<RegistrationEditModel> Get(string userName)
+        {
+            var registration = Db.Registrations.Where(r => r.UserName == userName)
+                .ProjectTo<RegistrationEditModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+
+            return registration == null
+                ? new DbResponse<RegistrationEditModel>(false, "data Not Found")
+                : new DbResponse<RegistrationEditModel>(true, $"{registration!.Name} Get Successfully",
+                    registration);
         }
 
         public List<SideNavbarModel> GetSideNavbar(string userName)
