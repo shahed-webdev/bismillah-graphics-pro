@@ -163,9 +163,10 @@ namespace BismillahGraphicsPro.BusinessLogic.Registration
             return _db.Branch.SubAdminDdl(branchId);
         }
 
-        public List<PageCategoryWithPageModel> SubAdminPageLinks(int registrationId)
+        public Task<List<PageCategoryWithPageModel>> SubAdminPageLinksAsync(string userName)
         {
-            return _db.Branch.SubAdminPageLinks(registrationId);
+            var registrationId = _db.Registration.RegistrationIdByUserName(userName);
+            return Task.FromResult(_db.Branch.SubAdminPageLinks(registrationId));
         }
 
         public async Task<DbResponse> SubAdminAssignLinks(int registrationId,List<PageLinkAssignModel> links)
