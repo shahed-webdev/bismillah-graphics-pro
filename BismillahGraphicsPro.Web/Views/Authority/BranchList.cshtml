@@ -29,6 +29,9 @@
                     <th style="width: 100px; text-align: center">
                         <strong>Active</strong>
                     </th>
+                    <th style="width: 100px; text-align: center">
+                        <strong>Update</strong>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -46,6 +49,9 @@
                                 <input id="@item.BranchId" x-on:change="branchActivation(@item.BranchId)" type="checkbox" class="form-check-input" @(item.IsActive == true ? "checked" : "")>
                                 <label for="@item.BranchId" class="form-check-label">@(item.IsActive == true ? "Active" : "Deactivate")</label>
                             </div>
+                        </td>
+                        <td class="text-center">
+                            <a class="blue-text" href="/authority/updateBranch/@item.BranchId">Update</a>
                         </td>
                     </tr>
                 }
