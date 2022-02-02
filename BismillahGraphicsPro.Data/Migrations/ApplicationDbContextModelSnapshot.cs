@@ -449,46 +449,56 @@ namespace BismillahGraphicsPro.Data.Migrations
                         new
                         {
                             LinkId = 8,
-                            Action = "measurementUnit",
-                            Controller = "Product",
+                            Action = "suppliers",
+                            Controller = "purchase",
                             LinkCategoryId = 3,
-                            RoleId = "4b48934d-ef26-4289-a038-e7313736126f",
+                            RoleId = "cb683688-df12-4127-979b-d6b1fd8eddda",
                             Sn = 1,
-                            Title = "Measurement Unit"
+                            Title = "Suppliers"
                         },
                         new
                         {
                             LinkId = 9,
-                            Action = "Category",
-                            Controller = "Product",
+                            Action = "Index",
+                            Controller = "purchase",
                             LinkCategoryId = 3,
-                            RoleId = "d4d25cbe-c54b-4982-ac79-a45c562faf8d",
+                            RoleId = "492d5817-5fd2-4342-8f84-4d5798aa5e01",
                             Sn = 2,
-                            Title = "Category"
+                            Title = "Purchase"
                         },
                         new
                         {
                             LinkId = 10,
-                            Action = "Index",
-                            Controller = "Product",
+                            Action = "records",
+                            Controller = "purchase",
                             LinkCategoryId = 3,
-                            RoleId = "d4d25cbe-c54b-4982-ac79-a45c562faf8d",
+                            RoleId = "492d5817-5fd2-4342-8f84-4d5798aa5e01",
                             Sn = 3,
-                            Title = "Products"
+                            Title = "Purchase Invoice"
                         },
                         new
                         {
                             LinkId = 11,
-                            Action = "stockReport",
-                            Controller = "Product",
+                            Action = "paymentReport",
+                            Controller = "purchase",
                             LinkCategoryId = 3,
-                            RoleId = "bec93436-98fd-44fe-bcd3-00f3a9cf0b3a",
+                            RoleId = "632f139d-4827-413e-8ede-45d3ba8f9724",
                             Sn = 4,
-                            Title = "Stock Report"
+                            Title = "Payment Report"
                         },
                         new
                         {
                             LinkId = 12,
+                            Action = "dueReport",
+                            Controller = "purchase",
+                            LinkCategoryId = 3,
+                            RoleId = "3eb3b3a9-51d9-4dd8-b9d9-7ed710ca6fce",
+                            Sn = 5,
+                            Title = "Due Report"
+                        },
+                        new
+                        {
+                            LinkId = 13,
                             Action = "vendors",
                             Controller = "Selling",
                             LinkCategoryId = 4,
@@ -498,7 +508,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 13,
+                            LinkId = 14,
                             Action = "Index",
                             Controller = "Selling",
                             LinkCategoryId = 4,
@@ -508,7 +518,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 14,
+                            LinkId = 15,
                             Action = "records",
                             Controller = "Selling",
                             LinkCategoryId = 4,
@@ -518,7 +528,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 15,
+                            LinkId = 16,
                             Action = "dueReport",
                             Controller = "Selling",
                             LinkCategoryId = 4,
@@ -528,7 +538,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 16,
+                            LinkId = 17,
                             Action = "paymentReport",
                             Controller = "Selling",
                             LinkCategoryId = 4,
@@ -538,7 +548,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 17,
+                            LinkId = 18,
                             Action = "sellingReport",
                             Controller = "Selling",
                             LinkCategoryId = 4,
@@ -548,7 +558,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 18,
+                            LinkId = 19,
                             Action = "category",
                             Controller = "expense",
                             LinkCategoryId = 5,
@@ -558,7 +568,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 19,
+                            LinkId = 20,
                             Action = "Index",
                             Controller = "expense",
                             LinkCategoryId = 5,
@@ -568,7 +578,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 20,
+                            LinkId = 21,
                             Action = "report",
                             Controller = "expense",
                             LinkCategoryId = 5,
@@ -578,7 +588,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 21,
+                            LinkId = 22,
                             Action = "DailyCash",
                             Controller = "Report",
                             LinkCategoryId = 6,
@@ -588,7 +598,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 22,
+                            LinkId = 23,
                             Action = "ProductSales",
                             Controller = "Report",
                             LinkCategoryId = 6,
@@ -598,7 +608,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 23,
+                            LinkId = 24,
                             Action = "Net",
                             Controller = "Report",
                             LinkCategoryId = 6,
@@ -608,7 +618,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 24,
+                            LinkId = 25,
                             Action = "vendor",
                             Controller = "SMS",
                             LinkCategoryId = 7,
@@ -618,7 +628,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 25,
+                            LinkId = 26,
                             Action = "Single",
                             Controller = "SMS",
                             LinkCategoryId = 7,
@@ -628,7 +638,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 26,
+                            LinkId = 27,
                             Action = "sentRecord",
                             Controller = "SMS",
                             LinkCategoryId = 7,
@@ -638,7 +648,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 27,
+                            LinkId = 28,
                             Action = "signup",
                             Controller = "subAdmin",
                             LinkCategoryId = 8,
@@ -648,7 +658,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 28,
+                            LinkId = 29,
                             Action = "Index",
                             Controller = "subAdmin",
                             LinkCategoryId = 8,
@@ -658,7 +668,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 29,
+                            LinkId = 30,
                             Action = "pageAccess",
                             Controller = "subAdmin",
                             LinkCategoryId = 8,
@@ -668,7 +678,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            LinkId = 30,
+                            LinkId = 31,
                             Action = "Reset",
                             Controller = "Admin",
                             LinkCategoryId = 9,

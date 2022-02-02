@@ -237,45 +237,55 @@ namespace BismillahGraphicsPro.Data
                 {
                     LinkId = 8,
                     LinkCategoryId = 3,
-                    RoleId = Ids[UserType.MeasurementUnit.ToString()],
-                    Controller = "Product",
-                    Action = "measurementUnit",
-                    Title = "Measurement Unit",
+                    RoleId = Ids[UserType.Suppliers.ToString()],
+                    Controller = "purchase",
+                    Action = "suppliers",
+                    Title = "Suppliers",
                     Sn = 1
                 },
                 new PageLink
                 {
                     LinkId = 9,
                     LinkCategoryId = 3,
-                    RoleId = Ids[UserType.Products.ToString()],
-                    Controller = "Product",
-                    Action = "Category",
-                    Title = "Category",
+                    RoleId = Ids[UserType.Purchase.ToString()],
+                    Controller = "purchase",
+                    Action = "Index",
+                    Title = "Purchase",
                     Sn = 2
                 },
                 new PageLink
                 {
                     LinkId = 10,
                     LinkCategoryId = 3,
-                    RoleId = Ids[UserType.Products.ToString()],
-                    Controller = "Product",
-                    Action = "Index",
-                    Title = "Products",
+                    RoleId = Ids[UserType.Purchase.ToString()],
+                    Controller = "purchase",
+                    Action = "records",
+                    Title = "Purchase Invoice",
                     Sn = 3
                 },
                 new PageLink
                 {
                     LinkId = 11,
                     LinkCategoryId = 3,
-                    RoleId = Ids[UserType.StockReport.ToString()],
-                    Controller = "Product",
-                    Action = "stockReport",
-                    Title = "Stock Report",
+                    RoleId = Ids[UserType.PurchasePaymentReport.ToString()],
+                    Controller = "purchase",
+                    Action = "paymentReport",
+                    Title = "Payment Report",
                     Sn = 4
                 },
                 new PageLink
                 {
                     LinkId = 12,
+                    LinkCategoryId = 3,
+                    RoleId = Ids[UserType.PurchaseDueReport.ToString()],
+                    Controller = "purchase",
+                    Action = "dueReport",
+                    Title = "Due Report",
+                    Sn = 5
+                },
+                new PageLink
+                {
+                    LinkId = 13,
                     LinkCategoryId = 4,
                     RoleId = Ids[UserType.Vendors.ToString()],
                     Controller = "Selling",
@@ -285,7 +295,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 13,
+                    LinkId = 14,
                     LinkCategoryId = 4,
                     RoleId = Ids[UserType.Selling.ToString()],
                     Controller = "Selling",
@@ -295,7 +305,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 14,
+                    LinkId = 15,
                     LinkCategoryId = 4,
                     RoleId = Ids[UserType.Selling.ToString()],
                     Controller = "Selling",
@@ -305,7 +315,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 15,
+                    LinkId = 16,
                     LinkCategoryId = 4,
                     RoleId = Ids[UserType.SellingDueReport.ToString()],
                     Controller = "Selling",
@@ -315,7 +325,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 16,
+                    LinkId = 17,
                     LinkCategoryId = 4,
                     RoleId = Ids[UserType.SellingPaymentReport.ToString()],
                     Controller = "Selling",
@@ -325,7 +335,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 17,
+                    LinkId = 18,
                     LinkCategoryId = 4,
                     RoleId = Ids[UserType.SellingReport.ToString()],
                     Controller = "Selling",
@@ -335,7 +345,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 18,
+                    LinkId = 19,
                     LinkCategoryId = 5,
                     RoleId = Ids[UserType.Expense.ToString()],
                     Controller = "expense",
@@ -345,7 +355,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 19,
+                    LinkId = 20,
                     LinkCategoryId = 5,
                     RoleId = Ids[UserType.Expense.ToString()],
                     Controller = "expense",
@@ -355,7 +365,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 20,
+                    LinkId = 21,
                     LinkCategoryId = 5,
                     RoleId = Ids[UserType.ExpenseReport.ToString()],
                     Controller = "expense",
@@ -365,7 +375,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 21,
+                    LinkId = 22,
                     LinkCategoryId = 6,
                     RoleId = Ids[UserType.DailyCash.ToString()],
                     Controller = "Report",
@@ -375,7 +385,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 22,
+                    LinkId = 23,
                     LinkCategoryId = 6,
                     RoleId = Ids[UserType.ProductSales.ToString()],
                     Controller = "Report",
@@ -385,7 +395,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 23,
+                    LinkId = 24,
                     LinkCategoryId = 6,
                     RoleId = Ids[UserType.Net.ToString()],
                     Controller = "Report",
@@ -395,7 +405,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 24,
+                    LinkId = 25,
                     LinkCategoryId = 7,
                     RoleId = Ids[UserType.SmsVendor.ToString()],
                     Controller = "SMS",
@@ -405,7 +415,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 25,
+                    LinkId = 26,
                     LinkCategoryId = 7,
                     RoleId = Ids[UserType.SmsSingle.ToString()],
                     Controller = "SMS",
@@ -415,7 +425,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 26,
+                    LinkId = 27,
                     LinkCategoryId = 7,
                     RoleId = Ids[UserType.SentRecord.ToString()],
                     Controller = "SMS",
@@ -425,7 +435,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 27,
+                    LinkId = 28,
                     LinkCategoryId = 8,
                     RoleId = Ids[UserType.SubAdminSignUp.ToString()],
                     Controller = "subAdmin",
@@ -435,7 +445,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 28,
+                    LinkId = 29,
                     LinkCategoryId = 8,
                     RoleId = Ids[UserType.SubAdminPageAccess.ToString()],
                     Controller = "subAdmin",
@@ -445,7 +455,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 29,
+                    LinkId = 30,
                     LinkCategoryId = 8,
                     RoleId = Ids[UserType.SubAdminPageAccess.ToString()],
                     Controller = "subAdmin",
@@ -455,7 +465,7 @@ namespace BismillahGraphicsPro.Data
                 },
                 new PageLink
                 {
-                    LinkId = 30,
+                    LinkId = 31,
                     LinkCategoryId = 9,
                     RoleId = Ids[UserType.Reset.ToString()],
                     Controller = "Admin",
