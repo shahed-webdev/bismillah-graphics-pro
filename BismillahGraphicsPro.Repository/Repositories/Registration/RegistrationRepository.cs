@@ -24,5 +24,15 @@ namespace BismillahGraphicsPro.Repository
         {
             return Db.Registrations.FirstOrDefault(r => r.UserName == userName)!.Type;
         }
+
+        public void PasswordChanged(string userName, string password)
+        {
+            var registration = Db.Registrations.FirstOrDefault(r => r.UserName == userName);
+
+            if (registration == null) return;
+            registration.Ps = password;
+            Db.Registrations.Update(registration);
+            Db.SaveChanges();
+        }
     }
 }
