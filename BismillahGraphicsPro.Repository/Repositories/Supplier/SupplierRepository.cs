@@ -90,9 +90,36 @@ public class SupplierRepository : Repository, ISupplierRepository
             .OrderBy(a => a.SupplierName)
             .ToDataResult(request);
     }
+
+    public DbResponse<SupplierViewModel> GetReport(int id, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+        var supplier = Db.Suppliers
+            .Include(v =>
+                v.Purchases.Where(p => p.PurchaseDate <= endDate && p.PurchaseDate >= startDate))
+            .FirstOrDefault(v => v.SupplierId == id);
+
+        if (supplier == null) return new DbResponse<SupplierViewModel>(false, $"data not found");
+
+        var supplierView = _mapper.Map<SupplierViewModel>(supplier);
+
+
+        supplierView.TotalAmount = Math.Round(supplier.Purchases.Sum(s => s.PurchaseTotalPrice), 2);
+        supplierView.SupplierDue = Math.Round(supplier.Purchases.Sum(s => s.PurchaseDueAmount), 2);
+        supplierView.SupplierPaid = Math.Round(supplier.Purchases.Sum(s => s.PurchasePaidAmount), 2);
+        supplierView.TotalDiscount = Math.Round(supplier.Purchases.Sum(s => s.PurchaseDiscountAmount), 2);
+
+        return new DbResponse<SupplierViewModel>(true, $"{supplierView.SupplierCompanyName} get successfully",
+            supplierView);
+    }
+
     public Task<List<SupplierViewModel>> SearchAsync(int branchId, string key)
     {
-        return Db.Suppliers.Where(v => v.BranchId == branchId && v.SupplierName.Contains(key) || v.SupplierPhone.Contains(key) || v.SupplierCompanyName.Contains(key))
+        return Db.Suppliers.Where(v =>
+                v.BranchId == branchId && v.SupplierCompanyName.Contains(key) || v.SupplierPhone.Contains(key) ||
+                v.SupplierCompanyName.Contains(key))
             .ProjectTo<SupplierViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.SupplierName)
             .Take(5)
@@ -106,12 +133,12 @@ public class SupplierRepository : Repository, ISupplierRepository
 
         var obj = Db.Purchases.Where(s => s.SupplierId == supplier.SupplierId)
             .GroupBy(s => s.SupplierId).Select(s =>
-            new
-            {
-                TotalAmount = s.Sum(c => c.PurchaseTotalPrice),
-                TotalDiscount = s.Sum(c => c.PurchaseDiscountAmount),
-                SupplierPaid = s.Sum(c => c.PurchasePaidAmount)
-            }).FirstOrDefault();
+                new
+                {
+                    TotalAmount = s.Sum(c => c.PurchaseTotalPrice),
+                    TotalDiscount = s.Sum(c => c.PurchaseDiscountAmount),
+                    SupplierPaid = s.Sum(c => c.PurchasePaidAmount)
+                }).FirstOrDefault();
 
         if (obj != null)
         {

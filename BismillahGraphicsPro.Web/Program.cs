@@ -51,11 +51,11 @@ if (!app.Environment.IsDevelopment())
 }
 
 //for automatic migrations Database
-using (var scope = app.Services.CreateScope())
-{
-    var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dataContext.Database.Migrate();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    dataContext.Database.Migrate();
+//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -400,11 +400,11 @@ namespace BismillahGraphicsPro.Data
 
                 entity.Property(e => e.PurchasePrice)
                     .HasColumnType("decimal(18, 2)")
-                    .HasComputedColumnSql("(round([PurchaseQuantity]*[PurchaseUnitPrice],(2)))", true);
+                   .HasComputedColumnSql("(round([PurchaseQuantity]*[PurchaseUnitPrice],(0)))", true);
 
                 entity.Property(e => e.PurchaseQuantity).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.PurchaseUnitPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.PurchaseUnitPrice).HasColumnType("decimal(18, 4)");
 
                 entity.HasOne(d => d.Branch)
                     .WithMany(p => p.PurchaseLists)
@@ -612,11 +612,11 @@ namespace BismillahGraphicsPro.Data
 
                 entity.Property(e => e.SellingPrice)
                     .HasColumnType("decimal(18, 2)")
-                    .HasComputedColumnSql("(round([SellingQuantity]*[SellingUnitPrice],(2)))", true);
+                    .HasComputedColumnSql("(round([SellingQuantity]*[SellingUnitPrice],(0)))", true);
 
                 entity.Property(e => e.SellingQuantity).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.SellingUnitPrice).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.SellingUnitPrice).HasColumnType("decimal(18, 4)");
 
                 entity.HasOne(d => d.Branch)
                     .WithMany(p => p.SellingLists)

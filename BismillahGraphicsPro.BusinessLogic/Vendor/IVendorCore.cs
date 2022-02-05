@@ -11,4 +11,5 @@ public interface IVendorCore
     Task<DbResponse<VendorViewModel>> GetAsync(int id);
     Task<DataResult<VendorViewModel>> ListAsync(string userName, DataRequest request);
     Task<List<VendorViewModel>> SearchAsync(string userName, string key);
+    Task<DbResponse<VendorViewModel>> GetReportAsync(int id, DateTime? sDate, DateTime? eDate);
 }

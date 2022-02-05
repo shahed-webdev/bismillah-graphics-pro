@@ -89,4 +89,17 @@ public class VendorCore:Core, IVendorCore
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return _db.Vendor.SearchAsync(branchId, key);
     }
+
+    public Task<DbResponse<VendorViewModel>> GetReportAsync(int id, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            return Task.FromResult(_db.Vendor.GetReport(id, sDate, eDate));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(
+                new DbResponse<VendorViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }

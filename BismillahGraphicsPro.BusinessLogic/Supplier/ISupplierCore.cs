@@ -11,4 +11,6 @@ public interface ISupplierCore
     Task<DbResponse<SupplierViewModel>> GetAsync(int id);
     Task<DataResult<SupplierViewModel>> ListAsync(string userName, DataRequest request);
     Task<List<SupplierViewModel>> SearchAsync(string userName, string key);
+
+    Task<DbResponse<SupplierViewModel>> GetReportAsync(int id, DateTime? sDate, DateTime? eDate);
 }

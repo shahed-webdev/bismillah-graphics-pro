@@ -16,4 +16,5 @@ public interface IVendorRepository
     DataResult<VendorViewModel> List(int branchId, DataRequest request);
     Task<List<VendorViewModel>> SearchAsync(int branchId, string key);
     void UpdatePaidDue(int id);
+    DbResponse<VendorViewModel> GetReport(int id, DateTime? sDate, DateTime? eDate);
 }

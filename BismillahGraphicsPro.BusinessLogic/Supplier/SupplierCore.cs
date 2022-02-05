@@ -5,11 +5,12 @@ using JqueryDataTables;
 
 namespace BismillahGraphicsPro.BusinessLogic;
 
-public class SupplierCore:Core, ISupplierCore
+public class SupplierCore : Core, ISupplierCore
 {
     public SupplierCore(IUnitOfWork db, IMapper mapper) : base(db, mapper)
     {
     }
+
     public Task<DbResponse<SupplierViewModel>> AddAsync(string userName, SupplierAddModel model)
     {
         try
@@ -19,9 +20,10 @@ public class SupplierCore:Core, ISupplierCore
             var branchId = _db.Registration.BranchIdByUserName(userName);
 
             if (_db.Supplier.IsExistName(branchId, model.SmsNumber))
-                return Task.FromResult(new DbResponse<SupplierViewModel>(false, $" {model.SupplierName} already Exist"));
+                return Task.FromResult(
+                    new DbResponse<SupplierViewModel>(false, $" {model.SupplierName} already Exist"));
 
-            return Task.FromResult(_db.Supplier.Add(branchId,model));
+            return Task.FromResult(_db.Supplier.Add(branchId, model));
         }
         catch (Exception e)
         {
@@ -83,9 +85,23 @@ public class SupplierCore:Core, ISupplierCore
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return Task.FromResult(_db.Supplier.List(branchId, request));
     }
+
     public Task<List<SupplierViewModel>> SearchAsync(string userName, string key)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
         return _db.Supplier.SearchAsync(branchId, key);
+    }
+
+    public Task<DbResponse<SupplierViewModel>> GetReportAsync(int id, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            return Task.FromResult(_db.Supplier.GetReport(id, sDate, eDate));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(
+                new DbResponse<SupplierViewModel>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
     }
 }

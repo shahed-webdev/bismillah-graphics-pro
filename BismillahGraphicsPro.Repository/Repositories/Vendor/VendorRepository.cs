@@ -93,7 +93,7 @@ public class VendorRepository : Repository, IVendorRepository
 
     public Task<List<VendorViewModel>> SearchAsync(int branchId, string key)
     {
-        return Db.Vendors.Where(v => v.BranchId == branchId && v.VendorName.Contains(key) || v.VendorPhone.Contains(key) || v.VendorCompanyName.Contains(key))
+        return Db.Vendors.Where(v => v.BranchId == branchId && v.VendorCompanyName.Contains(key) || v.VendorPhone.Contains(key) || v.VendorCompanyName.Contains(key))
             .ProjectTo<VendorViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.VendorName)
             .Take(5)
@@ -131,4 +131,28 @@ public class VendorRepository : Repository, IVendorRepository
         Db.Vendors.Update(vendor);
         Db.SaveChanges();
     }
+
+    public DbResponse<VendorViewModel> GetReport(int id, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+        var vendor = Db.Vendors
+            .Include(v =>
+                v.Sellings.Where(p => p.SellingDate <= endDate && p.SellingDate >= startDate))
+            .FirstOrDefault(v => v.VendorId == id);
+
+        if (vendor == null) return new DbResponse<VendorViewModel>(false, $"data not found");
+
+        var vendorView = _mapper.Map<VendorViewModel>(vendor);
+
+
+        vendorView.TotalAmount = Math.Round(vendor.Sellings.Sum(s => s.SellingTotalPrice), 2);
+        vendorView.VendorDue = Math.Round(vendor.Sellings.Sum(s => s.SellingDueAmount), 2);
+        vendorView.VendorPaid = Math.Round(vendor.Sellings.Sum(s => s.SellingPaidAmount), 2);
+        vendorView.TotalDiscount = Math.Round(vendor.Sellings.Sum(s => s.SellingDiscountAmount), 2);
+
+        return new DbResponse<VendorViewModel>(true, $"{vendorView.VendorCompanyName} get successfully", vendorView);
+    }
+
 }
