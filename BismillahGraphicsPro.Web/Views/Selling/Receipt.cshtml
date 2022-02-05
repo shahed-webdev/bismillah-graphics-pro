@@ -5,7 +5,7 @@
 }
 
 @section Styles{
-<link rel="stylesheet" href="/css/receipt.css">
+<link rel="stylesheet" href="/css/receipt.css?v=1.0.0">
 }
 
 <section class="my-4 d-print-none">
@@ -82,7 +82,7 @@
                             @item.SellingQuantity
                             @item.MeasurementUnitName
                         </td>
-                        <td class="text-right">@item.SellingUnitPrice/-</td>
+                        <td class="text-right">@item.SellingUnitPrice.ToString("0.00")/-</td>
                         <td class="text-right">@item.SellingPrice?.ToString("0.00")/-</td>
                     </tr>
                 }
