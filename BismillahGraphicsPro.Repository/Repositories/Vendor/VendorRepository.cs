@@ -93,7 +93,7 @@ public class VendorRepository : Repository, IVendorRepository
 
     public Task<List<VendorViewModel>> SearchAsync(int branchId, string key)
     {
-        return Db.Vendors.Where(v => v.BranchId == branchId && v.VendorCompanyName.Contains(key) || v.VendorPhone.Contains(key) || v.VendorCompanyName.Contains(key))
+        return Db.Vendors.Where(v => v.BranchId == branchId && ( v.VendorCompanyName.Contains(key) || v.SmsNumber.Contains(key)))
             .ProjectTo<VendorViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.VendorName)
             .Take(5)

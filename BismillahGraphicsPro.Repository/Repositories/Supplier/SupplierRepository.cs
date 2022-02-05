@@ -31,8 +31,8 @@ public class SupplierRepository : Repository, ISupplierRepository
         var supplier = Db.Suppliers.Find(model.SupplierId);
         if (supplier == null) return new DbResponse(false, "data Not Found");
 
-        supplier.SmsNumber = model.SupplierName;
-        supplier.SupplierName = model.SmsNumber;
+        supplier.SmsNumber = model.SmsNumber;
+        supplier.SupplierName = model.SupplierName;
         supplier.SupplierCompanyName = model.SupplierCompanyName;
         supplier.SupplierAddress = model.SupplierAddress;
         supplier.SupplierPhone = model.SupplierPhone;
@@ -118,8 +118,7 @@ public class SupplierRepository : Repository, ISupplierRepository
     public Task<List<SupplierViewModel>> SearchAsync(int branchId, string key)
     {
         return Db.Suppliers.Where(v =>
-                v.BranchId == branchId && v.SupplierCompanyName.Contains(key) || v.SupplierPhone.Contains(key) ||
-                v.SupplierCompanyName.Contains(key))
+                v.BranchId == branchId && (v.SupplierCompanyName.Contains(key) || v.SmsNumber.Contains(key)))
             .ProjectTo<SupplierViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.SupplierName)
             .Take(5)
