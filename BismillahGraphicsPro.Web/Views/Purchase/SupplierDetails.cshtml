@@ -146,9 +146,10 @@
 
                 const response = await fetch(`/purchase/SupplierDetailsAmount?id=${@ViewBag.supplier.SupplierId}&from=${from}&to=${to}`);
                 const responseData = await response.json();
-                console.log(responseData.Data)
-                //if (responseData.IsSuccess)
-                //    this.model = responseData.Data;
+               
+
+                if (responseData.IsSuccess)
+                    this.model = responseData.Data;
             }
         };
     }

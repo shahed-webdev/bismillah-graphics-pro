@@ -87,9 +87,9 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         //get total amount
-        public async Task<IActionResult> VendorDetailsAmount(int? id, DateTime from, DateTime to)
+        public async Task<IActionResult> VendorDetailsAmount(int? id, DateTime? from, DateTime? to)
         {
-            var response = await _vendorCore.GetAsync(id.GetValueOrDefault());
+            var response = await _vendorCore.GetReportAsync(id.GetValueOrDefault(),from,to);
             return Json(response);
         }
 
