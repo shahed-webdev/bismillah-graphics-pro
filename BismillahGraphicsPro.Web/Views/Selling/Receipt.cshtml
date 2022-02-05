@@ -100,18 +100,18 @@
 
                         @if (previousDue > 0)
                         {
-                            <h6>Previous Due: <strong>@previousDue/-</strong></h6>
+                            <p>Pvs Due: <strong>@previousDue/-</strong></p>
                         }
 
-                        <h6>Today Sales: <strong>@Model.SellingTotalPrice/-</strong></h6>
+                        <p>T. Sales: <strong>@Model.SellingTotalPrice/-</strong></p>
 
                         @if (Model.SellingDiscountAmount > 0)
                         {
-                            <h6>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h6>
+                            <p>Discount: <strong>@Model.SellingDiscountAmount/-</strong></p>
                         }
 
-                        <h6>Today Paid: <strong> @Model.SellingPaidAmount/-</strong></h6>
-                        <h6>Current Due: <strong>@Model.Vendor.VendorDue/-</strong></h6>
+                        <p>T. Paid: <strong> @Model.SellingPaidAmount/-</strong></p>
+                        <p>T. Due: <strong>@Model.Vendor.VendorDue/-</strong></p>
                     </div>
                 </td>
             </tr>
