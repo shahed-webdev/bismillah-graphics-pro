@@ -263,10 +263,10 @@
                     $(this.$refs.findVendor).typeahead({
                         minLength: 1,
                         displayText: item => {
-                            return `${item.VendorName} ${item.VendorPhone}`;
+                            return `${item.VendorCompanyName} ${item.VendorPhone}`;
                         },
                         afterSelect: function(item) {
-                            this.$element[0].value = item.VendorName;
+                            this.$element[0].value = item.VendorCompanyName;
                         },
                         source: (request, result) => {
                             $.ajax({

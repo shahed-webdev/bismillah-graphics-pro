@@ -252,10 +252,10 @@
                     $(this.$refs.findSupplier).typeahead({
                         minLength: 1,
                         displayText: item => {
-                            return `${item.SupplierName} ${item.SupplierPhone}`;
+                            return `${item.SupplierCompanyName} ${item.SupplierPhone}`;
                         },
                         afterSelect: function(item) {
-                            this.$element[0].value = item.SupplierName;
+                            this.$element[0].value = item.SupplierCompanyName;
                         },
                         source: (request, result) => {
                             $.ajax({
