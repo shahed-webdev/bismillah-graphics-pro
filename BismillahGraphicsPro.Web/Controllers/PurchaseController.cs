@@ -74,6 +74,25 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+
+        //supplier details
+        public async Task<IActionResult> SupplierDetails(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Suppliers");
+
+            var response = await _supplierCore.GetAsync(id.GetValueOrDefault());
+            ViewBag.supplier = response.Data;
+
+            return View();
+        }
+
+        //get total amount
+        public async Task<IActionResult> SupplierDetailsAmount(int? id, DateTime from, DateTime to)
+        {
+            var response = await _supplierCore.GetAsync(id.GetValueOrDefault());
+            return Json(response);
+        }
+
         #endregion
 
 

@@ -11,8 +11,8 @@
     <div class="col-sm-6">
         <form x-on:submit.prevent="finByDate">
             <div class="d-flex">
-                <input x-ref="fromDate" :value="moment().format('D MMMM, YYYY')" class="form-control datepicker" placeholder="Form Date" type="text">
-                <input x-ref="toDate" :value="moment().endOf('month').format('D MMMM, YYYY')" class="form-control datepicker mx-3" placeholder="To Date" type="text">
+                <input x-ref="fromDate" :value="defaultDates.from" class="form-control datepicker" placeholder="Form Date" type="text">
+                <input x-ref="toDate" :value="defaultDates.to" class="form-control datepicker mx-3" placeholder="To Date" type="text">
                 <div>
                     <button class="btn btn-custom-bg btn-md my-0" type="submit">Find</button>
                 </div>
@@ -38,106 +38,116 @@
 
 
 @section Scripts {
-    <script>
-        $(function() {
-            $('.datepicker').pickadate();
-        });
+<script>
+    $(function() {
+        $('.datepicker').pickadate();
+    });
 
 
-        //data table
-        const dataTable = {
-            table: null,
-            filter: [],
-            init: function() {
-                dataTable.table = $("#data-table").DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: {
-                        url: "/Purchase/GetPaymentData",
-                        type: "POST",
-                        data: function(d) {
-                            d.filters = dataTable.filter;
-                        }
-                    },
-                    columns:
-                    [
-                        {
-                            data: "ReceiptSn",
-                            "render": function(data, type, row) {
-                                return `<a class="blue-text" href="/purchase/paymentReceipt/${row.PurchaseReceiptId}">${data}</a>`;
-                            }
-                        },
-                        { data: "SupplierCompanyName" },
-                        { data: "PaidAmount", "render": function(data) { return `৳${data}` } },
-                        {
-                            data: "PaidDate",
-                            "render": function(data, type, row) {
-                                return moment(data).format("D MMM, YYYY");
-                            }
-                        }
-                    ],
-                    columnDefs: [
-                        //{ 'searchable': false, 'targets': [7, 8] },
-                        //{ 'sortable': false, 'targets': [7, 8] },
-                        { 'className': "text-center", "targets": [0, 3] },
-                        { 'className': "text-right", "targets": [2] }
-                    ]
-                });
-            },
-            operand: {
-                Equal: 0,
-                NotEqual: 1,
-                GreaterThan: 2,
-                LessThan: 3,
-                GreaterThanOrEqual: 4,
-                LessThanOrEqual: 5,
-                Contains: 6,
-                StartsWith: 7,
-                EndsWith: 8
-            },
-            getData: function() {
-                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
-            }
-        }
-
-        //alpine js code
-        function initData() {
-            return {
-                loading: false,
-                totalPaid: 0,
-
-                //get total paid amount
-                async getTotal(from,to) {
-                    try {
-                        const response = await fetch(`/purchase/GetPaid?from=${from}&to=${to}`);
-                        const responseData = await response.json();
-                        this.totalPaid = responseData.Data;
-
-                    } catch (error) {
-                        console.log(error);
+    //data table
+    const dataTable = {
+        table: null,
+        filter: [],
+        init: function() {
+            dataTable.table = $("#data-table").DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "/Purchase/GetPaymentData",
+                    type: "POST",
+                    data: function(d) {
+                        d.filters = dataTable.filter;
                     }
                 },
-
-
-                //data table get data
-                getTableData() {
-                    const fromDate = this.$refs.fromDate.value;
-                    const toDate = this.$refs.toDate.value;
-
-                    dataTable.filter.push({ Field: "PaidDate", Value: fromDate, Operand: dataTable.operand.GreaterThanOrEqual });
-                    dataTable.filter.push({ Field: "PaidDate", Value: toDate, Operand: dataTable.operand.LessThanOrEqual });
-                    dataTable.getData();
-
-
-                    this.getTotal(fromDate, toDate);
-                },
-
-
-                //bill find by date
-                finByDate() {
-                    this.getTableData();
-                }
-            };
+                columns:
+                [
+                    {
+                        data: "ReceiptSn",
+                        "render": function(data, type, row) {
+                            return `<a class="blue-text" href="/purchase/paymentReceipt/${row.PurchaseReceiptId}">${data}</a>`;
+                        }
+                    },
+                    { data: "SupplierCompanyName" },
+                    { data: "PaidAmount", "render": function(data) { return `৳${data}` } },
+                    {
+                        data: "PaidDate",
+                        "render": function(data, type, row) {
+                            return moment(data).format("D MMM, YYYY");
+                        }
+                    }
+                ],
+                columnDefs: [
+                    //{ 'searchable': false, 'targets': [7, 8] },
+                    //{ 'sortable': false, 'targets': [7, 8] },
+                    { 'className': "text-center", "targets": [0, 3] },
+                    { 'className': "text-right", "targets": [2] }
+                ]
+            });
+        },
+        operand: {
+            Equal: 0,
+            NotEqual: 1,
+            GreaterThan: 2,
+            LessThan: 3,
+            GreaterThanOrEqual: 4,
+            LessThanOrEqual: 5,
+            Contains: 6,
+            StartsWith: 7,
+            EndsWith: 8
+        },
+        getData: function() {
+            dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
         }
-    </script>
+    }
+
+    //alpine js code
+    function initData() {
+        return {
+            loading: false,
+            totalPaid: 0,
+            defaultDates: {
+                from: moment().startOf('month').format('D MMMM, YYYY'),
+                to: moment().endOf('month').format('D MMMM, YYYY')
+            },
+
+
+            //get total paid amount
+            async getTotal(from,to) {
+                try {
+                    const response = await fetch(`/purchase/GetPaid?from=${from}&to=${to}`);
+                    const responseData = await response.json();
+                    this.totalPaid = responseData.Data;
+
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+
+
+            //data table get data
+            getTableData(from = this.defaultDates.from, to = this.defaultDates.to) {
+                const filter = [
+                    { Field: "PaidDate", Value: from, Operand: dataTable.operand.GreaterThanOrEqual },
+                    { Field: "PaidDate", Value: to, Operand: dataTable.operand.LessThanOrEqual }
+                ]
+
+
+                dataTable.filter = filter;
+                dataTable.getData();
+
+
+                this.getTotal(from, to);
+            },
+
+
+            //bill find by date
+            finByDate() {
+                const from = this.$refs.fromDate.value;
+                const to = this.$refs.toDate.value;
+
+                this.getTableData(from,to);
+            }
+        };
+    }
+</script>
 }

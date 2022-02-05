@@ -90,28 +90,35 @@
             <tr>
                 <td colspan="4">
                     <span id="amount-word"></span>
+                    <p>@Model.Description</p>
                 </td>
                 <td colspan="2">
                     <div class="text-right">
-                        <h6>Total: <strong>@Model.SellingTotalPrice/-</strong></h6>
                         @{
-                            var discount = Model.SellingDiscountAmount;
-
-                            if (discount > 0)
-                            {
-                                <h6>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h6>
-                            }
+                            var previousDue = Model.Vendor.VendorDue-Model.SellingDueAmount;
                         }
 
-                        <h6>Paid: <strong> @Model.SellingPaidAmount/-</strong></h6>
-                        <h6>Due: <strong>@Model.SellingDueAmount/-</strong></h6>
+                        @if (previousDue > 0)
+                        {
+                            <h6>Previous Due: <strong>@previousDue/-</strong></h6>
+                        }
+
+                        <h6>Today Sales: <strong>@Model.SellingTotalPrice/-</strong></h6>
+
+                        @if (Model.SellingDiscountAmount > 0)
+                        {
+                            <h6>Discount: <strong>@Model.SellingDiscountAmount/-</strong></h6>
+                        }
+
+                        <h6>Today Paid: <strong> @Model.SellingPaidAmount/-</strong></h6>
+                        <h6>Current Due: <strong>@Model.Vendor.VendorDue/-</strong></h6>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <h4 class="mt-3">@Model.Description</h4>
+
 
     <div class="d-flex justify-content-between align-items-center d-print-none mt-3">
         <button id="btnBlockReadySendSMS" @(Model.Vendor.SmsNumber =="" ? "disabled='disabled'" : "") data-number="@Model.Vendor.SmsNumber" class="btn btn-outline-primary"><i class="fas fa-paper-plane mr-1"></i>Send Product Received SMS</button>
@@ -176,161 +183,161 @@
 
 
 @section scripts{
-    <script>
-        $(function() {
-            $("#amount-word").text(`Taka (in words): ${number2text(@Model.SellingTotalPrice)}`);
+<script>
+    $(function() {
+        $("#amount-word").text(`Taka (in words): ${number2text(@Model.SellingTotalPrice)}`);
 
-            getSMSBalance();
+        getSMSBalance();
+    });
+
+    //amount in word
+    function number2text(value) {
+        const fraction = Math.round((value % 1) * 100);
+        var fullText = "";
+
+        if (fraction > 0) {
+            fullText = `AND ${convertNumber(fraction)} PAISA`;
+        }
+
+        return convertNumber(value) + " TK " + fullText + " ONLY";
+    }
+
+    function convertNumber(number) {
+        if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
+
+        var coreAmount = Math.floor(number / 10000000);
+        number -= coreAmount * 10000000;
+
+        var lakhAmount = Math.floor(number / 100000);
+        number -= lakhAmount * 100000;
+
+        var thousandAmount = Math.floor(number / 1000);
+        number -= thousandAmount * 1000;
+
+        var hundredAmount = Math.floor(number / 100);
+        number = number % 100;
+
+        var tn = Math.floor(number / 10);
+        var one = Math.floor(number % 10);
+        var res = "";
+
+        if (coreAmount > 0) {
+            res += (convertNumber(coreAmount) + " CRORE");
+        }
+        if (lakhAmount > 0) {
+            res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
+        }
+        if (thousandAmount > 0) {
+            res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
+        }
+
+        if (hundredAmount) {
+            res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
+        }
+
+        var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
+        var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
+
+        if (tn > 0 || one > 0) {
+            if (!(res === "")) {
+                res += " AND ";
+            }
+
+            if (tn < 2) {
+                res += ones[tn * 10 + one];
+            } else {
+                res += tens[tn];
+                if (one > 0) {
+                    res += (`-${ones[one]}`);
+                }
+            }
+        }
+
+        if (res === "") {
+            res = "zero";
+        }
+        return res;
+    }
+
+
+    //SMS balance
+    function getSMSBalance() {
+        const balance = document.getElementById('smsBalance');
+        balance.textContent = "loading.."
+        $.ajax({
+            url: '/SMS/GetBalance',
+            type: "GET",
+            success: function(response) {
+                balance.textContent = `Remaining SMS: ${response}`;
+            },
+            error: error => console.log(error)
+        });
+    }
+
+    //send SMS
+    const btnBlockReadySendSMS = document.getElementById('btnBlockReadySendSMS');
+    const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
+
+    //sms product received
+    btnBlockReadySendSMS.addEventListener('click',
+        function() {
+            const number = this.getAttribute('data-number');
+            if (!number) return;
+
+            const text = `Dear Valued Vendor, I have received your product. Bill Amount TK: @Model.SellingTotalPrice Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
+            const model = { PhoneNumber: number, TextSms: text };
+
+            send(model);
         });
 
-        //amount in word
-        function number2text(value) {
-            const fraction = Math.round((value % 1) * 100);
-            var fullText = "";
+    //sms payment status
+    btnSendPaymentSMS.addEventListener('click',
+        function() {
+            const number = this.getAttribute('data-number');
+            if (!number) return;
 
-            if (fraction > 0) {
-                fullText = `AND ${convertNumber(fraction)} PAISA`;
-            }
+            const paidAmount = @Model.SellingPaidAmount;
+            const dueAmount = @Model.SellingDueAmount;
 
-            return convertNumber(value) + " TK " + fullText + " ONLY";
-        }
+            const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
+            const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
 
-        function convertNumber(number) {
-            if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
+            const text = `Dear Valued Vendor, The Order Amount Tk: @Model.SellingTotalPrice.${paid}${due}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
+            const model = { PhoneNumber: number, TextSms: text };
 
-            var coreAmount = Math.floor(number / 10000000);
-            number -= coreAmount * 10000000;
+            send(model);
+        });
 
-            var lakhAmount = Math.floor(number / 100000);
-            number -= lakhAmount * 100000;
-
-            var thousandAmount = Math.floor(number / 1000);
-            number -= thousandAmount * 1000;
-
-            var hundredAmount = Math.floor(number / 100);
-            number = number % 100;
-
-            var tn = Math.floor(number / 10);
-            var one = Math.floor(number % 10);
-            var res = "";
-
-            if (coreAmount > 0) {
-                res += (convertNumber(coreAmount) + " CRORE");
-            }
-            if (lakhAmount > 0) {
-                res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
-            }
-            if (thousandAmount > 0) {
-                res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
-            }
-
-            if (hundredAmount) {
-                res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
-            }
-
-            var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
-            var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
-
-            if (tn > 0 || one > 0) {
-                if (!(res === "")) {
-                    res += " AND ";
-                }
-
-                if (tn < 2) {
-                    res += ones[tn * 10 + one];
-                } else {
-                    res += tens[tn];
-                    if (one > 0) {
-                        res += (`-${ones[one]}`);
-                    }
-                }
-            }
-
-            if (res === "") {
-                res = "zero";
-            }
-            return res;
-        }
+    //send to server
+    function send(model) {
+        $.ajax({
+            url: '/SMS/PostSingle',
+            type: "POST",
+            data: model,
+            success: function(response) {
+                location.href = "/Selling";
+            },
+            error: error => console.log(error)
+        });
+    }
 
 
-        //SMS balance
-        function getSMSBalance() {
-            const balance = document.getElementById('smsBalance');
-            balance.textContent = "loading.."
+    //delete Bill
+    const deleteForm = document.getElementById("deleteForm");
+    deleteForm.addEventListener("submit",
+        function(evt) {
+            evt.preventDefault();
+
             $.ajax({
-                url: '/SMS/GetBalance',
-                type: "GET",
+                url: '/selling/DeleteBill/@Model.SellingId',
                 success: function(response) {
-                    balance.textContent = `Remaining SMS: ${response}`;
+                    if (response.IsSuccess)
+                        location.href = "/Selling/records";
                 },
                 error: error => console.log(error)
             });
-        }
+        });
 
-        //send SMS
-        const btnBlockReadySendSMS = document.getElementById('btnBlockReadySendSMS');
-        const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
-
-        //sms product received
-        btnBlockReadySendSMS.addEventListener('click',
-            function() {
-                const number = this.getAttribute('data-number');
-                if (!number) return;
-
-                const text = `Dear Valued Vendor, I have received your product. Bill Amount TK: @Model.SellingTotalPrice Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
-                const model = { PhoneNumber: number, TextSms: text };
-
-                send(model);
-            });
-
-        //sms payment status
-        btnSendPaymentSMS.addEventListener('click',
-            function() {
-                const number = this.getAttribute('data-number');
-                if (!number) return;
-
-                const paidAmount = @Model.SellingPaidAmount;
-                const dueAmount = @Model.SellingDueAmount;
-
-                const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
-                const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
-
-                const text = `Dear Valued Vendor, The Order Amount Tk: @Model.SellingTotalPrice.${paid}${due}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
-                const model = { PhoneNumber: number, TextSms: text };
-
-                send(model);
-            });
-
-        //send to server
-        function send(model) {
-            $.ajax({
-                url: '/SMS/PostSingle',
-                type: "POST",
-                data: model,
-                success: function(response) {
-                    location.href = "/Selling";
-                },
-                error: error => console.log(error)
-            });
-        }
-
-
-        //delete Bill
-        const deleteForm = document.getElementById("deleteForm");
-        deleteForm.addEventListener("submit",
-            function(evt) {
-                evt.preventDefault();
-
-                $.ajax({
-                    url: '/selling/DeleteBill/@Model.SellingId',
-                    success: function(response) {
-                        if (response.IsSuccess)
-                            location.href = "/Selling/records";
-                    },
-                    error: error => console.log(error)
-                });
-            });
-
-    </script>
+</script>
 }
 

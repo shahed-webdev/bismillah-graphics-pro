@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Supplier Details";
+    Layout = "_AdminLayout";
+}
+
+<div x-data="initData()">
+    <div class="container">
+        <form x-on:submit.prevent="finByDate">
+            <div class="row align-items-center mt-3">
+                <div class="col">
+                    <h5 x-text="model.SupplierCompanyName" class="mb-0 font-weight-bold"></h5>
+                    <p class="mb-0">
+                        <span x-text="model.SupplierAddress"></span>,
+                        <span x-text="model.SmsNumber"></span>
+                    </p>
+                </div>
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col">
+                            <input x-ref="fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
+                        </div>
+                        <div class="col">
+                            <input x-ref="toDate" class="form-control datepicker" placeholder="To Date" type="text">
+                        </div>
+                        <div>
+                            <button class="btn btn-custom-bg btn-md my-0" type="submit">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <ul class="list-group list-group-horizontal my-4 text-right font-weight-bold">
+            <li class="list-group-item flex-fill">Total Amount: ৳<strong x-text="model.TotalAmount"></strong></li>
+            <li class="list-group-item flex-fill">Total Paid: ৳<strong x-text="model.SupplierPaid"></strong></li>
+            <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.TotalDiscount"></strong></li>
+            <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.SupplierDue"></strong></li>
+        </ul>
+
+
+        <div class="card card-body">
+            <table id="data-table" class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th class="text-center">Bill No</th>
+                        <th class="text-right">Amount</th>
+                        <th class="text-right">Discount</th>
+                        <th class="text-right">Paid</th>
+                        <th class="text-right">Due</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+<script>
+    $(function() {
+        $('.datepicker').pickadate();
+
+        dataTable.filter = [{ Field: "SupplierId", Value: @ViewBag.supplier.SupplierId, Operand: dataTable.operand.Equal }]
+        dataTable.getData();
+    });
+
+
+    //data table
+    const dataTable = {
+        table: null,
+        filter: [],
+        init: function() {
+            dataTable.table = $("#data-table").DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "/Purchase/GetRecordsData",
+                    type: "POST",
+                    data: function(d) {
+                        d.filters = dataTable.filter;
+                    }
+                },
+                columns:
+                [   { data: "PurchaseDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                    { data: "PurchaseSn", "render": function(data, type, row) { return `<a class="blue-text" href="/purchase/Receipt/${row.PurchaseId}">${data}</a>` } },
+                    { data: "PurchaseTotalPrice" },
+                    { data: "PurchaseDiscountAmount" },
+                    { data: "PurchasePaidAmount" },
+                    {
+                        data: "PurchaseDueAmount",
+                        "render": function(data, type, row) {
+                            return data ? `<a class="blue-text" href="/purchase/payDueSingle/${row.PurchaseId}">${data}</a>` : data;
+                        }
+                    }
+                ],
+                columnDefs: [
+                    { 'searchable': false, 'targets': [2,3,4, 5] },
+                    //{ 'sortable': false, 'targets': [6] },
+                    { 'className': "text-center", "targets": [0, 1] },
+                    { 'className': "text-right", "targets": [2, 3, 4,5] }
+                ]
+            });
+        },
+        operand: {
+            Equal: 0,
+            NotEqual: 1,
+            GreaterThan: 2,
+            LessThan: 3,
+            GreaterThanOrEqual: 4,
+            LessThanOrEqual: 5,
+            Contains: 6,
+            StartsWith: 7,
+            EndsWith: 8
+        },
+        getData: function() {
+            dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+        }
+    }
+
+    //alpine js code
+    function initData() {
+        return {
+            loading: false,
+            model:JSON.parse('@Html.Raw(Json.Serialize(ViewBag.supplier))'),
+
+            //bill find by date
+            async finByDate() {
+                const from = this.$refs.fromDate.value;
+                const to = this.$refs.toDate.value;
+
+                const filter = [{ Field: "SupplierId", Value: @ViewBag.supplier.SupplierId, Operand: dataTable.operand.Equal }]
+
+                if (from) {
+                    filter.push({ Field: "PurchaseDate", Value: from, Operand: dataTable.operand.GreaterThanOrEqual })
+                } 
+                if (to) {
+                    filter.push({ Field: "PurchaseDate", Value: to, Operand: dataTable.operand.LessThanOrEqual })
+                }
+
+                dataTable.filter = filter;
+                dataTable.getData();
+             
+
+                const response = await fetch(`/purchase/SupplierDetailsAmount?id=${@ViewBag.supplier.SupplierId}&from=${from}&to=${to}`);
+                const responseData = await response.json();
+                console.log(responseData.Data)
+                //if (responseData.IsSuccess)
+                //    this.model = responseData.Data;
+            }
+        };
+    }
+</script>
+}
+

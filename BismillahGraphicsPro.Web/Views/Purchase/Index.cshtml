@@ -29,7 +29,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <template x-for="(product, index) in model.products" :key="product.ProductId">
+                            <template x-for="(product, index) in model.products" :key="product.Id">
                                 <tr>
                                     <td>
                                         <strong x-text="product.ProductName"></strong>
@@ -54,14 +54,14 @@
                                         <input x-model.number="product.PurchaseUnitPrice"
                                                x-on:input="calculateTotal"
                                                x-on:change="saveData"
-                                               type="number" step="0.01"
+                                               type="number" step="0.001"
                                                min="0" class="form-control" required>
                                     </td>
                                     <td class="text-right">
-                                        <strong x-text="product.PurchaseQuantity * product.PurchaseUnitPrice"></strong>/-
+                                        <strong x-text="Math.ceil(product.PurchaseQuantity * product.PurchaseUnitPrice)"></strong>/-
                                     </td>
                                     <td class="text-center">
-                                        <a x-on:click="removeProduct(product.ProductId)" class="btn btn-link red-text">
+                                        <a x-on:click="removeProduct(product.Id)" class="btn btn-link red-text">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
                                     </td>
@@ -170,6 +170,7 @@
                 accounts: [],
                 measurementUnits: [],
 
+
                 //get dropdown data
                 async getDropdownData() {
                     //get account
@@ -186,13 +187,8 @@
 
                 //add product to list
                 addProductToList(product) {
-                    const data = { ...product, PurchaseQuantity: 0, PurchaseUnitPrice: product.ProductPrice }
-                    const ifFound = this.model.products.some(item => item.ProductId === product.ProductId);
-
-                    if (ifFound) {
-                        $.notify(`${product.ProductName} already added!`, "error");
-                        return;
-                    }
+                    const data = { ...product, Id: +new Date, PurchaseQuantity: 0, PurchaseUnitPrice: product.ProductPrice }
+                   
 
                     this.model.products.push(data);
                     this.clearInput = "";
@@ -229,7 +225,7 @@
 
                 //remove Data
                 removeProduct(id) {
-                    this.model.products = this.model.products.filter(item => item.ProductId !== id);
+                    this.model.products = this.model.products.filter(item => item.Id !== id);
 
                     //save to local
                     this.saveData();
@@ -246,9 +242,9 @@
                 totalAmount: 0,
                 calculateTotal() {
                     const total = this.model.products.map(item => +item.PurchaseQuantity * +item.PurchaseUnitPrice).reduce((prev, current) => prev + current, 0);
-                    this.totalAmount = total;
+                    this.totalAmount = Math.ceil(total);
 
-                    return total || 0;
+                    return Math.ceil(total) || 0;
                 },
 
                 //find Supplier (autocomplete)

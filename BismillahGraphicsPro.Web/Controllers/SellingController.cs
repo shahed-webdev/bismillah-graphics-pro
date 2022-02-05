@@ -74,11 +74,30 @@ namespace BismillahGraphicsPro.Web.Controllers
             return Json(response);
         }
 
+
+        //Vendor details
+        public async Task<IActionResult> VendorDetails(int? id)
+        {
+            if (!id.HasValue) return RedirectToAction("Vendors");
+
+            var response = await _vendorCore.GetAsync(id.GetValueOrDefault());
+            ViewBag.vendor = response.Data;
+
+            return View();
+        }
+
+        //get total amount
+        public async Task<IActionResult> VendorDetailsAmount(int? id, DateTime from, DateTime to)
+        {
+            var response = await _vendorCore.GetAsync(id.GetValueOrDefault());
+            return Json(response);
+        }
+
         #endregion
 
 
         #region Selling
-        
+
         [Authorize(Roles = "Admin, Selling")]
         public IActionResult Index()
         {
