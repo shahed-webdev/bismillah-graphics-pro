@@ -133,13 +133,16 @@
                         {
                             data: "VendorCompanyName",
                             "render": function(data, type, row) {
-                                return `<p class="font-weight-bold mb-0">${data}</p><span>${row.VendorName}</span>`
+                                return `<a href="/selling/VendorDetails/${row.VendorId}" class="blue-text">
+                                <p class="font-weight-bold mb-0">${data}</p>
+                                <span>${row.VendorName}</span>
+                                </a>`
                             }
                         },
                         {
                             data: "VendorAddress",
                             "render": function(data, type, row) {
-                                return `<p class="mb-0 text-dark">${data}</p><small>${row.VendorPhone}</small>`
+                                return `<p class="mb-0 text-dark">${data?data:""}</p><small>${row.VendorPhone}</small>`
                             }
                         },
                         { data: "SmsNumber" },
