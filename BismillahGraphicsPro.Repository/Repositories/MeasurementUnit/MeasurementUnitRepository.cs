@@ -77,7 +77,7 @@ public class MeasurementUnitRepository: Repository, IMeasurementUnitRepository
 
     public List<DDL> ListDdl(int branchId)
     {
-        return Db.MeasurementUnits
+        return Db.MeasurementUnits.Where(m=> m.BranchId == branchId)
             .OrderBy(a => a.MeasurementUnitName)
             .Select(m => new DDL
             {

@@ -80,7 +80,7 @@ public class ExpenseCategoryRepository : Repository, IExpenseCategoryRepository
 
     public List<DDL> ListDdl(int branchId)
     {
-        return Db.ExpenseCategories
+        return Db.ExpenseCategories.Where(e=> e.BranchId == branchId)
             .OrderBy(a => a.CategoryName)
             .Select(m => new DDL
             {

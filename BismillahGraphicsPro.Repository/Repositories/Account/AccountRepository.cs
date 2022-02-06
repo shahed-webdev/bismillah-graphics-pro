@@ -81,7 +81,7 @@ public class AccountRepository : Repository, IAccountRepository
 
     public List<DDL> ListDdl(int branchId)
     {
-        return Db.Accounts
+        return Db.Accounts.Where(a=> a.BranchId == branchId)
             .OrderBy(a => a.AccountName)
             .Select(m => new DDL
             {
