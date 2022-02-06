@@ -176,7 +176,6 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Due Collection
 
         //due Collection single view
-        [Authorize(Roles = "Admin, SellingDueCollectionSingle")]
         public async Task<IActionResult> DueCollectionSingle(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -197,7 +196,6 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //due Collection multiple view
-        [Authorize(Roles = "Admin, SellingDueCollectionMultiple")]
         public async Task<IActionResult> DueCollectionMultiple(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Vendors");

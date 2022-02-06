@@ -175,7 +175,6 @@ namespace BismillahGraphicsPro.Web.Controllers
         #region Pay Due
 
         //pay due single view
-        [Authorize(Roles = "Admin, PurchasePayDueSingle")]
         public async Task<IActionResult> PayDueSingle(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -195,7 +194,6 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //pay due multiple view
-        [Authorize(Roles = "Admin, PurchasePayDueMultiple")]
         public async Task<IActionResult> PayDueMultiple(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Suppliers");
