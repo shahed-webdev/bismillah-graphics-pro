@@ -68,7 +68,7 @@
                                                min="0" class="form-control" required>
                                     </td>
                                     <td class="text-right">
-                                        <strong x-text="Math.ceil((product.Length * product.Width) * product.SellingUnitPrice)"></strong>/-
+                                        <strong x-text="Math.round((product.Length * product.Width) * product.SellingUnitPrice)"></strong>/-
                                     </td>
                                     <td class="text-center">
                                         <a x-on:click="removeProduct(product.Id)" class="btn btn-link red-text">
@@ -253,9 +253,9 @@
                 totalAmount: 0,
                 calculateTotal() {
                     const total = this.model.products.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
-                    this.totalAmount = Math.ceil(total);
+                    this.totalAmount = Math.round(total);
 
-                    return Math.ceil(total) || 0;
+                    return Math.round(total) || 0;
                 },
 
                 //find Vendor (autocomplete)
