@@ -4,7 +4,7 @@
 
 namespace BismillahGraphicsPro.Data.Migrations
 {
-    public partial class SeedLinkCategory : Migration
+    public partial class SeedLinkCategoryData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

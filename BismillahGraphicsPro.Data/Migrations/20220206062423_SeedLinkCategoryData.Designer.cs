@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BismillahGraphicsPro.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220202055403_SeedRoleData")]
-    partial class SeedRoleData
+    [Migration("20220206062423_SeedLinkCategoryData")]
+    partial class SeedLinkCategoryData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -424,6 +424,71 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasKey("LinkCategoryId");
 
                     b.ToTable("PageLinkCategory", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            LinkCategoryId = 1,
+                            Category = "Account",
+                            IconClass = "fas fa-file-invoice-dollar",
+                            Sn = 1
+                        },
+                        new
+                        {
+                            LinkCategoryId = 2,
+                            Category = "Product",
+                            IconClass = "fas fa-shopping-bag",
+                            Sn = 2
+                        },
+                        new
+                        {
+                            LinkCategoryId = 3,
+                            Category = "Purchase",
+                            IconClass = "fas fa-user-tie",
+                            Sn = 3
+                        },
+                        new
+                        {
+                            LinkCategoryId = 4,
+                            Category = "Selling",
+                            IconClass = "fas fa-shopping-bag",
+                            Sn = 4
+                        },
+                        new
+                        {
+                            LinkCategoryId = 5,
+                            Category = "Expense",
+                            IconClass = "fas fa-chart-pie",
+                            Sn = 5
+                        },
+                        new
+                        {
+                            LinkCategoryId = 6,
+                            Category = "Report",
+                            IconClass = "fas fa-file-alt",
+                            Sn = 6
+                        },
+                        new
+                        {
+                            LinkCategoryId = 7,
+                            Category = "SMS",
+                            IconClass = "fas fa-sms",
+                            Sn = 7
+                        },
+                        new
+                        {
+                            LinkCategoryId = 8,
+                            Category = "Sub-Admin",
+                            IconClass = "fas fa-user-shield",
+                            Sn = 8
+                        },
+                        new
+                        {
+                            LinkCategoryId = 9,
+                            Category = "Reset",
+                            IconClass = "fas fa-trash-restore",
+                            Sn = 9
+                        });
                 });
 
             modelBuilder.Entity("BismillahGraphicsPro.Data.Product", b =>
@@ -592,7 +657,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PurchaseUnitPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("PurchaseListId");
 
@@ -889,7 +954,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("SellingUnitPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<double>("Width")
                         .HasColumnType("float");
@@ -1273,6 +1338,13 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
+                            Id = "1c638e1e-597c-4814-94d2-49d8f81e775e",
+                            ConcurrencyStamp = "1c638e1e-597c-4814-94d2-49d8f81e775e",
+                            Name = "ProductCategory",
+                            NormalizedName = "PRODUCTCATEGORY"
+                        },
+                        new
+                        {
                             Id = "c5f489f6-6f53-473b-9c47-d087ce3e9cd5",
                             ConcurrencyStamp = "c5f489f6-6f53-473b-9c47-d087ce3e9cd5",
                             Name = "ProductSales",
@@ -1294,20 +1366,6 @@ namespace BismillahGraphicsPro.Data.Migrations
                         },
                         new
                         {
-                            Id = "0c03d7ba-96df-46cd-97bb-328de8edebed",
-                            ConcurrencyStamp = "0c03d7ba-96df-46cd-97bb-328de8edebed",
-                            Name = "PurchasePayDueMultiple",
-                            NormalizedName = "PURCHASEPAYDUEMULTIPLE"
-                        },
-                        new
-                        {
-                            Id = "216787ad-3c2d-4756-9067-779321626951",
-                            ConcurrencyStamp = "216787ad-3c2d-4756-9067-779321626951",
-                            Name = "PurchasePayDueSingle",
-                            NormalizedName = "PURCHASEPAYDUESINGLE"
-                        },
-                        new
-                        {
                             Id = "632f139d-4827-413e-8ede-45d3ba8f9724",
                             ConcurrencyStamp = "632f139d-4827-413e-8ede-45d3ba8f9724",
                             Name = "PurchasePaymentReport",
@@ -1326,20 +1384,6 @@ namespace BismillahGraphicsPro.Data.Migrations
                             ConcurrencyStamp = "d8a9c270-f027-4078-a71c-1d6c7372ff53",
                             Name = "Selling",
                             NormalizedName = "SELLING"
-                        },
-                        new
-                        {
-                            Id = "726bc8ab-e678-4b7f-a9e6-636ae673bd63",
-                            ConcurrencyStamp = "726bc8ab-e678-4b7f-a9e6-636ae673bd63",
-                            Name = "SellingDueCollectionMultiple",
-                            NormalizedName = "SELLINGDUECOLLECTIONMULTIPLE"
-                        },
-                        new
-                        {
-                            Id = "fe0aa59a-d691-4bcb-bad4-07fba932e7ac",
-                            ConcurrencyStamp = "fe0aa59a-d691-4bcb-bad4-07fba932e7ac",
-                            Name = "SellingDueCollectionSingle",
-                            NormalizedName = "SELLINGDUECOLLECTIONSINGLE"
                         },
                         new
                         {
@@ -1750,8 +1794,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     b.HasOne("BismillahGraphicsPro.Data.Branch", "Branch")
                         .WithMany("MeasurementUnits")
                         .HasForeignKey("BranchId")
-                        .IsRequired()
-                        .HasConstraintName("FK_MeasurementUnit_Branch");
+                        .IsRequired();
 
                     b.Navigation("Branch");
                 });

@@ -80,7 +80,7 @@ public class ProductCategoryRepository : Repository, IProductCategoryRepository
 
     public List<DDL> ListDdl(int branchId)
     {
-        return Db.ProductCategories
+        return Db.ProductCategories.Where(p=> p.BranchId == branchId)
             .OrderBy(a => a.ProductCategoryName)
             .Select(m => new DDL
             {

@@ -17,7 +17,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     { 2, "balanceSheet", "Account", null, 1, "1d844081-a5fc-4674-a767-4e835e591740", 2, "Balance Sheet" },
                     { 3, "TransactionLog", "Account", null, 1, "4120700d-198a-4817-9987-37077ba86160", 3, "Transaction Logs" },
                     { 4, "measurementUnit", "Product", null, 2, "4b48934d-ef26-4289-a038-e7313736126f", 1, "Measurement Unit" },
-                    { 5, "Category", "Product", null, 2, "d4d25cbe-c54b-4982-ac79-a45c562faf8d", 2, "Category" },
+                    { 5, "Category", "Product", null, 2, "1c638e1e-597c-4814-94d2-49d8f81e775e", 2, "Category" },
                     { 6, "Index", "Product", null, 2, "d4d25cbe-c54b-4982-ac79-a45c562faf8d", 3, "Products" },
                     { 7, "stockReport", "Product", null, 2, "bec93436-98fd-44fe-bcd3-00f3a9cf0b3a", 4, "Stock Report" },
                     { 8, "suppliers", "purchase", null, 3, "cb683688-df12-4127-979b-d6b1fd8eddda", 1, "Suppliers" },
@@ -41,7 +41,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     { 26, "Single", "SMS", null, 7, "299dd7bc-f8f4-42e2-b129-607d774bf983", 2, "Single SMS" },
                     { 27, "sentRecord", "SMS", null, 7, "a3e4480c-f381-4b34-9ab8-b0f3db05b724", 3, "Sent Record" },
                     { 28, "signup", "subAdmin", null, 8, "415afdc1-04c0-4e7c-8a38-3daeab8f2e10", 1, "Sign Up" },
-                    { 29, "Index", "subAdmin", null, 8, "058e2f01-67eb-4dcb-8eab-99402d0c3643", 2, "Sub-admin List" },
+                    { 29, "Index", "subAdmin", null, 8, "1bb0d758-5506-43f5-b6a0-a6b3b4ee8129", 2, "Sub-admin List" },
                     { 30, "pageAccess", "subAdmin", null, 8, "058e2f01-67eb-4dcb-8eab-99402d0c3643", 3, "Page Access" },
                     { 31, "Reset", "Admin", null, 9, "59adebcb-f095-45a4-bae0-cc574d810106", 1, "Reset" }
                 });

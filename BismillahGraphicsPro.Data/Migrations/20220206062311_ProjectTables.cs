@@ -99,7 +99,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                 {
                     table.PrimaryKey("PK_MeasurementUnit", x => x.MeasurementUnitId);
                     table.ForeignKey(
-                        name: "FK_MeasurementUnit_Branch",
+                        name: "FK_MeasurementUnit_Branch_BranchId",
                         column: x => x.BranchId,
                         principalTable: "Branch",
                         principalColumn: "BranchId");
@@ -605,7 +605,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     MeasurementUnitId = table.Column<int>(type: "int", nullable: false, defaultValueSql: "((1))"),
                     PurchaseQuantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PurchaseUnitPrice = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    PurchasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([PurchaseQuantity]*[PurchaseUnitPrice],(0)))", stored: true)
+                    PurchasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([PurchaseQuantity]*[PurchaseUnitPrice],(2)))", stored: true)
                 },
                 constraints: table =>
                 {
@@ -686,7 +686,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     SellingUnitPrice = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     Length = table.Column<double>(type: "float", nullable: false),
                     Width = table.Column<double>(type: "float", nullable: false),
-                    SellingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([SellingQuantity]*[SellingUnitPrice],(0)))", stored: true),
+                    SellingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false, computedColumnSql: "(round([SellingQuantity]*[SellingUnitPrice],(2)))", stored: true),
                     Details = table.Column<string>(type: "nvarchar(201)", maxLength: 201, nullable: true, computedColumnSql: "((CONVERT([nvarchar](100),[Length])+'X')+CONVERT([nvarchar](100),[Width]))", stored: true)
                 },
                 constraints: table =>

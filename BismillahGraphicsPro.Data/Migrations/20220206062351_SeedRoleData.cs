@@ -15,10 +15,9 @@ namespace BismillahGraphicsPro.Data.Migrations
                 {
                     { "058e2f01-67eb-4dcb-8eab-99402d0c3643", "058e2f01-67eb-4dcb-8eab-99402d0c3643", "SubAdminPageAccess", "SUBADMINPAGEACCESS" },
                     { "06f359fa-68bf-40f6-a112-fc599511b145", "06f359fa-68bf-40f6-a112-fc599511b145", "SellingReport", "SELLINGREPORT" },
-                    { "0c03d7ba-96df-46cd-97bb-328de8edebed", "0c03d7ba-96df-46cd-97bb-328de8edebed", "PurchasePayDueMultiple", "PURCHASEPAYDUEMULTIPLE" },
                     { "1bb0d758-5506-43f5-b6a0-a6b3b4ee8129", "1bb0d758-5506-43f5-b6a0-a6b3b4ee8129", "SubAdminList", "SUBADMINLIST" },
+                    { "1c638e1e-597c-4814-94d2-49d8f81e775e", "1c638e1e-597c-4814-94d2-49d8f81e775e", "ProductCategory", "PRODUCTCATEGORY" },
                     { "1d844081-a5fc-4674-a767-4e835e591740", "1d844081-a5fc-4674-a767-4e835e591740", "BalanceSheet", "BALANCESHEET" },
-                    { "216787ad-3c2d-4756-9067-779321626951", "216787ad-3c2d-4756-9067-779321626951", "PurchasePayDueSingle", "PURCHASEPAYDUESINGLE" },
                     { "25205E51-C7F6-43E5-927A-8074AF61B966", "25205E51-C7F6-43E5-927A-8074AF61B966", "Authority", "AUTHORITY" },
                     { "293de564-7caf-4686-9aea-f2dbc69b9072", "293de564-7caf-4686-9aea-f2dbc69b9072", "DailyCash", "DAILYCASH" },
                     { "299dd7bc-f8f4-42e2-b129-607d774bf983", "299dd7bc-f8f4-42e2-b129-607d774bf983", "SmsSingle", "SMSSINGLE" },
@@ -32,7 +31,6 @@ namespace BismillahGraphicsPro.Data.Migrations
                     { "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7", "4d4fb0a3-4734-4802-a027-9c9b2ad7dae7", "SubAdmin", "SUBADMIN" },
                     { "59adebcb-f095-45a4-bae0-cc574d810106", "59adebcb-f095-45a4-bae0-cc574d810106", "Reset", "RESET" },
                     { "632f139d-4827-413e-8ede-45d3ba8f9724", "632f139d-4827-413e-8ede-45d3ba8f9724", "PurchasePaymentReport", "PURCHASEPAYMENTREPORT" },
-                    { "726bc8ab-e678-4b7f-a9e6-636ae673bd63", "726bc8ab-e678-4b7f-a9e6-636ae673bd63", "SellingDueCollectionMultiple", "SELLINGDUECOLLECTIONMULTIPLE" },
                     { "8382e629-ac39-46ed-816e-0fe9275e3554", "8382e629-ac39-46ed-816e-0fe9275e3554", "SmsVendor", "SMSVENDOR" },
                     { "878cad39-1257-44cb-9c2d-21da49e4e34d", "878cad39-1257-44cb-9c2d-21da49e4e34d", "Net", "NET" },
                     { "a3e4480c-f381-4b34-9ab8-b0f3db05b724", "a3e4480c-f381-4b34-9ab8-b0f3db05b724", "SentRecord", "SENTRECORD" },
@@ -45,8 +43,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     { "d4d25cbe-c54b-4982-ac79-a45c562faf8d", "d4d25cbe-c54b-4982-ac79-a45c562faf8d", "Products", "PRODUCTS" },
                     { "d8a9c270-f027-4078-a71c-1d6c7372ff53", "d8a9c270-f027-4078-a71c-1d6c7372ff53", "Selling", "SELLING" },
                     { "f1fb596e-fc07-46f8-ae1d-ebbde38e5994", "f1fb596e-fc07-46f8-ae1d-ebbde38e5994", "Expense", "EXPENSE" },
-                    { "fb76a482-3d73-4e28-9155-581a1a2cbea4", "fb76a482-3d73-4e28-9155-581a1a2cbea4", "Account", "ACCOUNT" },
-                    { "fe0aa59a-d691-4bcb-bad4-07fba932e7ac", "fe0aa59a-d691-4bcb-bad4-07fba932e7ac", "SellingDueCollectionSingle", "SELLINGDUECOLLECTIONSINGLE" }
+                    { "fb76a482-3d73-4e28-9155-581a1a2cbea4", "fb76a482-3d73-4e28-9155-581a1a2cbea4", "Account", "ACCOUNT" }
                 });
 
             migrationBuilder.InsertData(
@@ -80,22 +77,17 @@ namespace BismillahGraphicsPro.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "0c03d7ba-96df-46cd-97bb-328de8edebed");
-
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
                 keyValue: "1bb0d758-5506-43f5-b6a0-a6b3b4ee8129");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "1d844081-a5fc-4674-a767-4e835e591740");
+                keyValue: "1c638e1e-597c-4814-94d2-49d8f81e775e");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "216787ad-3c2d-4756-9067-779321626951");
+                keyValue: "1d844081-a5fc-4674-a767-4e835e591740");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
@@ -156,11 +148,6 @@ namespace BismillahGraphicsPro.Data.Migrations
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "632f139d-4827-413e-8ede-45d3ba8f9724");
-
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
-                keyValue: "726bc8ab-e678-4b7f-a9e6-636ae673bd63");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
@@ -226,11 +213,6 @@ namespace BismillahGraphicsPro.Data.Migrations
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "fb76a482-3d73-4e28-9155-581a1a2cbea4");
-
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
-                keyValue: "fe0aa59a-d691-4bcb-bad4-07fba932e7ac");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
