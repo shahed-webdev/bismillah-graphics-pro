@@ -340,7 +340,7 @@ namespace BismillahGraphicsPro.Data.Migrations
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     BranchId = table.Column<int>(type: "int", nullable: false),
                     RegistrationId = table.Column<int>(type: "int", nullable: false),
-                    IsAdded = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((1))"),
+                    IsAdded = table.Column<bool>(type: "bit", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Details = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),

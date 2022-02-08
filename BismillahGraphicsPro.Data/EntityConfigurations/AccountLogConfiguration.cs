@@ -18,8 +18,7 @@ public class AccountLogConfiguration : IEntityTypeConfiguration<AccountLog>
             .HasDefaultValueSql("(dateadd(hour,(6),getutcdate()))");
 
         entity.Property(e => e.IsAdded)
-            .IsRequired()
-            .HasDefaultValueSql("((1))");
+            .IsRequired();
 
         entity.Property(e => e.LogDate).HasColumnType("date");
 

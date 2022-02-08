@@ -65,7 +65,7 @@ public class ExpenseRepository : Repository, IExpenseRepository
         var startDate = sDate ?? new DateTime(1000, 1, 1);
         var endDate = eDate ?? new DateTime(3000, 1, 1);
 
-        var ex = Db.Expenses
+        var ex = Db.Expenses.Where(e=> e.BranchId == branchId)
             .Include(e => e.ExpenseCategory)
             .Where(e => e.ExpenseDate <= endDate && e.ExpenseDate >= startDate)
             .GroupBy(e => new
