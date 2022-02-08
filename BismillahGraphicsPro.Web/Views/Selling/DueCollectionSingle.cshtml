@@ -299,7 +299,7 @@
                         success: response => {
                             if (response.IsSuccess) {
                                 this.model = {};
-                                location.href = "/Selling/records";
+                                location.href = "/Selling/receipt/@Model.SellingId";
                             }
 
                             $.notify(response.Message, response.IsSuccess ? "success" : "error");

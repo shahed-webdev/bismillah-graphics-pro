@@ -24,14 +24,16 @@
 <div class="card card-body mt-4">
     <table id="data-table" class="table table-sm">
         <thead>
-            <tr>
-                <th>Invoice</th>
-                <th>Vendor</th>
-                <th>Amount</th>
-                <th>Paid</th>
-                <th>Due</th>
-                <th>Date</th>
-            </tr>
+        <tr>
+            <th>Date</th>
+            <th>Party Name</th>
+            <th>Bill No.</th>
+            <th>Sales</th>
+            <th>Received</th>
+            <th>Discount</th>
+            <th>Balance</th>
+
+        </tr>
         </thead>
     </table>
 </div>
@@ -58,23 +60,26 @@
                     },
                     columns:
                     [
-                        { data: "SellingSn", "render": function(data, type, row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
+                        { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
                         { data: "VendorCompanyName" },
+                        { data: "SellingSn", "render": function(data, type, row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
+                        
                         { data: "SellingTotalPrice" },
                         { data: "SellingPaidAmount" },
+                        { data: "SellingDiscountAmount" },
                         {
                             data: "SellingDueAmount",
                             "render": function(data, type, row) {
                                 return data ? `<a class="blue-text" href="/selling/DueCollectionSingle/${row.SellingId}">${data}</a>` : data;
                             }
                         },
-                        { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } }
+                        
                     ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [0, 5] },
                         //{ 'sortable': false, 'targets': [6] },
-                        { 'className': "text-center", "targets": [0, 5] },
-                        { 'className': "text-right", "targets": [2, 3, 4] }
+                        { 'className': "text-center", "targets": [0, 2] },
+                        { 'className': "text-right", "targets": [3, 4,5,6] }
                     ]
                 });
             },
