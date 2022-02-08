@@ -188,7 +188,7 @@
                         url: "/Account/GetTransactionLogData",
                         type: "POST",
                         data: function(d) {
-                            d.filters = tableOptions.filter;
+                            d.filters = [...tableOptions.filter,{ Field: "IsAdded", Value: false, Operand: tableOptions.operand.Equal }];
                         }
                     },
                     columns: tableOptions.columns,

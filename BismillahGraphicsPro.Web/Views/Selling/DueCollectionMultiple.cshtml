@@ -106,128 +106,131 @@
 
 
 @section Scripts {
-    <script>
-        $(function() {
-            $('.datepicker').pickadate();
-        });
+<script>
+    $(function() {
+        $('.datepicker').pickadate();
+    });
 
-        //alpine js code
-        function initData() {
-            return {
-                loading: false,
-                model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
+    //alpine js code
+    function initData() {
+        return {
+            loading: false,
+            model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.dueModel))'),
+         
 
-                //dropdown list
-                accounts: [],
+            //dropdown list
+            accounts: [],
 
-                //get dropdown data
-                async getDropdownData() {
-                    //reset paid amount after reload
-                    this.$refs.totalPaid.value = "";
+            //get dropdown data
+            async getDropdownData() {
+                console.log('@Html.Raw(Json.Serialize(ViewBag.dueModel))')
 
-                    const accountResponse = await fetch("/common/getAccount");
-                    const account = await accountResponse.json();
-                    this.accounts = account;
-                },
+                //reset paid amount after reload
+                this.$refs.totalPaid.value = "";
 
-             
+                const accountResponse = await fetch("/common/getAccount");
+                const account = await accountResponse.json();
+                this.accounts = account;
+            },
 
-                //bill find by date
-                async finByDate() {
-                    const fromDate = this.$refs.fromDate.value;
-                    const toDate = this.$refs.toDate.value;
-                    const id = this.model.VendorId;
 
-                    const response = await fetch(`/Selling/GetDueBills?id=${id}&from=${fromDate}&to=${toDate}`);
-                    const responseData = await response.json();
 
-                    if (responseData.IsSuccess)
-                        this.model = responseData.Data;
-                },
+            //bill find by date
+            async finByDate() {
+                const fromDate = this.$refs.fromDate.value;
+                const toDate = this.$refs.toDate.value;
+                const id = this.model.VendorId;
 
-                //discount amount change
-                onDiscountChange(index) {
-                    const modelCopy = [...this.model.Sellings];
-                    const item = modelCopy[index];
-                    const due = item.SellingTotalPrice - item.SellingDiscountAmount - item.SellingPaidAmount;
+                const response = await fetch(`/Selling/GetDueBills?id=${id}&from=${fromDate}&to=${toDate}`);
+                const responseData = await response.json();
 
-                    modelCopy.forEach((item, i) => {
-                        if (i === index) item.SellingDueAmount = due;
+                if (responseData.IsSuccess)
+                    this.model = responseData.Data;
+            },
 
+            //discount amount change
+            onDiscountChange(index) {
+                const modelCopy = [...this.model.Sellings];
+                const item = modelCopy[index];
+                const due = item.SellingTotalPrice - item.SellingDiscountAmount - item.SellingPaidAmount;
+
+                modelCopy.forEach((item, i) => {
+                    if (i === index) item.SellingDueAmount = due;
+
+                    item.Paying = 0;
+                });
+
+                this.model.Sellings = modelCopy;
+                this.$refs.totalPaid.value = "";
+            },
+
+            //input total paid
+            inputPaidAmount(evt) {
+                let totalPaid = +evt.target.value;
+
+                const SellingDues = [...this.model.Sellings];
+
+                SellingDues.forEach(item => {
+                    const lineDue = item.SellingDueAmount;
+
+                    if (totalPaid < lineDue && totalPaid > 0) {
+                        item.Paying = totalPaid;
+                    } else if (totalPaid >= lineDue) {
+                        item.Paying = lineDue;
+                    } else {
                         item.Paying = 0;
-                    });
-
-                    this.model.Sellings = modelCopy;
-                    this.$refs.totalPaid.value = "";
-                },
-
-                //input total paid
-                inputPaidAmount(evt) {
-                    let totalPaid = +evt.target.value;
-
-                    const SellingDues = [...this.model.Sellings];
-
-                    SellingDues.forEach(item => {
-                        const lineDue = item.SellingDueAmount;
-
-                        if (totalPaid < lineDue && totalPaid > 0) {
-                            item.Paying = totalPaid;
-                        } else if (totalPaid >= lineDue) {
-                            item.Paying = lineDue;
-                        } else {
-                            item.Paying = 0;
-                        }
-
-                        totalPaid -= lineDue;
-                    });
-
-                    this.model.Sellings = SellingDues;
-                },
-
-                //submit dues
-                payDues() {
-                    const { VendorId, AccountId, PaidAmount, Description, Sellings } = this.model;
-
-                    const model = {
-                        VendorId,
-                        AccountId,
-                        PaidAmount,
-                        PaidDate:this.$refs.datePicker.value,
-                        Description,
-                        Bills: Sellings.filter(item => item.Paying > 0).map(item => {
-                            return {
-                                SellingId: item.SellingId,
-                                SellingPaidAmount: item.Paying,
-                                SellingDiscountAmount: item.SellingDiscountAmount
-                            }
-                        })
                     }
 
-                    if (!model.Bills.length) {
-                        return $.notify("Enter paid amount", "error");
-                    }
+                    totalPaid -= lineDue;
+                });
 
-                    this.loading = true;
+                this.model.Sellings = SellingDues;
+            },
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/Selling/PostDues",
-                        data: model,
-                        success: response => {
-                            if (response.IsSuccess) {
-                                location.href = `/selling/paymentReceipt/${response.Data}`;
-                            }
+            //submit dues
+            payDues() {
+                const { VendorId, AccountId, PaidAmount, Description, Sellings } = this.model;
 
-                            $.notify(response.Message, response.IsSuccess ? "success" : "error");
-                            this.loading = false;
-                        },
-                        error: error => {
-                            console.log(error);
-                            this.loading = false;
+                const model = {
+                    VendorId,
+                    AccountId,
+                    PaidAmount,
+                    PaidDate:this.$refs.datePicker.value,
+                    Description,
+                    Bills: Sellings.filter(item => item.Paying > 0).map(item => {
+                        return {
+                            SellingId: item.SellingId,
+                            SellingPaidAmount: item.Paying,
+                            SellingDiscountAmount: item.SellingDiscountAmount
                         }
-                    });
+                    })
                 }
-            };
-        }
-    </script>
+
+                if (!model.Bills.length) {
+                    return $.notify("Enter paid amount", "error");
+                }
+
+                this.loading = true;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Selling/PostDues",
+                    data: model,
+                    success: response => {
+                        if (response.IsSuccess) {
+                            location.href = `/selling/paymentReceipt/${response.Data}`;
+                        }
+
+                        $.notify(response.Message, response.IsSuccess ? "success" : "error");
+                        this.loading = false;
+                    },
+                    error: error => {
+                        console.log(error);
+                        this.loading = false;
+                    }
+                });
+            }
+        };
+    }
+</script>
 }

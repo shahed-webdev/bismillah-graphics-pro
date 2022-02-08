@@ -10,7 +10,7 @@ namespace BismillahGraphicsPro.Data
             PurchaseLists = new HashSet<PurchaseList>();
             PurchasePaymentRecords = new HashSet<PurchasePaymentRecord>();
         }
-
+      
         public int PurchaseId { get; set; }
         public int BranchId { get; set; }
         public int RegistrationId { get; set; }

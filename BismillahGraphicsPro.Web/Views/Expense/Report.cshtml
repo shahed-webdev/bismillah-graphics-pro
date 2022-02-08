@@ -12,8 +12,8 @@
         <div class="col-sm-6">
             <form x-on:submit.prevent="finByDate">
                 <div class="d-flex">
-                    <input name="fromDate" :value="pickedDates.fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
-                    <input name="toDate" :value="pickedDates.toDate" class="form-control datepicker mx-3" placeholder="To Date" type="text">
+                    <input x-ref="fromDate" :value="defaultDates.from" class="form-control datepicker" placeholder="Form Date" type="text">
+                    <input x-ref="toDate" :value="defaultDates.to" class="form-control datepicker mx-3" placeholder="To Date" type="text">
                     <div>
                         <button class="btn btn-custom-bg btn-md my-0" type="submit">Find</button>
                     </div>
@@ -115,9 +115,9 @@
                 loading: false,
                 expenseCategory:[],
                 totalAmount: 0,
-                pickedDates: {
-                    fromDate: moment().startOf("month").format("DD MMMM, YYYY"),
-                    toDate: moment().endOf("month").format("DD MMMM, YYYY")
+                defaultDates: {
+                    from: moment().startOf('month').format('D MMMM, YYYY'),
+                    to: moment().endOf('month').format('D MMMM, YYYY')
                 },
 
 
@@ -161,22 +161,28 @@
 
 
                 //data table get data
-                getTableData() {
-                    const { fromDate, toDate } = this.pickedDates;
+                getTableData(from = this.defaultDates.from, to = this.defaultDates.to) {
+      
+                    const filter = [
+                        { Field: "ExpenseDate", Value: from, Operand: dataTable.operand.GreaterThanOrEqual },
+                        { Field: "ExpenseDate", Value: to, Operand: dataTable.operand.LessThanOrEqual }
+                    ]
 
-                    dataTable.filter.push({ Field: "ExpenseDate", Value: fromDate, Operand: dataTable.operand.GreaterThanOrEqual });
-                    dataTable.filter.push({ Field: "ExpenseDate", Value: toDate, Operand: dataTable.operand.LessThanOrEqual });
+                    dataTable.filter = filter;
                     dataTable.getData();
 
 
-                    this.getCategory(fromDate, toDate);
-                    this.getTotal(fromDate, toDate);
+                    this.getCategory(from, to);
+                    this.getTotal(from, to);
                 },
 
 
                 //bill find by date
                 finByDate() {
-                    this.getTableData();
+                    const from = this.$refs.fromDate.value;
+                    const to = this.$refs.toDate.value;
+
+                    this.getTableData(from,to);
                 }
             };
         }
