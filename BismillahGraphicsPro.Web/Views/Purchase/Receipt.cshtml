@@ -5,7 +5,7 @@
 }
 
 @section Styles{
-    <link rel="stylesheet" href="/css/receipt.css">
+<link rel="stylesheet" href="/css/receipt.css">
 }
 
 <section class="my-4 d-print-none">
@@ -19,7 +19,7 @@
             {
                 <button disabled="" class="btn btn-success btn-rounded"><i class="fas fa-money-bill-alt mr-1"></i>No Due</button>
             }
-           
+
             <a class="btn btn-discord btn-rounded" href="/purchase/records"><i class="fas fa-shopping-bag mr-1"></i>Purchase Record</a>
         </div>
         <div>
@@ -110,7 +110,7 @@
         </tbody>
     </table>
 
-   
+
 
     <div class="d-flex justify-content-between align-items-center d-print-none mt-3">
         <button id="btnBlockReadySendSMS" @(Model.Supplier.SmsNumber =="" ? "disabled='disabled'" : "") data-number="@Model.Supplier.SmsNumber" class="btn btn-outline-primary"><i class="fas fa-paper-plane mr-1"></i>Send Product Received SMS</button>
@@ -164,159 +164,159 @@
 
 
 @section scripts{
-    <script>
-        $(function() {
-            $("#amount-word").text(`Taka (in words): ${number2text(@Model.PurchaseTotalPrice)}`);
+<script>
+    $(function() {
+        $("#amount-word").text(`Taka (in words): ${number2text(@Model.PurchaseTotalPrice)}`);
 
-            getSMSBalance();
+        getSMSBalance();
+    });
+
+    //amount in word
+    function number2text(value) {
+        const fraction = Math.round((value % 1) * 100);
+        var fullText = "";
+
+        if (fraction > 0) {
+            fullText = `AND ${convertNumber(fraction)} PAISA`;
+        }
+
+        return convertNumber(value) + " TK " + fullText + " ONLY";
+    }
+
+    function convertNumber(number) {
+        if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
+
+        var coreAmount = Math.floor(number / 10000000);
+        number -= coreAmount * 10000000;
+
+        var lakhAmount = Math.floor(number / 100000);
+        number -= lakhAmount * 100000;
+
+        var thousandAmount = Math.floor(number / 1000);
+        number -= thousandAmount * 1000;
+
+        var hundredAmount = Math.floor(number / 100);
+        number = number % 100;
+
+        var tn = Math.floor(number / 10);
+        var one = Math.floor(number % 10);
+        var res = "";
+
+        if (coreAmount > 0) {
+            res += (convertNumber(coreAmount) + " CRORE");
+        }
+        if (lakhAmount > 0) {
+            res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
+        }
+        if (thousandAmount > 0) {
+            res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
+        }
+
+        if (hundredAmount) {
+            res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
+        }
+
+
+        var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
+        var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
+
+        if (tn > 0 || one > 0) {
+            if (!(res === "")) {
+                res += " AND ";
+            }
+
+            if (tn < 2) {
+                res += ones[tn * 10 + one];
+            } else {
+                res += tens[tn];
+                if (one > 0) {
+                    res += (`-${ones[one]}`);
+                }
+            }
+        }
+
+        if (res === "") {
+            res = "zero";
+        }
+        return res;
+    }
+
+
+    //SMS balance
+    function getSMSBalance() {
+        const balance = document.getElementById('smsBalance');
+        balance.textContent = "loading.."
+        $.ajax({
+            url: '/SMS/GetBalance',
+            type: "GET",
+            success: function(response) {
+                balance.textContent = `Remaining SMS: ${response}`;
+            },
+            error: error => console.log(error)
         });
+    }
 
-        //amount in word
-        function number2text(value) {
-            const fraction = Math.round((value % 1) * 100);
-            var fullText = "";
+    //send SMS
+    const btnBlockReadySendSMS = document.getElementById('btnBlockReadySendSMS');
+    const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
 
-            if (fraction > 0) {
-                fullText = `AND ${convertNumber(fraction)} PAISA`;
-            }
+    //sms product received
+    btnBlockReadySendSMS.addEventListener('click', function() {
+        const number = this.getAttribute('data-number');
+        if (!number) return;
 
-            return convertNumber(value) + " TK " + fullText + " ONLY";
-        }
+        const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.PurchaseTotalPrice Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
+        const model = { PhoneNumber: number, TextSms: text };
 
-        function convertNumber(number) {
-            if ((number < 0) || (number > 999999999)) return "NUMBER OUT OF RANGE!";
+        send(model);
+    });
 
-            var coreAmount = Math.floor(number / 10000000);
-            number -= coreAmount * 10000000;
+    //sms payment status
+    btnSendPaymentSMS.addEventListener('click', function() {
+        const number = this.getAttribute('data-number');
+        if (!number) return;
 
-            var lakhAmount = Math.floor(number / 100000);
-            number -= lakhAmount * 100000;
+        const paidAmount = @Model.PurchasePaidAmount;
+        const dueAmount = @Model.PurchaseDueAmount;
 
-            var thousandAmount = Math.floor(number / 1000);
-            number -= thousandAmount * 1000;
+        const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
+        const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
 
-            var hundredAmount = Math.floor(number / 100);
-            number = number % 100;
+        const text = `Dear Valued Supplier, The Order Amount Tk: @Model.PurchaseTotalPrice.${paid}${due}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
+        const model = { PhoneNumber: number, TextSms: text };
 
-            var tn = Math.floor(number / 10);
-            var one = Math.floor(number % 10);
-            var res = "";
+        send(model);
+    });
 
-            if (coreAmount > 0) {
-                res += (convertNumber(coreAmount) + " CRORE");
-            }
-            if (lakhAmount > 0) {
-                res += (((res === "") ? "" : " ") + convertNumber(lakhAmount) + " LAKH");
-            }
-            if (thousandAmount > 0) {
-                res += (((res === "") ? "" : " ") + convertNumber(thousandAmount) + " THOUSAND");
-            }
-
-            if (hundredAmount) {
-                res += (((res === "") ? "" : " ") + convertNumber(hundredAmount) + " HUNDRED");
-            }
-
-
-            var ones = Array("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN");
-            var tens = Array("", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY");
-
-            if (tn > 0 || one > 0) {
-                if (!(res === "")) {
-                    res += " AND ";
-                }
-
-                if (tn < 2) {
-                    res += ones[tn * 10 + one];
-                } else {
-                    res += tens[tn];
-                    if (one > 0) {
-                        res += (`-${ones[one]}`);
-                    }
-                }
-            }
-
-            if (res === "") {
-                res = "zero";
-            }
-            return res;
-        }
+    //send to server
+    function send(model) {
+        $.ajax({
+            url: '/SMS/PostSingle',
+            type: "POST",
+            data: model,
+            success: function(response) {
+                location.href = "/purchase";
+            },
+            error: error => console.log(error)
+        });
+    }
 
 
-        //SMS balance
-        function getSMSBalance() {
-            const balance = document.getElementById('smsBalance');
-            balance.textContent = "loading.."
+    //delete Bill
+    const deleteForm = document.getElementById("deleteForm");
+    deleteForm.addEventListener("submit",
+        function(evt) {
+            evt.preventDefault();
+
             $.ajax({
-                url: '/SMS/GetBalance',
-                type: "GET",
+                url: '/purchase/DeleteBill/@Model.PurchaseId',
                 success: function(response) {
-                    balance.textContent = `Remaining SMS: ${response}`;
+                    if (response.IsSuccess)
+                        location.href = "/purchase/records";
                 },
                 error: error => console.log(error)
             });
-        }
-
-        //send SMS
-        const btnBlockReadySendSMS = document.getElementById('btnBlockReadySendSMS');
-        const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
-
-        //sms product received
-        btnBlockReadySendSMS.addEventListener('click', function() {
-            const number = this.getAttribute('data-number');
-            if (!number) return;
-
-            const text = `Dear Valued Supplier, I have received your product. Bill Amount TK: @Model.PurchaseTotalPrice Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
-            const model = { PhoneNumber: number, TextSms: text };
-
-            send(model);
         });
-
-        //sms payment status
-        btnSendPaymentSMS.addEventListener('click', function() {
-            const number = this.getAttribute('data-number');
-            if (!number) return;
-
-            const paidAmount = @Model.PurchasePaidAmount;
-            const dueAmount = @Model.PurchaseDueAmount;
-
-            const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
-            const due = dueAmount ? ` Due Amount Tk: ${dueAmount}, please pay dues. ` : "";
-
-            const text = `Dear Valued Supplier, The Order Amount Tk: @Model.PurchaseTotalPrice.${paid}${due}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
-            const model = { PhoneNumber: number, TextSms: text };
-
-            send(model);
-        });
-
-        //send to server
-        function send(model) {
-            $.ajax({
-                url: '/SMS/PostSingle',
-                type: "POST",
-                data: model,
-                success: function(response) {
-                    location.href = "/purchase";
-                },
-                error: error => console.log(error)
-            });
-        }
-
-
-        //delete Bill
-        const deleteForm = document.getElementById("deleteForm");
-        deleteForm.addEventListener("submit",
-            function(evt) {
-                evt.preventDefault();
-
-                $.ajax({
-                    url: '/purchase/DeleteBill/@Model.PurchaseId',
-                    success: function(response) {
-                        if (response.IsSuccess)
-                            location.href = "/purchase/records";
-                    },
-                    error: error => console.log(error)
-                });
-            });
-    </script>
+</script>
 }
 

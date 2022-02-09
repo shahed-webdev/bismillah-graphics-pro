@@ -40,43 +40,109 @@
 
     <table class="table table-bordered">
         <thead>
-            <tr>
-                <th class="text-center"><strong>No.</strong></th>
-                <th><strong>Selling Date</strong></th>
-                <th class="text-center"><strong>Bill No.</strong></th>
-                <th class="text-right"><strong>Amount</strong></th>
-                <th class="text-right"><strong>Paid</strong></th>
-            </tr>
+        <tr>
+            <th class="text-center"><strong>No.</strong></th>
+            <th><strong>Selling Date</strong></th>
+            <th class="text-center"><strong>Bill No.</strong></th>
+            <th class="text-right"><strong>Amount</strong></th>
+            <th class="text-right"><strong>Paid</strong></th>
+        </tr>
         </thead>
         <tbody>
-            @{
-                var index = 0;
-                foreach (var item in Model.Bills)
-                {
-                    index++;
-                    <tr>
-                        <td class="text-center">@index</td>
-                        <td>@item.SellingDate.ToString("d MMM yyyy")</td>
-                        <td class="text-center">
-                            <a class="blue-text" href="/Selling/receipt/@item.SellingId">
-                                @item.SellingSn
-                            </a>
-                        </td>
-                        <td class="text-right">@item.SellingTotalPrice/-</td>
-                        <td class="text-right">@item.SellingPaidAmount/-</td>
-                    </tr>
-                }
+        @{
+            var index = 0;
+            foreach (var item in Model.Bills)
+            {
+                index++;
+                <tr>
+                    <td class="text-center">@index</td>
+                    <td>@item.SellingDate.ToString("d MMM yyyy")</td>
+                    <td class="text-center">
+                        <a class="blue-text" href="/Selling/receipt/@item.SellingId">
+                            @item.SellingSn
+                        </a>
+                    </td>
+                    <td class="text-right">@item.SellingTotalPrice/-</td>
+                    <td class="text-right">@item.SellingPaidAmount/-</td>
+                </tr>
             }
-            <tr>
-                <td colspan="4">
-                    <span id="amount-word"></span>
-                </td>
-                <td colspan="2">
-                    <div class="text-right">
-                        <h5>Total Paid: <strong>@Model.PaidAmount/-</strong></h5>
-                    </div>
-                </td>
-            </tr>
+        }
+        <tr>
+            <td colspan="4">
+                <span id="amount-word"></span>
+            </td>
+            <td colspan="2">
+                <div class="text-right">
+                    <h5>Total Paid: <strong>@Model.PaidAmount/-</strong></h5>
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
+
+<div class="d-flex justify-content-between align-items-center d-print-none mt-3">
+    <div class="text-center">
+        <h5 id="smsBalance" class="font-weight-bold"></h5>
+        <em class="m-0 text-muted">SMS Number: @(Model.SmsNumber=="" ? "N/A" : Model.SmsNumber)</em>
+    </div>
+    <button id="btnSendPaymentSMS" @(Model.SmsNumber=="" ? "disabled='disabled'" : "") data-number="@Model.SmsNumber" class="btn btn-outline-danger"><i class="fas fa-paper-plane mr-1"></i>Send Payment Status</button>
+</div>
+
+
+@section scripts{
+<script>
+    $(function() {
+        getSMSBalance();
+    });
+
+
+    //SMS balance
+    function getSMSBalance() {
+        const balance = document.getElementById('smsBalance');
+        balance.textContent = "loading.."
+        $.ajax({
+            url: '/SMS/GetBalance',
+            type: "GET",
+            success: function(response) {
+                balance.textContent = `Remaining SMS: ${response}`;
+            },
+            error: error => console.log(error)
+        });
+    }
+
+    //send SMS
+    const btnSendPaymentSMS = document.getElementById('btnSendPaymentSMS');
+
+
+    //sms payment status
+    btnSendPaymentSMS.addEventListener('click',
+        function() {
+            const number = this.getAttribute('data-number');
+            if (!number) return;
+
+            const paidAmount = @Model.PaidAmount;
+
+            const paid = paidAmount ? ` Paid Amount Tk: ${paidAmount}. ` : "";
+
+            const text = `Dear Valued Vendor, ${paid}Thanks @ViewBag.branchInfo.BranchName. @ViewBag.branchInfo.BranchPhone`;
+            const model = { PhoneNumber: number, TextSms: text };
+
+            send(model);
+        });
+
+    //send to server
+    function send(model) {
+        $.ajax({
+            url: '/SMS/PostSingle',
+            type: "POST",
+            data: model,
+            success: function(response) {
+                location.href = "/Selling";
+            },
+            error: error => console.log(error)
+        });
+    }
+
+</script>
+}

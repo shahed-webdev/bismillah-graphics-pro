@@ -51,7 +51,7 @@
                                         <input x-model.number="product.Length" x-on:change="saveData" x-on:input="calculateTotal" type="number" step="0.01" min="0" class="form-control length" placeholder="Length" required>
                                         <input x-model.number="product.Width" x-on:change="saveData" x-on:input="calculateTotal" type="number" step="0.01" min="0" class="form-control width" placeholder="Width" required>
                                     </td>
-                                    <td class="text-center" x-text="product.Length||0 * product.Width||0"></td>
+                                    <td class="text-center" x-text="(product.Length * product.Width)||0"></td>
                                     <td>
                                         <select x-model.number="product.MeasurementUnitId" x-on:change="saveData" class="form-control" required>
                                             <option value="">[ SELECT ]</option>

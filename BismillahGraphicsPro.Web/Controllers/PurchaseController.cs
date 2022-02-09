@@ -226,6 +226,10 @@ namespace BismillahGraphicsPro.Web.Controllers
         public async Task<IActionResult> PaymentReceipt(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Suppliers");
+            //branch info
+            var branch = await _registration.GetBranchAsync(User.Identity.Name);
+            ViewBag.branchInfo = branch.Data;
+
             var model = await _purchaseCore.GetPaymentDetailsAsync(User.Identity.Name, id.GetValueOrDefault());
 
             return View(model.Data);
