@@ -7,7 +7,7 @@ public class AccountLogAddModel
     public int AccountId { get; set; }
     public int BranchId { get; set; }
     public int RegistrationId { get; set; }
-    public bool? IsAdded { get; set; }
+    public bool IsAdded { get; set; }
     public decimal Amount { get; set; }
     public string? Details { get; set; }
     public AccountLogType Type { get; set; }
