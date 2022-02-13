@@ -4,15 +4,15 @@
 }
 
 
-<div x-data="initData()" class="row align-items-center mt-3">
+<div x-data="initData()" x-init="getTableData()" class="row align-items-center mt-3">
     <div class="col">
         <h1 class="page-header">Sales Report: ৳<span x-text="totalAmount"></span></h1>
     </div>
-    <div x-init="onDataInit()" class="col-sm-6">
+    <div class="col-sm-6">
         <form x-on:submit.prevent="finByDate">
             <div class="d-flex">
-                <input name="fromDate" :value="pickedDates.fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
-                <input name="toDate" :value="pickedDates.toDate" class="form-control datepicker mx-3" placeholder="To Date" type="text">
+                <input x-ref="fromDate" :value="pickedDates.fromDate" class="form-control datepicker" placeholder="Form Date" type="text">
+                <input x-ref="toDate" :value="pickedDates.toDate" class="form-control datepicker mx-3" placeholder="To Date" type="text">
                 <div>
                     <button class="btn btn-custom-bg btn-md my-0" type="submit">Find</button>
                 </div>
@@ -42,6 +42,10 @@
 
 @section Scripts {
     <script>
+        $(function() {
+            $('.datepicker').pickadate();
+        });
+
 
         //data table
         const dataTable = {
@@ -121,33 +125,28 @@
                     }
                 },
 
-                //data table get data
-                getTableData() {
-                    const { fromDate, toDate } = this.pickedDates;
 
-                    dataTable.filter.push({ Field: "SellingDate", Value: fromDate, Operand: dataTable.operand.GreaterThanOrEqual });
-                    dataTable.filter.push({ Field: "SellingDate", Value: toDate, Operand: dataTable.operand.LessThanOrEqual });
+                //data table get data
+                getTableData(from = this.pickedDates.fromDate, to = this.pickedDates.toDate) {
+                    const filter = [
+                        { Field: "SellingDate", Value: from, Operand: dataTable.operand.GreaterThanOrEqual },
+                        { Field: "SellingDate", Value: to, Operand: dataTable.operand.LessThanOrEqual }
+                    ]
+
+                    dataTable.filter = filter;
                     dataTable.getData();
 
-                    this.getTotal(fromDate, toDate);
+
+                    this.getTotal(from, to);
                 },
 
-                //date function init
-                onDataInit() {
-                    this.getTableData();
-
-                    const self = this.pickedDates;
-
-                    $('.datepicker').pickadate({
-                        onSet: function(context) {
-                            self[this.component.$node[0].name] = moment(context.select).format("D, MMM YYYY");
-                        }
-                    });
-                },
 
                 //bill find by date
                 finByDate() {
-                    this.getTableData();
+                    const from = this.$refs.fromDate.value;
+                    const to = this.$refs.toDate.value;
+
+                    this.getTableData(from,to);
                 }
             };
         }
