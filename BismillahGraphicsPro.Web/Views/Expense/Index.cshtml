@@ -20,7 +20,6 @@
                     </select>
                 </div>
             </div>
-
             <div class="col-sm-6 col-lg-4">
                 <div class="form-group">
                     <label>Expense Amount</label>
@@ -51,7 +50,7 @@
                 </div>
             </div>
             <div class="pt-4">
-                <button type="submit" class="btn btn-md btn-custom-bg waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
+                <button :disabled="loading" type="submit" class="btn btn-md btn-custom-bg waves-effect waves-light">Create <i class="fas fa-check ml-1"></i></button>
             </div>
         </div>
     </form>
