@@ -7,8 +7,8 @@
     <div class="container">
         <form x-on:submit.prevent="finByDate">
             <div class="row align-items-center mt-3">
-                <div class="col">
-                    <h5 x-text="model.VendorCompanyName" class="page-header mb-0 font-weight-bold"></h5>
+                <div id="print-header" class="col">
+                    <h5 x-text="model.VendorCompanyName" class="mb-0 font-weight-bold"></h5>
                     <p class="mb-0">
                         <span x-text="model.VendorAddress"></span>,
                         <span x-text="model.SmsNumber"></span>
@@ -30,12 +30,14 @@
             </div>
         </form>
 
-        <ul class="list-group list-group-horizontal my-4 text-right font-weight-bold">
-            <li class="list-group-item flex-fill">Total Amount: ৳<strong x-text="model.TotalAmount"></strong></li>
-            <li class="list-group-item flex-fill">Total Paid: ৳<strong x-text="model.VendorPaid"></strong></li>
-            <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.TotalDiscount"></strong></li>
-            <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.VendorDue"></strong></li>
-        </ul>
+        <div id="print-amount">
+            <ul class="list-group list-group-horizontal my-4 text-right font-weight-bold">
+                <li class="list-group-item flex-fill">Total Amount: ৳<strong x-text="model.TotalAmount"></strong></li>
+                <li class="list-group-item flex-fill">Total Paid: ৳<strong x-text="model.VendorPaid"></strong></li>
+                <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.TotalDiscount"></strong></li>
+                <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.VendorDue"></strong></li>
+            </ul>
+        </div>
 
 
         <div class="card card-body">
@@ -131,9 +133,11 @@
                 customize: function(win) {
                     $(win.document.body).prepend(`
                     <nav class="mb-3 navbar">
-                    <h4 class="text-black mb-0">${$('.navbar-brand').text()}</h4>
+                      <h4 class="text-black text-center">${$('.navbar-brand').html()}</h4>
                     </nav>
-                    <h5>${$('.page-header').text()}</h5>`);
+
+                    <div>${$('#print-header').html()}</div>
+                    <div>${$('#print-amount').html()}</div>`);
                 },
                 autoPrint: true
             }],
