@@ -8,7 +8,7 @@
         <form x-on:submit.prevent="finByDate">
             <div class="row align-items-center mt-3">
                 <div class="col">
-                    <h5 x-text="model.VendorCompanyName" class="mb-0 font-weight-bold"></h5>
+                    <h5 x-text="model.VendorCompanyName" class="page-header mb-0 font-weight-bold"></h5>
                     <p class="mb-0">
                         <span x-text="model.VendorAddress"></span>,
                         <span x-text="model.SmsNumber"></span>
@@ -60,98 +60,124 @@
 
 @section Scripts {
 <script>
-    $(function() {
-        $('.datepicker').pickadate();
+     $(function() {
+         $('.datepicker').pickadate();
 
-        dataTable.filter = [{ Field: "VendorId", Value: @ViewBag.Vendor.VendorId, Operand: dataTable.operand.Equal }]
-        dataTable.getData();
-    });
+         dataTable.filter = [{ Field: "VendorId", Value: @ViewBag.Vendor.VendorId, Operand: dataTable.operand.Equal }]
+         dataTable.getData();
+     });
 
 
-    //data table
-    const dataTable = {
-        table: null,
-        filter: [],
-        init: function() {
-            dataTable.table = $("#data-table").DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "/selling/GetRecordsData",
-                    type: "POST",
-                    data: function(d) {
-                        d.filters = dataTable.filter;
-                    }
+     //data table
+     const dataTable = {
+         table: null,
+         filter: [],
+         init: function() {
+             dataTable.table = $("#data-table").DataTable({
+                 processing: true,
+                 serverSide: true,
+                 dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                 buttons: dataTable.button,
+                 ajax: {
+                     url: "/selling/GetRecordsData",
+                     type: "POST",
+                     data: function(d) {
+                         d.filters = dataTable.filter;
+                     }
+                 },
+                 columns:
+                 [   { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
+                     { data: "SellingSn", "render": function(data, type, row) { return `<a class="blue-text" href="/Selling/Receipt/${row.SellingId}">${data}</a>` } },
+                     { data: "SellingTotalPrice" },
+                     { data: "SellingDiscountAmount" },
+                     { data: "SellingPaidAmount" },
+                     {
+                         data: "SellingDueAmount",
+                         "render": function(data, type, row) {
+                             return data ? `<a class="blue-text" href="/Selling/payDueSingle/${row.SellingId}">${data}</a>` : data;
+                         }
+                     }
+                 ],
+                 columnDefs: [
+                     { 'searchable': false, 'targets': [2,3,4, 5] },
+                     //{ 'sortable': false, 'targets': [6] },
+                     { 'className': "text-center", "targets": [0, 1] },
+                     { 'className': "text-right", "targets": [2, 3, 4,5] }
+                 ]
+             });
+         },
+         operand: {
+             Equal: 0,
+             NotEqual: 1,
+             GreaterThan: 2,
+             LessThan: 3,
+             GreaterThanOrEqual: 4,
+             LessThanOrEqual: 5,
+             Contains: 6,
+             StartsWith: 7,
+             EndsWith: 8
+         },
+         getData: function() {
+             dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+         },
+         button: {
+            buttons: [{
+                extend: 'print',
+                text: '<i class="fa fa-print"></i> Print',
+                title: '',
+                exportOptions: {
+                    //columns: [0,1] //Column value those print
                 },
-                columns:
-                [   { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                    { data: "SellingSn", "render": function(data, type, row) { return `<a class="blue-text" href="/Selling/Receipt/${row.SellingId}">${data}</a>` } },
-                    { data: "SellingTotalPrice" },
-                    { data: "SellingDiscountAmount" },
-                    { data: "SellingPaidAmount" },
-                    {
-                        data: "SellingDueAmount",
-                        "render": function(data, type, row) {
-                            return data ? `<a class="blue-text" href="/Selling/payDueSingle/${row.SellingId}">${data}</a>` : data;
-                        }
-                    }
-                ],
-                columnDefs: [
-                    { 'searchable': false, 'targets': [2,3,4, 5] },
-                    //{ 'sortable': false, 'targets': [6] },
-                    { 'className': "text-center", "targets": [0, 1] },
-                    { 'className': "text-right", "targets": [2, 3, 4,5] }
-                ]
-            });
-        },
-        operand: {
-            Equal: 0,
-            NotEqual: 1,
-            GreaterThan: 2,
-            LessThan: 3,
-            GreaterThanOrEqual: 4,
-            LessThanOrEqual: 5,
-            Contains: 6,
-            StartsWith: 7,
-            EndsWith: 8
-        },
-        getData: function() {
-            dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
-        }
-    }
-
-    //alpine js code
-    function initData() {
-        return {
-            loading: false,
-            model:JSON.parse('@Html.Raw(Json.Serialize(ViewBag.vendor))'),
-
-            //bill find by date
-            async finByDate() {
-                const from = this.$refs.fromDate.value;
-                const to = this.$refs.toDate.value;
-
-                const filter = [{ Field: "VendorId", Value: @ViewBag.Vendor.VendorId, Operand: dataTable.operand.Equal }]
-
-                if (from) {
-                    filter.push({ Field: "SellingDate", Value: from, Operand: dataTable.operand.GreaterThanOrEqual })
-                } 
-                if (to) {
-                    filter.push({ Field: "SellingDate", Value: to, Operand: dataTable.operand.LessThanOrEqual })
+                customize: function(win) {
+                    $(win.document.body).prepend(`
+                    <nav class="mb-3 navbar">
+                    <h4 class="text-black mb-0">${$('.navbar-brand').text()}</h4>
+                    </nav>
+                    <h5>${$('.page-header').text()}</h5>`);
+                },
+                autoPrint: true
+            }],
+            dom:
+            {
+                button: {
+                    className: 'btn purple-gradient btn-rounded btn-sm my-0'
                 }
-
-                dataTable.filter = filter;
-                dataTable.getData();
-             
-
-                const response = await fetch(`/Selling/VendorDetailsAmount?id=${@ViewBag.Vendor.VendorId}&from=${from}&to=${to}`);
-                const responseData = await response.json();
-                
-                if (responseData.IsSuccess)
-                    this.model = responseData.Data;
             }
-        };
+         }
     }
+
+     //alpine js code
+     function initData() {
+         return {
+             loading: false,
+             model:JSON.parse('@Html.Raw(Json.Serialize(ViewBag.vendor))'),
+
+             //bill find by date
+             async finByDate() {
+                 const from = this.$refs.fromDate.value;
+                 const to = this.$refs.toDate.value;
+
+                 const filter = [{ Field: "VendorId", Value: @ViewBag.Vendor.VendorId, Operand: dataTable.operand.Equal }]
+
+                 if (from) {
+                     filter.push({ Field: "SellingDate", Value: from, Operand: dataTable.operand.GreaterThanOrEqual })
+                 }
+                 if (to) {
+                     filter.push({ Field: "SellingDate", Value: to, Operand: dataTable.operand.LessThanOrEqual })
+                 }
+
+                 dataTable.filter = filter;
+                 dataTable.getData();
+
+
+                 const response = await fetch(`/Selling/VendorDetailsAmount?id=${@ViewBag.Vendor.VendorId}&from=${from}&to=${to}`);
+                 const responseData = await response.json();
+
+                 if (responseData.IsSuccess)
+                     this.model = responseData.Data;
+             }
+         };
+     }
 </script>
 }
 

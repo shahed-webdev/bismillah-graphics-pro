@@ -21,6 +21,8 @@ main { min-height: 86vh; }
 /*data table*/
 table.table thead th { font-weight: bold; }
 table.table td, table.table th { vertical-align: middle; }
+/*print option*/
+.dataTables_length, .dt-buttons { float: left; }
 
 /*footer*/
 footer { background-color: var(--bg-primary) }

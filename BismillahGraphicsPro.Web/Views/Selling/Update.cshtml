@@ -4,17 +4,19 @@
 }
 
 @section Styles{
-    <style>
-        .length, .width {
-            display: inline-block;
-            width: 60px;
-            margin: 5px;
-            text-align: center;
-        }
-    </style>
+<style>
+    .length, .width {
+        display: inline-block;
+        width: 60px;
+        margin: 5px;
+        text-align: center;
+    }
+</style>
 }
 
 <div x-data="initData()" x-init="getDropdownData">
+
+
     <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
         <div>
             <h1 class="page-header">Update Bill</h1>
@@ -51,7 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <template x-for="(product,index) in model.SellingLists" :key="product.ProductId">
+                            <template x-for="(product,index) in model.SellingLists" :key="product.SellingListId">
                                 <tr>
                                     <td>
                                         <strong x-text="product.ProductName"></strong>
@@ -113,7 +115,7 @@
                         <span>Total Due:</span>
                         ৳<span x-text="(model.SellingTotalPrice - model.SellingDiscountAmount) - model.SellingPaidAmount"></span>
                     </h6>
-                   
+
                     <div class="form-group mt-3">
                         <label>Description</label>
                         <input x-model="model.Description" type="text" class="form-control">
@@ -131,134 +133,183 @@
 
 @section Scripts {
 <script>
-    //alpine js code
-    function initData() {
-        return {
-            loading: false,
-            clearInput: "",
-            model: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.updateData))'),
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                clearInput: "",
+                model: {
+        "SellingId": 1472,
+        "BranchId": 1,
+        "SoldByUserName": "rasel",
+        "VendorId": 11,
+        "SellingSn": 342,
+        "SellingTotalPrice": 17923.50,
+        "SellingDiscountAmount": 0.00,
+        "SellingPaidAmount": 0.00,
+        "SellingDueAmount": 17923.50,
+        "Description": null,
+        "SellingDate": "2022-02-27T00:00:00",
+        "Vendor": {
+            "VendorId": 11,
+            "BranchId": 1,
+            "VendorCompanyName": "ZIAN DIGITAL BAG Ltd.",
+            "VendorName": "Mr.Rippon ,Khokon Sir",
+            "VendorAddress": "Bonbari Kushura Dhamrai Dhaka",
+            "VendorPhone": "01730-881439,01730881438",
+            "SmsNumber": "01730881439",
+            "TotalAmount": 238040.00,
+            "TotalDiscount": 2620.00,
+            "VendorPaid": 40982.00,
+            "VendorDue": 194438.00
+        },
+        "SellingLists": [{
+            "SellingListId": 1808,
+            "ProductId": 7,
+            "ProductName": "FLEXO BLOCK 2.84",
+            "MeasurementUnitId": 3,
+            "MeasurementUnitName": "IN",
+            "SellingQuantity": 1127.50,
+            "SellingUnitPrice": 9.0000,
+            "Length": 55,
+            "Width": 20.5,
+            "SellingPrice": 10147.500000
+        }, {
+            "SellingListId": 1809,
+            "ProductId": 7,
+            "ProductName": "FLEXO BLOCK 2.84",
+            "MeasurementUnitId": 3,
+            "MeasurementUnitName": "IN",
+            "SellingQuantity": 864.00,
+            "SellingUnitPrice": 9.0000,
+            "Length": 48,
+            "Width": 18,
+            "SellingPrice": 7776.000000
+        }],
+        "SellingPaymentRecords": []
+    },
 
-            //dropdown list
-            measurementUnits: [],
+                //dropdown list
+                measurementUnits: [],
 
-            //get dropdown data
-            async getDropdownData() {
-                //get measurement
-                const measurementResponse = await fetch("/common/getMeasurementUnit");
-                const measurement = await measurementResponse.json();
-                this.measurementUnits = measurement;
-            },
+                //get dropdown data
+                async getDropdownData() {
+                    //get measurement
+                    const measurementResponse = await fetch("/common/getMeasurementUnit");
+                    const measurement = await measurementResponse.json();
+                    this.measurementUnits = measurement;
+                },
 
-            //add product to list
-            addProductToList(product) {
-                const data = { ...product,Length:0, Width:0, SellingUnitPrice: product.ProductPrice }
-                const ifFound = this.model.SellingLists.some(item => item.ProductId === product.ProductId);
+                //add product to list
+                addProductToList(product) {
+                    const data = { ...product,Length:0, Width:0, SellingUnitPrice: product.ProductPrice }
+                    const ifFound = this.model.SellingLists.some(item => item.ProductId === product.ProductId);
 
-                if (ifFound) {
-                    $.notify(`${product.ProductName} already added!`, "error");
-                    return;
-                }
-
-                this.model.SellingLists.push(data);
-                this.clearInput = "";
-                this.$refs.findProduct.focus();
-            },
-
-            //find product (autocomplete)
-            findProduct() {
-                $(this.$refs.findProduct).typeahead({
-                    minLength: 1,
-                    displayText: item => {
-                        return item.ProductName;
-                    },
-                    afterSelect: function(item) {
-                        this.$element[0].value = item.ProductName;
-                    },
-                    source: (request, result) => {
-                        $.ajax({
-                            url: `/common/findProduct`,
-                            data: { prefix: request },
-                            success: response => result(response),
-                            error: err => console.log(err)
-                        });
-                    },
-                    updater: item => {
-                        this.addProductToList(item);
-                        return item;
-                    }
-                })
-            },
-
-            //remove Data
-            removeProduct(id) {
-                this.model.SellingLists = this.model.SellingLists.filter(item => item.ProductId !== id);
-
-                const total = this.calculateTotal();
-
-                if (!total) {
-                    this.model.SellingDiscountAmount = 0
-                    this.model.SellingPaidAmount = 0
-                }
-            },
-
-            //sum total amount
-            calculateTotal() {
-                const total = this.model.SellingLists.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
-                this.model.SellingTotalPrice = total;
-
-                return total || 0;
-            },
-
-            //update data
-            async updateData() {
-                if (!this.model.SellingLists.length)
-                    return $.notify("Add Product!", "error");
-
-                try {
-                    const {SellingId,VendorId,SellingDiscountAmount,Description,SellingLists}=this.model
-
-                    const model = {
-                        SellingId,
-                        VendorId,
-                        SellingTotalPrice: this.calculateTotal(),
-                        SellingDiscountAmount,
-                        Description,
-                        SellingLists:SellingLists.map(item => {
-                            return {
-                                ProductId: item.ProductId,
-                                MeasurementUnitId: item.MeasurementUnitId,
-                                SellingQuantity: item.Length * item.Width,
-                                SellingUnitPrice: item.SellingUnitPrice,
-                                Length: item.Length,
-                                Width: item.Width
-                            }
-                        })
+                    if (ifFound) {
+                        $.notify(`${product.ProductName} already added!`, "error");
+                        return;
                     }
 
-                    const options = {
-                        method: 'PUT',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(model)
-                    };
+                    this.model.SellingLists.push(data);
+                    this.clearInput = "";
+                    this.$refs.findProduct.focus();
+                },
 
-                    this.loading = true;
+                //find product (autocomplete)
+                findProduct() {
+                    $(this.$refs.findProduct).typeahead({
+                        minLength: 1,
+                        displayText: item => {
+                            return item.ProductName;
+                        },
+                        afterSelect: function(item) {
+                            this.$element[0].value = item.ProductName;
+                        },
+                        source: (request, result) => {
+                            $.ajax({
+                                url: `/common/findProduct`,
+                                data: { prefix: request },
+                                success: response => result(response),
+                                error: err => console.log(err)
+                            });
+                        },
+                        updater: item => {
+                            this.addProductToList(item);
+                            return item;
+                        }
+                    })
+                },
 
-                    const response = await fetch("/Selling/UpdateSelling", options);
-                    const responseData = await response.json();
+                //remove Data
+                removeProduct(id) {
+                    this.model.SellingLists = this.model.SellingLists.filter(item => item.ProductId !== id);
 
-                    if (responseData.IsSuccess) {
-                        location.href = `/Selling/receipt/${responseData.Data}`;
+                    const total = this.calculateTotal();
+
+                    if (!total) {
+                        this.model.SellingDiscountAmount = 0
+                        this.model.SellingPaidAmount = 0
                     }
+                },
 
-                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                    this.loading = false;
+                //sum total amount
+                calculateTotal() {
+                    const total = this.model.SellingLists.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
+                    this.model.SellingTotalPrice = total;
 
-                } catch (error) {
-                    console.log(error);
-                    this.loading = false;
+                    return total || 0;
+                },
+
+                //update data
+                async updateData() {
+                    if (!this.model.SellingLists.length)
+                        return $.notify("Add Product!", "error");
+
+                    try {
+                        const {SellingId,VendorId,SellingDiscountAmount,Description,SellingLists}=this.model
+
+                        const model = {
+                            SellingId,
+                            VendorId,
+                            SellingTotalPrice: this.calculateTotal(),
+                            SellingDiscountAmount,
+                            Description,
+                            SellingLists:SellingLists.map(item => {
+                                return {
+                                    ProductId: item.ProductId,
+                                    MeasurementUnitId: item.MeasurementUnitId,
+                                    SellingQuantity: item.Length * item.Width,
+                                    SellingUnitPrice: item.SellingUnitPrice,
+                                    Length: item.Length,
+                                    Width: item.Width
+                                }
+                            })
+                        }
+
+                        const options = {
+                            method: 'PUT',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(model)
+                        };
+
+                        this.loading = true;
+
+                        const response = await fetch("/Selling/UpdateSelling", options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            location.href = `/Selling/receipt/${responseData.Data}`;
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
+                    }
                 }
-            }
-        };
-    }
+            };
+        }
 </script>
 }

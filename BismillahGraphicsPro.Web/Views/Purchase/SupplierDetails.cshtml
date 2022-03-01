@@ -8,7 +8,7 @@
         <form x-on:submit.prevent="finByDate">
             <div class="row align-items-center mt-3">
                 <div class="col">
-                    <h5 x-text="model.SupplierCompanyName" class="mb-0 font-weight-bold"></h5>
+                    <h5 x-text="model.SupplierCompanyName" class="page-header mb-0 font-weight-bold"></h5>
                     <p class="mb-0">
                         <span x-text="model.SupplierAddress"></span>,
                         <span x-text="model.SmsNumber"></span>
@@ -76,6 +76,8 @@
             dataTable.table = $("#data-table").DataTable({
                 processing: true,
                 serverSide: true,
+                dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                 buttons: dataTable.button,
                 ajax: {
                     url: "/Purchase/GetRecordsData",
                     type: "POST",
@@ -117,7 +119,31 @@
         },
         getData: function() {
             dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
-        }
+        },
+         button: {
+            buttons: [{
+                extend: 'print',
+                text: '<i class="fa fa-print"></i> Print',
+                title: '',
+                exportOptions: {
+                    //columns: [0,1] //Column value those print
+                },
+                customize: function(win) {
+                    $(win.document.body).prepend(`
+                    <nav class="mb-3 navbar">
+                    <h4 class="text-black mb-0">${$('.navbar-brand').text()}</h4>
+                    </nav>
+                    <h5>${$('.page-header').text()}</h5>`);
+                },
+                autoPrint: true
+            }],
+            dom:
+            {
+                button: {
+                    className: 'btn purple-gradient btn-rounded btn-sm my-0'
+                }
+            }
+         }
     }
 
     //alpine js code
