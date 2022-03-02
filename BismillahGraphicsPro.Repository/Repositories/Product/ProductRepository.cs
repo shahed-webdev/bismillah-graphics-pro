@@ -118,7 +118,7 @@ public class ProductRepository : Repository, IProductRepository
         var startDate = sDate ?? new DateTime(1000, 1, 1);
         var endDate = eDate ?? new DateTime(3000, 1, 1);
 
-        var report = Db.Products
+        var report = Db.Products.Where(p=> p.BranchId == branchId)
             .Include(p => p.SellingLists)
             .Select(p => new ProductReportModel
             {
