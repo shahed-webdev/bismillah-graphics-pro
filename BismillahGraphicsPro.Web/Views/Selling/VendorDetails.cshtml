@@ -132,8 +132,9 @@
                 },
                 customize: function(win) {
                     $(win.document.body).prepend(`
-                    <nav class="mb-3 navbar">
-                      <h4 class="text-black text-center">${$('.navbar-brand').html()}</h4>
+                    <nav class="mb-3 navbar text-center">
+                      <h4 class="text-black">${$('.navbar-brand').html()}</h4>
+                      <div>${$('#print-address').html()}</div>
                     </nav>
 
                     <div>${$('#print-header').html()}</div>

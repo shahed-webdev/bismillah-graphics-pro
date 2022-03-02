@@ -34,8 +34,8 @@ namespace BismillahGraphicsPro.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DailyCash(DateTime? date)
         {
-            ViewBag.date = DateTime.Now.ToString("d MMMM, yyyy");
             var defaultDate = date ?? DateTime.Now;
+            ViewBag.date = defaultDate;
 
             var response = await _account.DailyCashReportAsync(User.Identity.Name, defaultDate);
             return View(response.Data);

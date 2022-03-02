@@ -1,7 +1,9 @@
 ﻿@model BranchDetailsModel
 
-<a href="/Home/Index" class="navbar-brand ml-1 pb-0">@Model.BranchName</a>
-<div class="text-white pb-1">
+<a href="/Home/Index" class="navbar-brand ml-1 pb-0">
+    @Model.BranchName
+</a>
+<div id="print-address" class="text-white pb-1">
     <span>
         <i class="fas fa-map-marker-alt"></i>
         @Model.BranchAddress
@@ -10,8 +12,12 @@
         <i class="fas fa-phone"></i>
         @Model.BranchPhone
     </span>
-    <span>
-        <i class="fas fa-globe"></i>
-        @Model.BranchEmail
-    </span>
+
+    @if (Model.BranchEmail != null) 
+    {
+        <span>
+            <i class="fas fa-globe"></i>
+            @Model.BranchEmail
+        </span>
+    }
 </div>

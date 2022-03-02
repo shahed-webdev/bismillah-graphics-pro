@@ -8,7 +8,7 @@
         <form x-on:submit.prevent="finByDate">
             <div class="row align-items-center mt-3">
                 <div id="print-header" class="col">
-                    <h5 x-text="model.SupplierCompanyName" class="page-header mb-0 font-weight-bold"></h5>
+                    <h5 x-text="model.SupplierCompanyName" class="mb-0 font-weight-bold"></h5>
                     <p class="mb-0">
                         <span x-text="model.SupplierAddress"></span>,
                         <span x-text="model.SmsNumber"></span>
@@ -132,8 +132,9 @@
                 },
                 customize: function(win) {
                     $(win.document.body).prepend(`
-                    <nav class="mb-3 navbar">
-                     <h4 class="text-black text-center">${$('.navbar-brand').html()}</h4>
+                    <nav class="mb-3 navbar text-center">
+                     <h4 class="text-black">${$('.navbar-brand').html()}</h4>
+                     <div>${$('#print-address').html()}</div>
                     </nav>
                     <div>${$('#print-header').html()}</div>
                     <div>${$('#print-amount').html()}</div>`);

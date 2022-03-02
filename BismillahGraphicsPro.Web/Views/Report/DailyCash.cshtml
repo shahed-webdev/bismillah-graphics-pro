@@ -15,7 +15,7 @@
             <div class="form-inline justify-content-end">
                 <div class="md-form m-0">
                     <form action="/Report/DailyCash" method="post">
-                        <input id="formDate" name="date" value="@ViewBag.date" class="form-control datepicker" placeholder="Form Date" type="text" />
+                        <input id="formDate" name="date" value="@Convert.ToDateTime(ViewBag.date).ToString("d MMMM, yyyy")" class="form-control datepicker" placeholder="Form Date" type="text" />
                         <button id="find" class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
                     </form>
                 </div>
