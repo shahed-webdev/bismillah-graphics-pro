@@ -30,9 +30,9 @@
                 </div>
             </div>
             <div class="col-xl-3">
-                <div x-init="dateInit()" class="form-group">
+                <div class="form-group">
                     <label>Deposit Date</label>
-                    <input x-model="formData.DepositDate" type="text" class="form-control datepicker" required>
+                    <input x-ref="datePicker" type="text" class="form-control datepicker" :value="moment().format('D MMMM, YYYY')" required>
                 </div>
             </div>
             <div class="col-xl-3">
@@ -66,6 +66,7 @@
 @section Scripts {
     <script>
         $(function() {
+             $('.datepicker').pickadate();
             dataTable.getData();
         });
 
@@ -125,46 +126,32 @@
                 data: [],
                 formData: {},
 
-                //date function init
-                dateInit() {
-                    this.formData.DepositDate = moment(new Date()).format("D, MMM YYYY");
-
-                    $('.datepicker').pickadate({
-                        onSet: context => {
-                            this.formData.DepositDate = moment(context.select).format("D, MMM YYYY");
-                        }
-                    })
-                },
-
                 //insert data
                 async insertData() {
                     this.loading = true;
 
-                    try {
-                        this.formData.AccountId = @Model.AccountId;
-                        const model = { ...this.formData, DepositDate: new Date(this.formData.DepositDate) };
+                   
+                    this.formData.AccountId = @Model.AccountId;
+                    const model = { ...this.formData, DepositDate: this.$refs.datePicker.value };
 
-                        const options = {
-                            method: 'POST',
-                            body: JSON.stringify(model),
-                            headers: { "Content-Type": "application/json" }
-                        };
+                     $.ajax({
+                      type: "POST",
+                      url: "/Account/PostDeposit",
+                      data: model,
+                      success: response => {
+                      if (response.IsSuccess) {
+                        this.formData = {};
+                        location.href = "account";
+                      }
 
-                        const response = await fetch("/Account/PostDeposit", options);
-                        const responseData = await response.json();
-
-                        if (responseData.IsSuccess) {
-                            this.formData = {};
-                            location.href = "account";
-                        }
-
-                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                        this.loading = false;
-
-                    } catch (error) {
+                      $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                      this.loading = false;
+                      },
+                      error: error => {
                         console.log(error);
                         this.loading = false;
-                    }
+                     }
+                });
                 }
             };
         }

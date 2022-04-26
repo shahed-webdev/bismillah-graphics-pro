@@ -80,7 +80,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post deposit account
         [HttpPost]
-        public IActionResult PostDeposit([FromBody] AccountDepositViewModel model)
+        public IActionResult PostDeposit(AccountDepositViewModel model)
         {
             var response = _account.Deposit(User.Identity.Name,model);
             return Json(response);
@@ -110,7 +110,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
         //post Withdraw account
         [HttpPost]
-        public IActionResult PostWithdraw([FromBody] AccountWithdrawViewModel model)
+        public IActionResult PostWithdraw(AccountWithdrawViewModel model)
         {
             var response = _account.Withdraw(User.Identity.Name, model);
             return Json(response);
