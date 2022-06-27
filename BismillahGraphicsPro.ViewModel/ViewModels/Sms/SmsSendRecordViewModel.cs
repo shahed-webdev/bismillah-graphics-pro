@@ -6,5 +6,5 @@ public class SmsSendRecordViewModel
     public string TextSms { get; set; } = null!;
     public int TextCount { get; set; }
     public int SmsCount { get; set; }
-    public DateTime Date { get; set; }
+    public DateTime SendDate { get; set; }
 }

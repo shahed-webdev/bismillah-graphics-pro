@@ -61,6 +61,13 @@ namespace BismillahGraphicsPro.Web.Controllers
             return View();
         }
 
+        // Get Sent Total
+        public async Task<IActionResult> GetSentTotal(DateTime? from, DateTime? to)
+        {
+            var response = await _sms.SmsSentCountAsync(User.Identity.Name,from,to);
+            return Json(response);
+        }
+
 
         //sent data-table
         public async Task<IActionResult> SentRecordData(DataRequest request)

@@ -66,7 +66,7 @@
                                     @item.PurchaseQuantity
                                     @item.MeasurementUnitName
                                 </td>
-                                <td class="text-right">@item.PurchaseUnitPrice/-</td>
+                                <td class="text-right">@item.PurchaseUnitPrice.ToString("0.00")/-</td>
                                 <td class="text-right">@item.PurchasePrice?.ToString("0.00")/-</td>
                             </tr>
                         }
