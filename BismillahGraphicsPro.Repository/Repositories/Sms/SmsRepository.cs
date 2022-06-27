@@ -91,7 +91,7 @@ public class SmsRepository : Repository, ISmsRepository
 
     public DbResponse<int> SmsSentCount(int branchId, DateTime? sDate, DateTime? eDate)
     {
-        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var startDate = sDate ?? new DateTime(1970, 1, 1);
         var endDate = eDate ?? new DateTime(3000, 1, 1);
 
         var smsCount = Db.SmsSendRecords.Where(p => p.BranchId == branchId && p.SendDate <= endDate && p.SendDate >= startDate)
