@@ -65,8 +65,7 @@ public class SmsCore : Core, ISmsCore
         try
         {
             var branchId = _db.Registration.BranchIdByUserName(userName);
-            return Task.FromResult(new DbResponse<int>(true, "Success",
-                _db.Sms.SmsSentCount(branchId, sDate, eDate)));
+            return Task.FromResult(_db.Sms.SmsSentCount(branchId, sDate, eDate));
             
         }
         catch (Exception e)
