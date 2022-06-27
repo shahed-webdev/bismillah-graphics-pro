@@ -9,4 +9,5 @@ public interface ISmsCore
     Task<DbResponse> SendSingleSmsAsync(string userName, SmsSendSingleModel model);
     Task<DataResult<SmsSendRecordViewModel>> SendRecordsAsync(string userName, DataRequest request);
     Task<DbResponse<int>> SmsBalanceAsync();
+    Task<DbResponse<int>> SmsSentCountAsync(string userName, DateTime? sDate, DateTime? eDate);
 }

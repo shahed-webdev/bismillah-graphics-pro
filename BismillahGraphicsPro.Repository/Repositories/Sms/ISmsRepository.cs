@@ -9,4 +9,5 @@ public interface ISmsRepository
     DbResponse SendSingleSms(int branchId, SmsSendSingleModel model);
     DataResult<SmsSendRecordViewModel> SendRecords(int branchId, DataRequest request);
     DbResponse<int> SmsBalance();
+    DbResponse<int> SmsSentCount(int branchId, DateTime? sDate, DateTime? eDate);
 }

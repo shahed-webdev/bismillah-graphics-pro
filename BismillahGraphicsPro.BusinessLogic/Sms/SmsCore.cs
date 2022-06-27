@@ -59,4 +59,19 @@ public class SmsCore : Core, ISmsCore
             return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
         }
     }
+
+    public Task<DbResponse<int>> SmsSentCountAsync(string userName, DateTime? sDate, DateTime? eDate)
+    {
+        try
+        {
+            var branchId = _db.Registration.BranchIdByUserName(userName);
+            return Task.FromResult(new DbResponse<int>(true, "Success",
+                _db.Sms.SmsSentCount(branchId, sDate, eDate)));
+            
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(new DbResponse<int>(false, $"{e.Message}. {e.InnerException?.Message ?? ""}"));
+        }
+    }
 }

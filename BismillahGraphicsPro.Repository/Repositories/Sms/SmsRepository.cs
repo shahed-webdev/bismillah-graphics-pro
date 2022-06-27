@@ -88,4 +88,14 @@ public class SmsRepository : Repository, ISmsRepository
         var smsProvider = new SmsProviderBuilder();
         return new DbResponse<int>(true, "Sms Balance Get Successfully", smsProvider.SmsBalance());
     }
+
+    public DbResponse<int> SmsSentCount(int branchId, DateTime? sDate, DateTime? eDate)
+    {
+        var startDate = sDate ?? new DateTime(1000, 1, 1);
+        var endDate = eDate ?? new DateTime(3000, 1, 1);
+
+        var smsCount = Db.SmsSendRecords.Where(p => p.BranchId == branchId && p.SendDate <= endDate && p.SendDate >= startDate)
+            .Sum(v =>v.Smscount);
+        return new DbResponse<int>(true, $"get successfully",smsCount);
+    }
 }
