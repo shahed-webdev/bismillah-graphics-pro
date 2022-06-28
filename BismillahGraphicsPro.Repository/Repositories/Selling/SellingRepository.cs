@@ -162,8 +162,8 @@ public class SellingRepository : Repository, ISellingRepository
         var oldTotalPrice = selling.SellingTotalPrice;
         var newTotalPrice = model.SellingTotalPrice;
 
-        selling.Vendor.TotalAmount += newDiscount - oldDiscount;
-        selling.Vendor.TotalDiscount += newTotalPrice - oldTotalPrice;
+        selling.Vendor.TotalAmount += newTotalPrice - oldTotalPrice;
+        selling.Vendor.TotalDiscount += newDiscount - oldDiscount;
 
 
         selling.SellingDiscountAmount = model.SellingDiscountAmount;
