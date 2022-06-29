@@ -9,7 +9,7 @@ public class SmsProviderBuilder
 
     public SmsProviderBuilder()
     {
-        _provider = new SmsProviderBanglaPhone();
+        _provider = new SmsProviderBulksmsbd();
     }
     public int SmsBalance()
     {
