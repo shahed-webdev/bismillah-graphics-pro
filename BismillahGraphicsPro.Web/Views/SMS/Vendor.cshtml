@@ -6,9 +6,9 @@
 <div class="m-md-3 mb-3">
     <h1 class="page-header">
         Send SMS To Vendor
-        <small class="text-muted text-lowercase">
+        @*<small class="text-muted text-lowercase">
             SMS balance: <strong id="smsBalance"></strong>
-        </small>
+        </small>*@
     </h1>
 
     <div class="card card-body my-3">
@@ -45,21 +45,21 @@
 <script>
     $(function() {
         dataTable.getData();
-        getSMSBalance()
+        //getSMSBalance()
     });
 
     //get sms balance
-    function getSMSBalance() {
-        $.ajax({
-            url: '/SMS/GetBalance',
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            success: function(response) {
-                document.getElementById('smsBalance').textContent = response;
-            },
-            error: error => console.log(error)
-        });
-    }
+    //function getSMSBalance() {
+    //    $.ajax({
+    //        url: '/SMS/GetBalance',
+    //        type: "GET",
+    //        contentType: "application/json; charset=utf-8",
+    //        success: function(response) {
+    //            document.getElementById('smsBalance').textContent = response;
+    //        },
+    //        error: error => console.log(error)
+    //    });
+    //}
 
     //get data
     var dataTable = {

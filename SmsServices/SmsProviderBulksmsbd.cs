@@ -13,49 +13,6 @@ public class SmsProviderBulksmsbd : ISmsProvider
 
     public int GetSmsBalance()
     {
-        // Create Url
-        //const string actionUrl = "accountinfo";
-        //const string info = "package";
-
-        //const string dataFormat = "?userId={0}&password={1}&info={2}";
-        //var dataUrl = string.Format(dataFormat, UserId, Password, info);
-
-        //var address = new Uri(HostUrl + actionUrl + dataUrl);
-
-        //// Create the web request
-        //var request = WebRequest.Create(address) as HttpWebRequest;
-
-        //// Set type to POST
-        //request.Method = "GET";
-        //request.ContentType = "text/xml";
-
-        //try
-        //{
-        //    using (var response = request.GetResponse())
-        //    {
-        //        dynamic responseObject = ParseResponse(response);
-
-        //        if (responseObject.isError == "true")
-        //        {
-        //            throw new Exception(string.Format("Sms Sending was failed. Because: {0}", responseObject.message));
-        //        }
-        //        else
-        //        {
-        //            // Get the response stream
-        //            return (int)responseObject.AvailableExternalSmsCount;
-        //        }
-        //    }
-        //}
-        //catch (WebException e)
-        //{
-        //    dynamic responseObject = ParseResponse(e.Response);
-
-        //    if (responseObject.isError == "true")
-        //    {
-        //        throw new Exception("Sms Sending was failed. Because: " + responseObject.message);
-        //    }
-        //}
-
         return 100000; // No API for get Balance. So use a fixed number for SMS availability
     }
 
