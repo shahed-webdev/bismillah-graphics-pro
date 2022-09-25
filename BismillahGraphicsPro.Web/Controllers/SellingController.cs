@@ -143,6 +143,7 @@ namespace BismillahGraphicsPro.Web.Controllers
         }
 
         //view update Selling
+        [Authorize(Roles = "Admin")] //only admin allow
         public async Task<IActionResult> Update(int? id)
         {
             if (!id.HasValue) return RedirectToAction("Index");
@@ -155,6 +156,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //post update Selling
+        [Authorize(Roles = "Admin")] //only admin allow
         [HttpPut]
         public async Task<IActionResult> UpdateSelling([FromBody] SellingEditModel model)
         {
@@ -164,6 +166,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //Delete Bill
+        [Authorize(Roles = "Admin")] //only admin allow
         public async Task<IActionResult> DeleteBill(int id)
         {
             var response = await _sellingCore.DeleteAsync(User.Identity.Name, id);

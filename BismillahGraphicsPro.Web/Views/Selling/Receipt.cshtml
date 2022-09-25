@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Selling Receipt";
     Layout = "_AdminLayout";
+    var isAdmin = User.IsInRole("Admin");
 }
 
 @section Styles{
@@ -11,7 +12,7 @@
     <section class="my-4 d-print-none">
         <div class="d-flex justify-content-between">
             <div>
-                @if (Model.SellingDueAmount > 0)
+            @if (Model.SellingDueAmount > 0)
             {
                 <a class="btn btn-success btn-rounded" href="/Selling/DueCollectionSingle/@Model.SellingId"><i class="fas fa-money-bill-alt mr-1"></i>Pay Due</a>
             }
@@ -131,7 +132,7 @@
         <button id="btnBlockReadySendSMS" @(Model.Vendor.SmsNumber =="" ? "disabled='disabled'" : "") data-number="@Model.Vendor.SmsNumber" class="btn btn-outline-primary"><i class="fas fa-paper-plane mr-1"></i>Send Product Received SMS</button>
         <div class="text-center">
             <h5 id="smsBalance" class="font-weight-bold"></h5>
-            <em class="m-0 text-muted">SMS Number: @(Model.Vendor.SmsNumber=="" ? "N/A" : Model.Vendor.SmsNumber)</em>
+            <em class="m-0 text-muted">SMS Number: @(Model.Vendor.SmsNumber == "" ? "N/A" : Model.Vendor.SmsNumber)</em>
         </div>
         <button id="btnSendPaymentSMS" @(Model.Vendor.SmsNumber=="" ? "disabled='disabled'" : "") data-number="@Model.Vendor.SmsNumber" class="btn btn-outline-danger"><i class="fas fa-paper-plane mr-1"></i>Send Payment Status</button>
     </div>
@@ -184,14 +185,19 @@
     </div>
 </div>
 
-<form id="deleteForm" class="d-print-none">
-    <button type="submit" class="btn btn-danger mx-0 mt-4">Delete Bill</button>
-</form>
+@{
+    if (isAdmin)
+    {
+        <form id="deleteForm" class="d-print-none">
+            <button type="submit" class="btn btn-danger mx-0 mt-4">Delete Bill</button>
+        </form>
+    }
+}
 
 
 @section scripts{
     <script>
-        $(function() {
+        $(function () {
             $("#amount-word").text(`Taka (in words): ${number2text(@Model.SellingTotalPrice)}`);
 
             //getSMSBalance();
@@ -287,7 +293,7 @@
 
         //sms product received
         btnBlockReadySendSMS.addEventListener('click',
-            function() {
+            function () {
                 const number = this.getAttribute('data-number');
                 if (!number) return;
 
@@ -299,7 +305,7 @@
 
         //sms payment status
         btnSendPaymentSMS.addEventListener('click',
-            function() {
+            function () {
                 const number = this.getAttribute('data-number');
                 if (!number) return;
 
@@ -321,7 +327,7 @@
                 url: '/SMS/PostSingle',
                 type: "POST",
                 data: model,
-                success: function(response) {
+                success: function (response) {
                     location.href = "/Selling";
                 },
                 error: error => console.log(error)
@@ -331,20 +337,21 @@
 
         //delete Bill
         const deleteForm = document.getElementById("deleteForm");
-        deleteForm.addEventListener("submit",
-            function(evt) {
-                evt.preventDefault();
+        if (deleteForm) {
+            deleteForm.addEventListener("submit",
+                function (evt) {
+                    evt.preventDefault();
 
-                $.ajax({
-                    url: '/selling/DeleteBill/@Model.SellingId',
-                    success: function(response) {
-                        if (response.IsSuccess)
-                            location.href = "/Selling/records";
-                    },
-                    error: error => console.log(error)
+                    $.ajax({
+                        url: '/selling/DeleteBill/@Model.SellingId',
+                        success: function (response) {
+                            if (response.IsSuccess)
+                                location.href = "/Selling/records";
+                        },
+                        error: error => console.log(error)
+                    });
                 });
-            });
-
+        }
 
 
         //show hide table col

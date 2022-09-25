@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Selling";
     Layout = "_AdminLayout";
+    var isAdmin = User.IsInRole("Admin");
 }
+
 
 
 <h1 class="page-header my-3">Selling Invoice</h1>
@@ -9,15 +11,15 @@
 <div class="card card-body mt-4">
     <table id="data-table" class="table table-sm">
         <thead>
-        <tr>
-            <th>Invoice</th>
-            <th>Vendor</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th>Due</th>
-            <th>Date</th>
-            <th>Update</th>
-        </tr>
+            <tr>
+                <th>Invoice</th>
+                <th>Vendor</th>
+                <th>Amount</th>
+                <th>Paid</th>
+                <th>Due</th>
+                <th>Date</th>      
+                <th>Update</th>
+            </tr>
         </thead>
     </table>
 </div>
@@ -26,14 +28,16 @@
 
 @section Scripts {
     <script>
-        $(function() {
+        const isAdmin = '@isAdmin';
+
+        $(function () {
             dataTable.getData();
         });
-
+ 
         //data table
         const dataTable = {
             table: null,
-            init: function() {
+            init: function () {
                 dataTable.table = $("#data-table").DataTable({
                     processing: true,
                     serverSide: true,
@@ -42,29 +46,34 @@
                         type: "POST"
                     },
                     columns:
-                    [
-                        { data: "SellingSn", "render": function(data, type, row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
-                        { data: "VendorCompanyName" },
-                        { data: "SellingTotalPrice" },
-                        { data: "SellingPaidAmount" },
-                        {
-                            data: "SellingDueAmount",
-                            "render": function(data, type, row) {
-                                return data ? `<a class="blue-text" href="/selling/DueCollectionSingle/${row.SellingId}">${data}</a>` : data;
+                        [
+                            { data: "SellingSn", "render": function (data, type, row) { return `<a class="blue-text" href="/Selling/receipt/${row.SellingId}">${data}</a>` } },
+                            { data: "VendorCompanyName" },
+                            { data: "SellingTotalPrice" },
+                            { data: "SellingPaidAmount" },
+                            {
+                                data: "SellingDueAmount",
+                                "render": function (data, type, row) {
+                                    return data ? `<a class="blue-text" href="/selling/DueCollectionSingle/${row.SellingId}">${data}</a>` : data;
+                                }
+                            },
+                            { data: "SellingDate", "render": function (data) { return moment(data).format('DD MMM YYYY') } },
+
+                             {
+                                data: "SellingId", "render": function (data) {
+                                    return isAdmin === "True" ? `<a class="blue-text" href="/Selling/update/${data}">Update</a>` : "denied"
+                                }
                             }
-                        },
-                        { data: "SellingDate", "render": function(data) { return moment(data).format('DD MMM YYYY') } },
-                        { data: "SellingId", "render": function(data) { return `<a class="blue-text" href="/Selling/update/${data}">Update</a>` } }
-                    ],
+                        ],
                     columnDefs: [
-                        { 'searchable': false, 'targets': [2,3,4,5, 6] },
+                        { 'searchable': false, 'targets': [2, 3, 4, 5, 6] },
                         { 'sortable': false, 'targets': [6] },
                         { 'className': "text-center", "targets": [0, 5, 6] },
                         { 'className': "text-right", "targets": [2, 3, 4] }
                     ]
                 });
             },
-            getData: function() {
+            getData: function () {
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
             }
         }
