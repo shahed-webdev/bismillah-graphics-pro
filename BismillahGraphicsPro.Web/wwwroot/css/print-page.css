@@ -22,7 +22,7 @@
     .container-fluid, .container { min-width: 0 !important; max-width: 100%; margin: 0; padding: 0; overflow: hidden !important }
     .card-body { padding: 0 !important; }
 
-    #content-wrapper { min-height: 0; padding: 0; margin-left: 0; overflow-x: auto !important }
+    #content-wrapper { min-height: 0; padding: 0; margin-left: 0 !important; overflow-x: auto !important }
     #content-wrapper h3 { font-size: 1.2rem; }
 
 

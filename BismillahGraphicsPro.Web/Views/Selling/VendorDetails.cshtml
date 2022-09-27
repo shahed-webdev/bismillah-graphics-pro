@@ -3,6 +3,12 @@
     Layout = "_AdminLayout";
 }
 
+
+@section Styles{
+<link href="~/pages-css/vendor-details.css" rel="stylesheet" />
+}
+
+
 <div x-data="initData()">
     <div class="container">
         <form x-on:submit.prevent="finByDate">
@@ -132,13 +138,9 @@
                 },
                 customize: function(win) {
                     $(win.document.body).prepend(`
-                    <nav class="mb-3 navbar text-center">
-                      <h4 class="text-black">${$('.navbar-brand').html()}</h4>
-                      <div>${$('#print-address').html()}</div>
-                    </nav>
-
-                    <div>${$('#print-header').html()}</div>
-                    <div>${$('#print-amount').html()}</div>`);
+                            <h4 class="report-title">BILL STATEMENT</h4>
+                    <div class="text-center">${$('#print-header').html()}</div>
+                    <div class="text-center">${$('#print-amount').html()}</div>`);
                 },
                 autoPrint: true
             }],
