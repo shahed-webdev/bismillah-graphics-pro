@@ -72,110 +72,111 @@
 </div>
 
 @section Scripts {
-<script>
+    <script>
         const isAdmin = '@isAdmin'
-    $(function() {
-        $('.datepicker').pickadate();
+        $(function () {
+            $('.datepicker').pickadate();
 
-        dataTable.getData();
-    });
+            dataTable.getData();
+        });
 
-    //data table
-    const dataTable = {
-        table: null,
-        init: function() {
-            dataTable.table = $("#data-table").DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "/Expense/GetExpense",
-                    type: "POST"
-                },
-                columns:
-                [
-                    { data: "ExpenseDate", "render": function(data) { return moment(data).format('D, MMM YYYY') } },
-                    { data: "ExpenseFor" },
-                    { data: "AccountName" },
-                    { data: "ExpenseAmount", "render": function(data) { return `${data}/-` } },
-                    { data: "ExpenseId", "render": function(data) {
-                                    return isAdmin ==="True" ? `<a x-on:click="deleteData(${data})" style="color:#ff0000" class="fas fa-trash-alt"></a>`:"Denied";
+        //data table
+        const dataTable = {
+            table: null,
+            init: function () {
+                dataTable.table = $("#data-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/Expense/GetExpense",
+                        type: "POST"
+                    },
+                    columns:
+                        [
+                            { data: "ExpenseDate", "render": function (data) { return moment(data).format('D, MMM YYYY') } },
+                            { data: "ExpenseFor" },
+                            { data: "AccountName" },
+                            { data: "ExpenseAmount", "render": function (data) { return `${data}/-` } },
+                            {
+                                data: "ExpenseId", "render": function (data) {
+                                    return `<a x-on:click="deleteData(${data})" style="color:#ff0000" class="fas fa-trash-alt"></a>`;
                                 }
                             }
-                ],
-                columnDefs: [
-                    { 'searchable': false, 'targets': [0, 3, 4] },
-                    { 'sortable': false, 'targets': [4] },
-                    { 'className': "text-center", "targets": [4] },
-                    { 'className': "text-right", "targets": [3] }
-                ]
-            });
-        },
-        getData: function() {
-            dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+                        ],
+                    columnDefs: [
+                        { 'searchable': false, 'targets': [0, 3, 4] },
+                        { 'sortable': false, "visible": isAdmin === "True", 'targets': [4] },
+                        { 'className': "text-center", "targets": [4] },
+                        { 'className': "text-right", "targets": [3] }
+                    ]
+                });
+            },
+            getData: function () {
+                dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            }
         }
-    }
 
-    //alpine js code
-    function initData() {
-        return {
-            loading: false,
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
 
-            //bind dropdown list
-            categories: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.categoryDropdown))'),
-            accounts: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.accountDropdown))'),
+                //bind dropdown list
+                categories: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.categoryDropdown))'),
+                accounts: JSON.parse('@Html.Raw(Json.Serialize(ViewBag.accountDropdown))'),
 
-            formData: {},
+                formData: {},
 
-            //insert data
-            insertData() {
-                this.loading = true;
+                //insert data
+                insertData() {
+                    this.loading = true;
 
-                const model = { ...this.formData, ExpenseDate: this.$refs.datePicker.value };
+                    const model = { ...this.formData, ExpenseDate: this.$refs.datePicker.value };
 
-                $.ajax({
-                    type: "POST",
-                    url: "/Expense/PostExpense",
-                    data: model,
-                    success: response => {
-                        this.loading = false;
+                    $.ajax({
+                        type: "POST",
+                        url: "/Expense/PostExpense",
+                        data: model,
+                        success: response => {
+                            this.loading = false;
 
-                        if (response.IsSuccess) {
-                            this.formData = {};
+                            if (response.IsSuccess) {
+                                this.formData = {};
+                                dataTable.getData();
+                            }
+
+                            $.notify(response.Message, response.IsSuccess ? "success" : "error");
+                        },
+                        error: error => {
+                            console.log(error);
+                            this.loading = false;
+                        }
+                    });
+                },
+
+                //delete Data
+                async deleteData(id) {
+                    this.loading = true;
+
+                    try {
+                        const options = { method: 'DELETE' };
+
+                        const response = await fetch(`/Expense/DeleteExpense/${id}`, options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
                             dataTable.getData();
                         }
 
-                        $.notify(response.Message, response.IsSuccess ? "success" : "error");
-                    },
-                    error: error => {
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
                         console.log(error);
                         this.loading = false;
                     }
-                });
-            },
-
-            //delete Data
-            async deleteData(id) {
-                this.loading = true;
-
-                try {
-                    const options = { method: 'DELETE' };
-
-                    const response = await fetch(`/Expense/DeleteExpense/${id}`, options);
-                    const responseData = await response.json();
-
-                    if (responseData.IsSuccess) {
-                        dataTable.getData();
-                    }
-
-                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                    this.loading = false;
-
-                } catch (error) {
-                    console.log(error);
-                    this.loading = false;
                 }
-            }
-        };
-    }
-</script>
+            };
+        }
+    </script>
 }

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Selling";
+    ViewData["Title"] = "Selling Invoice";
     Layout = "_AdminLayout";
     var isAdmin = User.IsInRole("Admin");
 }
@@ -32,6 +32,7 @@
 
         $(function () {
             dataTable.getData();
+           
         });
  
         //data table
@@ -61,13 +62,13 @@
 
                              {
                                 data: "SellingId", "render": function (data) {
-                                    return isAdmin === "True" ? `<a class="blue-text" href="/Selling/update/${data}">Update</a>` : "Denied"
+                                    return `<a class="blue-text" href="/Selling/update/${data}">Update</a>`
                                 }
                             }
                         ],
                     columnDefs: [
                         { 'searchable': false, 'targets': [2, 3, 4, 5, 6] },
-                        { 'sortable': false, 'targets': [6] },
+                        { 'sortable': false, "visible": isAdmin === "True", 'targets': [6] },
                         { 'className': "text-center", "targets": [0, 5, 6] },
                         { 'className': "text-right", "targets": [2, 3, 4] }
                     ]
@@ -77,5 +78,7 @@
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
             }
         }
+
+       
     </script>
 }
