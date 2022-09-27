@@ -11,7 +11,7 @@ public interface IProductCore
     Task<DbResponse> DeleteAsync(int id);
     Task<DbResponse<ProductViewModel>> GetAsync(int id);
     Task<DataResult<ProductViewModel>> ListAsync(string userName, DataRequest request);
-    Task<List<ProductViewModel>> SearchAsync(string userName, string key);
+    Task<List<ProductViewModel>> SearchAsync(string userName, string key, bool isStock);
     //Product category
     Task<DbResponse<ProductCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName);
     Task<DbResponse> CategoryEditAsync(ProductCategoryCrudModel model);

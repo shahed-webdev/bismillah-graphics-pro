@@ -222,7 +222,7 @@
                         source: (request, result) => {
                             $.ajax({
                                 url: `/common/findProduct`,
-                                data: { prefix: request },
+                                data: { prefix: request, isStock  : true},
                                 success: response => result(response),
                                 error: err => console.log(err)
                             });

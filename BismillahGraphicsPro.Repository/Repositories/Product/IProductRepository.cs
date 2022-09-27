@@ -15,8 +15,9 @@ public interface IProductRepository
     bool IsRelatedDataExist(int id);
     DataResult<ProductViewModel> List(int branchId, DataRequest request);
 
-    Task<List<ProductViewModel>> SearchAsync(int branchId, string key);
+    Task<List<ProductViewModel>> SearchAsync(int branchId, string key, bool isStock);
     void AddStock(int productId, decimal stock);
     void SubtractStock(int productId, decimal stock);
+    bool IsInStock(int productId, decimal sellingSellingQuantity);
     List<ProductReportModel> SaleReport(int branchId, DateTime? sDate, DateTime? eDate);
 }

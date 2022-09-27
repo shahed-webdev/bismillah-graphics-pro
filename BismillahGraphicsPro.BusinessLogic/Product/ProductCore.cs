@@ -86,10 +86,10 @@ public class ProductCore : Core, IProductCore
         return Task.FromResult(_db.Product.List(branchId, request));
     }
 
-    public Task<List<ProductViewModel>> SearchAsync(string userName, string key)
+    public Task<List<ProductViewModel>> SearchAsync(string userName, string key, bool isStock)
     {
         var branchId = _db.Registration.BranchIdByUserName(userName);
-        return  _db.Product.SearchAsync(branchId, key);
+        return  _db.Product.SearchAsync(branchId, key, isStock);
     }
 
     public Task<DbResponse<ProductCategoryCrudModel>> CategoryAddAsync(string categoryName, string userName)

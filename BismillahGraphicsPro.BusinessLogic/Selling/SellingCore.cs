@@ -19,6 +19,18 @@ public class SellingCore : Core, ISellingCore
             if (!model.SellingLists.Any())
                 return Task.FromResult(new DbResponse<int>(false, "Invalid Data"));
 
+            var sellingListGroup = model.SellingLists.GroupBy(x => x.ProductId).Select(g => new { ProductId = g.Key, SellingQuantity = g.Sum(x => x.SellingQuantity) }).ToList();
+
+            foreach (var item in sellingListGroup)
+            {
+              var isInStock =  _db.Product.IsInStock(item.ProductId, item.SellingQuantity);
+                if(!isInStock)
+                {
+                  var product = _db.Product.Get(item.ProductId);
+                    return Task.FromResult(new DbResponse<int>(false, $"Not enough {product.Data.ProductName} only available {product.Data.Stock} quantity"));
+                }
+            }
+
             var branchId = _db.Registration.BranchIdByUserName(userName);
             var registrationId = _db.Registration.RegistrationIdByUserName(userName);
             var sellingSn = _db.Selling.GetSellingSn(branchId);

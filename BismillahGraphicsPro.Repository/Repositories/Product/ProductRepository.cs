@@ -86,9 +86,11 @@ public class ProductRepository : Repository, IProductRepository
             .ToDataResult(request);
     }
 
-    public Task<List<ProductViewModel>> SearchAsync(int branchId, string key)
+    public Task<List<ProductViewModel>> SearchAsync(int branchId, string key, bool isStock)
     {
-        return Db.Products.Where(p => p.BranchId == branchId && p.ProductName.Contains(key))
+        var query = Db.Products.Where(p => p.BranchId == branchId && p.ProductName.Contains(key));
+        if (isStock) query = query.Where(p => p.Stock > 0);
+        return query
             .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(a => a.ProductName)
             .Take(5)
@@ -111,6 +113,11 @@ public class ProductRepository : Repository, IProductRepository
         product.Stock -= stock;
         Db.Products.Update(product);
         Db.SaveChanges();
+    }
+
+    public bool IsInStock(int productId, decimal sellingSellingQuantity)
+    {
+        return Db.Products.Any(m => m.ProductId == productId && m.Stock >= sellingSellingQuantity);
     }
 
     public List<ProductReportModel> SaleReport(int branchId, DateTime? sDate, DateTime? eDate)

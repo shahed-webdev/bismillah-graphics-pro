@@ -43,9 +43,9 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //find product autocomplete
-        public async Task<IActionResult> FindProduct(string prefix)
+        public async Task<IActionResult> FindProduct(string prefix, bool isStock = false)
         {
-            var response = await _productCore.SearchAsync(User.Identity.Name, prefix);
+            var response = await _productCore.SearchAsync(User.Identity.Name, prefix, isStock);
             return Json(response);
         }
 
