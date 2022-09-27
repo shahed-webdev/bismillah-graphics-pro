@@ -6,7 +6,7 @@
 }
 
 @section Styles{
-    <link rel="stylesheet" href="/css/receipt.css?v=1.0.0">
+    <link rel="stylesheet" href="/css/receipt.css?v=1.1.0">
 }
 
     <section class="my-4 d-print-none">
@@ -23,14 +23,56 @@
 
             <a class="btn btn-discord btn-rounded" href="/Selling/records"><i class="fas fa-shopping-bag mr-1"></i>Selling Record</a>
         </div>
+
+        <div class="text-left">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       id="description"
+                       value="hide"
+                       onchange="showHideTableCol(this.id)">
+                <label class="custom-control-label"
+                       for="description">
+                    Hide Description
+                </label>
+            </div>
+
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       id="unitPrice"
+                       value="hide"
+                       onchange="showHideTableCol(this.id)">
+                <label class="custom-control-label"
+                       for="unitPrice">
+                    Hide Unit Price
+                </label>
+            </div>
+
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       id="checkPreviousDue"
+                       value="hide">
+                <label class="custom-control-label"
+                       for="checkPreviousDue">
+                    Hide Previous Due
+                </label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       id="checkTotalDue"
+                       value="hide">
+                <label class="custom-control-label"
+                       for="checkTotalDue">
+                    Hide Total Due
+                </label>
+            </div>
+        </div>
         <div>
             <a class="btn btn-elegant btn-rounded" href="/Selling"><i class="fas fa-shopping-cart mr-1"></i>Selling</a>
             <button class="btn btn-default btn-rounded" onclick="print()"><i class="fas fa-print mr-1"></i>Print</button>
-
-            <div class="custom-control custom-checkbox text-right">
-                <input type="checkbox" class="custom-control-input" id="description" value="hide" onchange="showHideTableCol(this.id);">
-                <label class="custom-control-label" for="description">Hide Description</label>
-            </div>
         </div>
     </div>
 </section>
@@ -72,7 +114,7 @@
                     <strong>Description</strong>
                 </th>
                 <th class="text-center"><strong>Quantity</strong></th>
-                <th class="text-right"><strong>Unit&nbsp;Price</strong></th>
+                <th id="unitPrice_head" class="text-right"><strong>Unit&nbsp;Price</strong></th>
                 <th class="text-right"><strong>Line&nbsp;Total</strong></th>
             </tr>
         </thead>
@@ -82,49 +124,51 @@
                 foreach (var item in Model.SellingLists)
                 {
                     index++;
-                    <tr>
-                        <td class="text-center">@index</td>
-                        <td>@item.ProductName</td>
-                        <td class="text-center description">@item.Length x @item.Width</td>
-                        <td class="text-center">
-                            @item.SellingQuantity
-                            @item.MeasurementUnitName
-                        </td>
-                        <td class="text-right">@item.SellingUnitPrice.ToString("0.00")/-</td>
-                        <td class="text-right">@item.SellingPrice?.ToString("0.00")/-</td>
-                    </tr>
+                                        <tr>
+                                            <td class="text-center">@index</td>
+                                            <td>@item.ProductName</td>
+                                            <td class="text-center description">@item.Length x @item.Width</td>
+                                            <td class="text-center">
+                                                @item.SellingQuantity
+                                                @item.MeasurementUnitName
+                                            </td>
+                                            <td class="text-right unitPrice">@item.SellingUnitPrice.ToString("0.00")/-</td>
+                                            <td class="text-right">@item.SellingPrice?.ToString("0.00")/-</td>
+                                        </tr>
                 }
             }
-            <tr>
-                <td colspan="4">
-                    <span id="amount-word"></span>
-                    <p>@Model.Description</p>
-                </td>
-                <td colspan="2">
-                    <div class="text-right">
-                        @{
-                            var previousDue = Model.Vendor.VendorDue - Model.SellingDueAmount;
-                        }
-
-                        @if (previousDue > 0)
-                        {
-                            <p>Pvs Due: <strong>@previousDue/-</strong></p>
-                        }
-
-                        <p>T. Sales: <strong>@Model.SellingTotalPrice/-</strong></p>
-
-                        @if (Model.SellingDiscountAmount > 0)
-                        {
-                            <p>Discount: <strong>@Model.SellingDiscountAmount/-</strong></p>
-                        }
-
-                        <p>T. Paid: <strong> @Model.SellingPaidAmount/-</strong></p>
-                        <p>T. Due: <strong>@Model.Vendor.VendorDue/-</strong></p>
-                    </div>
-                </td>
-            </tr>
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <div class="w-100">
+            <span id="amount-word"></span>
+            <p>@Model.Description</p>
+        </div>
+
+        <div class="amount-content w-50">
+            @{
+                var previousDue = Model.Vendor.VendorDue - Model.SellingDueAmount;
+            }
+
+            @if (previousDue > 0)
+            {
+                <p id="prevDue">Pvs Due: @previousDue/-</p>
+            }
+
+            <p>T. Sales: @Model.SellingTotalPrice/-</p>
+
+            @if (Model.SellingDiscountAmount > 0)
+            {
+                <p>Discount: @Model.SellingDiscountAmount/-</p>
+            }
+
+            <p>T. Paid: @Model.SellingPaidAmount/-</p>
+            <p id="totalDue">T. Due: @Model.Vendor.VendorDue/-</p>
+        </div>
+
+    </div>
+
 
 
 
@@ -143,29 +187,29 @@
 
             if (paymentRecord.Count > 0)
             {
-                <h5 class="mt-4">PAYMENT RECORD</h5>
-                <table class="table table-sm table-bordered text-dark">
-                    <thead>
-                        <tr>
-                            <th><strong>Paid Date</strong></th>
-                            <th><strong>Paid Amount</strong></th>
-                            <th><strong>Payment Method</strong></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in paymentRecord)
+                                    <h5 class="mt-4">PAYMENT RECORD</h5>
+                                    <table class="table table-sm table-bordered text-dark">
+                                        <thead>
+                                            <tr>
+                                                <th><strong>Paid Date</strong></th>
+                                                <th><strong>Paid Amount</strong></th>
+                                                <th><strong>Payment Method</strong></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in paymentRecord)
                         {
-                            <tr>
-                                <td>@item.SellingPaidDate.ToString("d MMM yyyy")</td>
-                                <td class="text-right">@item.SellingPaidAmount/-</td>
-                                <td class="text-center">
-                                    <strong>@item.AccountName</strong>
-                                    <em class="text-dark">@item.Description</em>
-                                </td>
-                            </tr>
+                                                <tr>
+                                                    <td>@item.SellingPaidDate.ToString("d MMM yyyy")</td>
+                                                    <td class="text-right">@item.SellingPaidAmount/-</td>
+                                                    <td class="text-center">
+                                                        <strong>@item.AccountName</strong>
+                                                        <em class="text-dark">@item.Description</em>
+                                                    </td>
+                                                </tr>
                         }
-                    </tbody>
-                </table>
+                                        </tbody>
+                                    </table>
             }
         }
     </div>
@@ -188,9 +232,9 @@
 @{
     if (isAdmin)
     {
-        <form id="deleteForm" class="d-print-none">
-            <button type="submit" class="btn btn-danger mx-0 mt-4">Delete Bill</button>
-        </form>
+    <form id="deleteForm" class="d-print-none">
+                                <button type="submit" class="btn btn-danger mx-0 mt-4">Delete Bill</button>
+    </form>
     }
 }
 
@@ -380,6 +424,22 @@
                 document.getElementById(col_name).value = "hide";
             }
         }
+
+        //hide prev due
+        const checkPreviousDue = document.getElementById("checkPreviousDue");
+        const prevDue = document.getElementById("prevDue");
+        
+        checkPreviousDue.addEventListener("change",()=>{
+            prevDue.classList.toggle("d-none");
+        });
+
+        //hide total due
+        const checkTotalDue = document.getElementById("checkTotalDue");
+        const totalDue = document.getElementById("totalDue");
+
+        checkTotalDue.addEventListener("change", () => {
+            totalDue.classList.toggle("d-none");
+        });
     </script>
 }
 

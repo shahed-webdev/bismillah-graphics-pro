@@ -3,7 +3,6 @@ using BismillahGraphicsPro.ViewModel;
 using JqueryDataTables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BismillahGraphicsPro.Web.Controllers
 {
@@ -56,6 +55,7 @@ namespace BismillahGraphicsPro.Web.Controllers
 
 
         //delete expense
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task <IActionResult> DeleteExpense(int id)
         {

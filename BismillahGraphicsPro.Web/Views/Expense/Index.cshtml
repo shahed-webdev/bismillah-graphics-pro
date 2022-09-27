@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Expense";
     Layout = "_AdminLayout";
+    var isAdmin = User.IsInRole("Admin");
 }
 
 
@@ -72,6 +73,7 @@
 
 @section Scripts {
 <script>
+        const isAdmin = '@isAdmin'
     $(function() {
         $('.datepicker').pickadate();
 
@@ -95,7 +97,10 @@
                     { data: "ExpenseFor" },
                     { data: "AccountName" },
                     { data: "ExpenseAmount", "render": function(data) { return `${data}/-` } },
-                    { data: "ExpenseId", "render": function(data) { return `<a x-on:click="deleteData(${data})" style="color:#ff0000" class="fas fa-trash-alt"></a>`; } }
+                    { data: "ExpenseId", "render": function(data) {
+                                    return isAdmin ==="True" ? `<a x-on:click="deleteData(${data})" style="color:#ff0000" class="fas fa-trash-alt"></a>`:"Denied";
+                                }
+                            }
                 ],
                 columnDefs: [
                     { 'searchable': false, 'targets': [0, 3, 4] },

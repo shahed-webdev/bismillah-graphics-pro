@@ -1,0 +1,8 @@
+﻿
+.report-title {margin-bottom:1rem; text-align: center; font-weight: bold; }
+
+@page { margin-top: 3cm; }
+
+@media print {
+    header { display: none !important }
+}
