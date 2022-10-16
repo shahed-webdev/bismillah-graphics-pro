@@ -4,270 +4,264 @@
 }
 
 @section Styles{
-<style>
-    .length, .width {
-        display: inline-block;
-        width: 60px;
-        margin: 5px;
-        text-align: center;
-    }
-</style>
+    <style>
+        .length, .width { display: inline-block; width: 60px; margin: 5px; text-align: center; }
+    </style>
 }
 
-<div x-data="initData()" x-init="getDropdownData">
+    <div x-data="initData()" x-init="getDropdownData">
 
 
-    <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
-        <div>
-            <h1 class="page-header">Update Bill</h1>
-            <p x-text="model.Vendor.VendorCompanyName"></p>
+        <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
+            <div>
+                <h1 class="page-header">Update Bill</h1>
+                <p x-text="model.Vendor.VendorCompanyName"></p>
+            </div>
+
+            <div class="text-right">
+                <h4 class="mb-0 font-weight-bold">RECEIPT# <span x-text="model.SellingSn"></span></h4>
+                Selling Date: <span x-text="moment(model.SellingDate).format('D MMM, YYYY')"></span>
+            </div>
         </div>
 
-        <div class="text-right">
-            <h4 class="mb-0 font-weight-bold">RECEIPT# <span x-text="model.SellingSn"></span></h4>
-            Selling Date: <span x-text="moment(model.SellingDate).format('D MMM, YYYY')"></span>
-        </div>
-    </div>
-
-    <form x-on:submit.prevent="updateData()">
-        <div class="row">
-            <div class="col-xl-9 col-lg-8 mb-4">
-                <div class="card card-body">
-                    <div class="md-form">
-                        <div x-init="findProduct" class="form-group">
-                            <label for="inputFindProduct">Find Product</label>
-                            <input id="inputFindProduct" x-ref="findProduct" x-model="clearInput" type="text" class="form-control">
+        <form x-on:submit.prevent="updateData()">
+            <div class="row">
+                <div class="col-xl-9 col-lg-8 mb-4">
+                    <div class="card card-body">
+                        <div class="md-form">
+                            <div x-init="findProduct" class="form-group">
+                                <label for="inputFindProduct">Find Product</label>
+                                <input id="inputFindProduct" x-ref="findProduct" x-model="clearInput" type="text" class="form-control">
+                            </div>
                         </div>
-                    </div>
 
-                    <table id="data-table" class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th class="text-center">Description</th>
-                                <th>Quantity</th>
-                                <th>M.Unit</th>
-                                <th>Unit Price</th>
-                                <th class="text-right">Line Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template x-for="(product,index) in model.SellingLists" :key="product.ProductId + product.SellingListId+index">
+                        <table id="data-table" class="table table-sm">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <strong x-text="product.ProductName"></strong>
-                                        <small class="d-block" x-text="product.ProductCategoryName"></small>
-                                    </td>
-                                    <td>
-                                        <input x-model.number="product.Length" x-on:input="calculateTotal" type="number" step="0.01" min="0" class="form-control length" placeholder="Length" required>
-                                        <input x-model.number="product.Width" x-on:input="calculateTotal" type="number" step="0.01" min="0" class="form-control width" placeholder="Width" required>
-                                    </td>
-                                    <td class="text-center" x-text="product.Length * product.Width"></td>
-                                    <td>
-                                        <select x-model.number="product.MeasurementUnitId" class="form-control" required>
-                                            <option value="">[ SELECT ]</option>
-                                            <template x-for="item in measurementUnits" :key="item.value">
-                                                <option :selected="+item.value===product.MeasurementUnitId" :value="item.value" x-text="item.label"></option>
-                                            </template>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input x-model.number="product.SellingUnitPrice"
+                                    <th>Product</th>
+                                    <th class="text-center">Description</th>
+                                    <th>Quantity</th>
+                                    <th>M.Unit</th>
+                                    <th>Unit Price</th>
+                                    <th class="text-right">Line Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="(product,index) in model.SellingLists" :key="product.ProductId + product.SellingListId+index">
+                                    <tr>
+                                        <td>
+                                            <strong x-text="product.ProductName"></strong>
+                                            <small class="d-block" x-text="product.ProductCategoryName"></small>
+                                        </td>
+                                        <td>
+                                            <input x-model.number="product.Length" x-on:input="calculateTotal" type="number" step="0.01" min="0" class="form-control length" placeholder="Length" required>
+                                            <input x-model.number="product.Width" x-on:input="calculateTotal" type="number" step="0.01" min="0" class="form-control width" placeholder="Width" required>
+                                        </td>
+                                        <td class="text-center" x-text="product.Length * product.Width"></td>
+                                        <td>
+                                            <select x-model.number="product.MeasurementUnitId" class="form-control" required>
+                                                <option value="">[ SELECT ]</option>
+                                                <template x-for="item in measurementUnits" :key="item.value">
+                                                    <option :selected="+item.value===product.MeasurementUnitId" :value="item.value" x-text="item.label"></option>
+                                                </template>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input x-model.number="product.SellingUnitPrice"
                                                x-on:input="calculateTotal"
                                                type="number" step="0.01"
                                                min="0" class="form-control" required>
-                                    </td>
-                                    <td class="text-right">
-                                        <strong x-text="(product.Length * product.Width) * product.SellingUnitPrice"></strong>/-
-                                    </td>
-                                    <td class="text-center">
-                                        <a x-on:click="removeProduct(product.Id)" class="btn btn-link red-text">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div x-init="calculateTotal()" class="col-xl-3 col-lg-4">
-                <div class="card card-body">
-                    <h6 class="font-weight-bold">
-                        <span>Total Price:</span>
-                        ৳<span x-text="model.SellingTotalPrice"></span>
-                    </h6>
-                    <div class="form-group mt-2 mb-4">
-                        <label>Discount</label>
-                        <input x-model.number="model.SellingDiscountAmount" min="0" :max="model.SellingTotalPrice" step="0.01" type="number" class="form-control">
-                    </div>
-                    <h6 class="font-weight-bold text-success">
-                        <span>Total Payable:</span>
-                        ৳<span x-text="model.SellingTotalPrice - model.SellingDiscountAmount"></span>
-                    </h6>
-                    <h6 class="font-weight-bold mt-2 mb-3">
-                        <span>Total Paid</span>
-                        ৳<span x-text="model.SellingPaidAmount"></span>
-                    </h6>
-                    <h6 class="font-weight-bold text-danger">
-                        <span>Total Due:</span>
-                        ৳<span x-text="(model.SellingTotalPrice - model.SellingDiscountAmount) - model.SellingPaidAmount"></span>
-                    </h6>
-
-                    <div class="form-group mt-3">
-                        <label>Description</label>
-                        <input x-model="model.Description" type="text" class="form-control">
-                    </div>
-                    <div class="mt-3">
-                        <button :disabled="model.SellingTotalPrice <= 0 || loading" class="btn btn-custom-bg w-100" type="submit">Update Bill</button>
+                                        </td>
+                                        <td class="text-right">
+                                            <strong x-text="(product.Length * product.Width) * product.SellingUnitPrice"></strong>/-
+                                        </td>
+                                        <td class="text-center">
+                                            <a x-on:click="removeProduct(product.Id)" class="btn btn-link red-text">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+
+                <div x-init="calculateTotal()" class="col-xl-3 col-lg-4">
+                    <div class="card card-body">
+                        <h6 class="font-weight-bold">
+                            <span>Total Price:</span>
+                            ৳<span x-text="model.SellingTotalPrice"></span>
+                        </h6>
+                        <div class="form-group mt-2 mb-4">
+                            <label>Discount</label>
+                            <input x-model.number="model.SellingDiscountAmount" min="0" :max="model.SellingTotalPrice" step="0.01" type="number" class="form-control">
+                        </div>
+                        <h6 class="font-weight-bold text-success">
+                            <span>Total Payable:</span>
+                            ৳<span x-text="model.SellingTotalPrice - model.SellingDiscountAmount"></span>
+                        </h6>
+                        <h6 class="font-weight-bold mt-2 mb-3">
+                            <span>Total Paid</span>
+                            ৳<span x-text="model.SellingPaidAmount"></span>
+                        </h6>
+                        <h6 class="font-weight-bold text-danger">
+                            <span>Total Due:</span>
+                            ৳<span x-text="(model.SellingTotalPrice - model.SellingDiscountAmount) - model.SellingPaidAmount"></span>
+                        </h6>
+
+                        <div class="form-group mt-3">
+                            <label>Description</label>
+                            <input x-model="model.Description" type="text" class="form-control">
+                        </div>
+                        <div class="mt-3">
+                            <button :disabled="model.SellingTotalPrice <= 0 || loading" class="btn btn-custom-bg w-100" type="submit">Update Bill</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
 
 
-@section Scripts {
-<script>
-    //alpine js code
-    function initData() {
-        return {
-            loading: false,
-            clearInput: "",
-            model: {},
+    @section Scripts {
+    <script>
+        //alpine js code
+        function initData() {
+            return {
+                loading: false,
+                clearInput: "",
+                model: {},
 
-            //dropdown list
-            measurementUnits: [],
+                //dropdown list
+                measurementUnits: [],
 
-            //get dropdown data
-            async getDropdownData() {
-               const data = JSON.parse('@Html.Raw(Json.Serialize(ViewBag.updateData))');
-                          
-               const list = data.SellingLists.map(item => {
-                    return {
-                        ...item,
-                        Id: Math.floor(Math.random() * 100)
+                //get dropdown data
+                async getDropdownData() {
+                    const data = JSON.parse('@Html.Raw(Json.Serialize(ViewBag.updateData))');
+
+                    const list = data.SellingLists.map(item => {
+                        return {
+                            ...item,
+                            Id: Math.floor(Math.random() * 100)
+                        }
+                    });
+
+                    data.SellingLists = list;
+                    this.model = data;
+
+                    //get measurement
+                    const measurementResponse = await fetch("/common/getMeasurementUnit");
+                    const measurement = await measurementResponse.json();
+                    this.measurementUnits = measurement;
+                },
+
+                //add product to list
+                addProductToList(product) {
+                    const data = { ...product, Id: Math.floor(Math.random() * 100), Length: 0, Width: 0, SellingUnitPrice: product.ProductPrice }
+
+                    this.model.SellingLists.push(data);
+                    this.clearInput = "";
+                    this.$refs.findProduct.focus();
+                },
+
+                //find product (autocomplete)
+                findProduct() {
+                    $(this.$refs.findProduct).typeahead({
+                        minLength: 1,
+                        displayText: item => {
+                            return item.ProductName;
+                        },
+                        afterSelect: function (item) {
+                            this.$element[0].value = item.ProductName;
+                        },
+                        source: (request, result) => {
+                            $.ajax({
+                                url: `/common/findProduct`,
+                                data: { prefix: request },
+                                success: response => result(response),
+                                error: err => console.log(err)
+                            });
+                        },
+                        updater: item => {
+                            this.addProductToList(item);
+                            return item;
+                        }
+                    })
+                },
+
+                //remove data
+                removeProduct(id) {
+                    this.model.SellingLists = this.model.SellingLists.filter(item => item.Id !== id);
+
+                    const total = this.calculateTotal();
+
+                    if (!total) {
+                        this.model.SellingDiscountAmount = 0
+                        this.model.SellingPaidAmount = 0
                     }
-                });
+                },
 
-                data.SellingLists = list;
-                this.model= data;
-                console.log(data)
+                //sum total amount
+                calculateTotal() {
+                    const total = this.model.SellingLists.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
+                    this.model.SellingTotalPrice = total;
 
-                //get measurement
-                const measurementResponse = await fetch("/common/getMeasurementUnit");
-                const measurement = await measurementResponse.json();
-                this.measurementUnits = measurement;
-            },
+                    return total || 0;
+                },
 
-            //add product to list
-            addProductToList(product) {
-                const data = { ...product, Id: Math.floor(Math.random() * 100), Length:0, Width:0, SellingUnitPrice: product.ProductPrice }
-             
-                this.model.SellingLists.push(data);
-                this.clearInput = "";
-                this.$refs.findProduct.focus();
-            },
+                //update data
+                async updateData() {
+                    if (!this.model.SellingLists.length)
+                        return $.notify("Add Product!", "error");
 
-            //find product (autocomplete)
-            findProduct() {
-                $(this.$refs.findProduct).typeahead({
-                    minLength: 1,
-                    displayText: item => {
-                        return item.ProductName;
-                    },
-                    afterSelect: function(item) {
-                        this.$element[0].value = item.ProductName;
-                    },
-                    source: (request, result) => {
-                        $.ajax({
-                            url: `/common/findProduct`,
-                            data: { prefix: request },
-                            success: response => result(response),
-                            error: err => console.log(err)
-                        });
-                    },
-                    updater: item => {
-                        this.addProductToList(item);
-                        return item;
+                    try {
+                        const { SellingId, VendorId, SellingDiscountAmount, Description, SellingLists } = this.model
+
+                        const model = {
+                            SellingId,
+                            VendorId,
+                            SellingTotalPrice: this.calculateTotal(),
+                            SellingDiscountAmount,
+                            Description,
+                            SellingLists: SellingLists.map(item => {
+                                return {
+                                    ProductId: item.ProductId,
+                                    MeasurementUnitId: item.MeasurementUnitId,
+                                    SellingQuantity: item.Length * item.Width,
+                                    SellingUnitPrice: item.SellingUnitPrice,
+                                    Length: item.Length,
+                                    Width: item.Width
+                                }
+                            })
+                        }
+
+                        const options = {
+                            method: 'PUT',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(model)
+                        };
+
+                        this.loading = true;
+
+                        const response = await fetch("/Selling/UpdateSelling", options);
+                        const responseData = await response.json();
+
+                        if (responseData.IsSuccess) {
+                            location.href = `/Selling/receipt/${responseData.Data}`;
+                        }
+
+                        $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
+                        this.loading = false;
+
+                    } catch (error) {
+                        console.log(error);
+                        this.loading = false;
                     }
-                })
-            },
-
-            //remove data
-            removeProduct(id) {
-                this.model.SellingLists = this.model.SellingLists.filter(item => item.Id !== id);
-
-                const total = this.calculateTotal();
-
-                if (!total) {
-                    this.model.SellingDiscountAmount = 0
-                    this.model.SellingPaidAmount = 0
                 }
-            },
-
-            //sum total amount
-            calculateTotal() {
-                const total = this.model.SellingLists.map(item => (item.Length * item.Width) * +item.SellingUnitPrice).reduce((prev, current) => prev + current, 0);
-                this.model.SellingTotalPrice = total;
-
-                return total || 0;
-            },
-
-            //update data
-            async updateData() {
-                if (!this.model.SellingLists.length)
-                    return $.notify("Add Product!", "error");
-
-                try {
-                    const {SellingId,VendorId,SellingDiscountAmount,Description,SellingLists}=this.model
-
-                    const model = {
-                        SellingId,
-                        VendorId,
-                        SellingTotalPrice: this.calculateTotal(),
-                        SellingDiscountAmount,
-                        Description,
-                        SellingLists:SellingLists.map(item => {
-                            return {
-                                ProductId: item.ProductId,
-                                MeasurementUnitId: item.MeasurementUnitId,
-                                SellingQuantity: item.Length * item.Width,
-                                SellingUnitPrice: item.SellingUnitPrice,
-                                Length: item.Length,
-                                Width: item.Width
-                            }
-                        })
-                    }
-
-                    const options = {
-                        method: 'PUT',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(model)
-                    };
-
-                    this.loading = true;
-
-                    const response = await fetch("/Selling/UpdateSelling", options);
-                    const responseData = await response.json();
-
-                    if (responseData.IsSuccess) {
-                        location.href = `/Selling/receipt/${responseData.Data}`;
-                    }
-
-                    $.notify(responseData.Message, responseData.IsSuccess ? "success" : "error");
-                    this.loading = false;
-
-                } catch (error) {
-                    console.log(error);
-                    this.loading = false;
-                }
-            }
-        };
-    }
-</script>
+            };
+        }
+    </script>
 }
