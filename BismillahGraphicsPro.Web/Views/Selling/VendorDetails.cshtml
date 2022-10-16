@@ -100,8 +100,7 @@
                      { data: "SellingDiscountAmount" },
                      { data: "SellingPaidAmount" },
                      {
-                         data: "SellingDueAmount",
-                         "render": function(data, type, row) {
+                         data: "SellingDueAmount", "render": function(data, type, row) {
                              return data ? `<a class="blue-text" href="/Selling/payDueSingle/${row.SellingId}">${data}</a>` : data;
                          }
                      }
@@ -138,9 +137,9 @@
                 },
                 customize: function(win) {
                     $(win.document.body).prepend(`
-                            <h4 class="report-title">BILL STATEMENT</h4>
-                    <div class="text-center">${$('#print-header').html()}</div>
-                    <div class="text-center">${$('#print-amount').html()}</div>`);
+                    <h6 class="report-title">BILL STATEMENT</h6>
+                    <div>${$('#print-header').html()}</div>
+                    <div>${$('#print-amount').html()}</div>`);
                 },
                 autoPrint: true
             }],
@@ -152,6 +151,7 @@
             }
          }
     }
+
 
      //alpine js code
      function initData() {

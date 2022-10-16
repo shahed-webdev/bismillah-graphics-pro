@@ -124,6 +124,8 @@
                 dataTable.table = $("#data-table").DataTable({
                     processing: true,
                     serverSide: true,
+                    dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                    buttons: dataTable.button,
                     ajax: {
                         url: "/Selling/GetVendorData",
                         type: "POST"
@@ -168,6 +170,26 @@
             },
             getData: function() {
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            button: {
+                buttons: [{
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: '',
+                    exportOptions: {
+                        columns: [0,1,2,3,4,5,6] //Column value those print
+                    },
+                    customize: function (win) {
+                        $(win.document.body).prepend(`<h3>${$('.page-header').html()}</h3>`);
+                    },
+                    autoPrint: true
+                }],
+                dom:
+                {
+                    button: {
+                        className: 'btn purple-gradient btn-rounded btn-sm my-0'
+                    }
+                }
             }
         }
 

@@ -6,7 +6,7 @@
 
 <div x-data="initData()" x-init="getTotalDue()" class="d-flex justify-content-between align-items-center my-3">
     <h1 class="page-header">Selling Due Report</h1>
-    <h5 class="font-weight-bold mb-0">Total Due: ৳<span x-text="totalDue"></span></h5>
+    <h5 id="total-amount" class="font-weight-bold mb-0">Total Due: ৳<span x-text="totalDue"></span></h5>
 </div>
 
 <div class="card card-body mt-4">
@@ -39,6 +39,8 @@
                 dataTable.table = $("#data-table").DataTable({
                     processing: true,
                     serverSide: true,
+                    dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>><"row"<"col-sm-12"<tr>>><"row"<"col-sm-5"i><"col-sm-7"p>>',
+                    buttons: dataTable.button,
                     ajax: {
                         url: "/Selling/GetVendorData",
                         type: "POST",
@@ -86,6 +88,29 @@
             getData: function() {
                 dataTable.filter.push({ Field: "VendorDue", Value: 0, Operand: dataTable.operand.GreaterThan });
                 dataTable.table ? dataTable.table.ajax.reload() : dataTable.init();
+            },
+            button: {
+                buttons: [{
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: '',
+                    exportOptions: {
+                        //columns: [0, 1, 2, 3, 4, 5, 6] //Column value those print
+                    },
+                    customize: function (win) {
+                        $(win.document.body).prepend(`
+                         <h3>${$('.page-header').html()}</h3>
+                         <h6>${$('#total-amount').html()}</h6>
+                        `);
+                    },
+                    autoPrint: true
+                }],
+                dom:
+                {
+                    button: {
+                        className: 'btn purple-gradient btn-rounded btn-sm my-0'
+                    }
+                }
             }
         }
 
