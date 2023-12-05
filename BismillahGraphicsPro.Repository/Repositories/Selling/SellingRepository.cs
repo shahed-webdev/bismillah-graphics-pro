@@ -116,6 +116,16 @@ public class SellingRepository : Repository, ISellingRepository
 
 
         }
+        //restock the product 
+        foreach (var sellingList in selling.SellingLists)
+        {
+            var product = Db.Products.FirstOrDefault(p => p.ProductId == sellingList.ProductId);
+            if (product == null) continue;
+            
+            product.Stock += sellingList.SellingQuantity;
+
+            Db.Products.Update(product);
+        }
 
         var ids = selling.SellingPaymentRecords.Select(p => p.SellingPaymentRecordId).ToList();
         var logs = Db.AccountLogs.Where(l => l.TableName == AccountLogTableName.SellingPaymentRecord && ids.Contains(l.TableId))
