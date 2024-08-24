@@ -142,6 +142,7 @@ public class BranchRepository : Repository, IBranchRepository
     public List<BranchListModel> BranchList()
     {
         return Db.Branches
+            .Include(b => b.Registrations.Where(r=> r.UserName == b.AdminUserName))
             .ProjectTo<BranchListModel>(_mapper.ConfigurationProvider)
             .ToList();
     }

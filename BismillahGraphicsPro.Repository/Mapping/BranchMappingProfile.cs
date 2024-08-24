@@ -13,7 +13,10 @@ namespace BismillahGraphicsPro.Repository
     {
         public BranchMappingProfile()
         {
-            CreateMap<Branch, BranchListModel>().ReverseMap();
+            CreateMap<Branch, BranchListModel>()
+                .ForMember(d => d.AdminPassword, opt => opt.MapFrom(c => c.Registrations.FirstOrDefault().Ps))
+
+                .ReverseMap();
             CreateMap<Branch, BranchDetailsModel>().ReverseMap();
             CreateMap<Branch, BranchEditModel>().ReverseMap();
         }
