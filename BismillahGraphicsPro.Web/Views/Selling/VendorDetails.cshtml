@@ -41,7 +41,15 @@
                 <li class="list-group-item flex-fill">Total Amount: ৳<strong x-text="model.TotalAmount"></strong></li>
                 <li class="list-group-item flex-fill">Total Paid: ৳<strong x-text="model.VendorPaid"></strong></li>
                 <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.TotalDiscount"></strong></li>
-                <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.VendorDue"></strong></li>
+                <li class="list-group-item flex-fill">
+                    Total Due:
+                    <template x-if="model.VendorDue">
+                        <a href="/selling/DueCollectionMultiple/@ViewBag.Vendor.VendorId" class="blue-text">৳<strong x-text="model.VendorDue"></strong></a>
+                    </template>
+                    <template x-if="!model.VendorDue">
+                        ৳<strong x-text="model.VendorDue"></strong>
+                    </template>
+                </li>
             </ul>
         </div>
 
@@ -101,7 +109,7 @@
                      { data: "SellingPaidAmount" },
                      {
                          data: "SellingDueAmount", "render": function(data, type, row) {
-                             return data ? `<a class="blue-text" href="/Selling/payDueSingle/${row.SellingId}">${data}</a>` : data;
+                                 return data ? `<a class="blue-text" href="/Selling/DueCollectionSingle/${row.SellingId}">${data}</a>` : data;
                          }
                      }
                  ],

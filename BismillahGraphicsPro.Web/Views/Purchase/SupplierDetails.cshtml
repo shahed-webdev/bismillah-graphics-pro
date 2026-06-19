@@ -35,7 +35,15 @@
                 <li class="list-group-item flex-fill">Total Amount: ৳<strong x-text="model.TotalAmount"></strong></li>
                 <li class="list-group-item flex-fill">Total Paid: ৳<strong x-text="model.SupplierPaid"></strong></li>
                 <li class="list-group-item flex-fill">Total Discount: ৳<strong x-text="model.TotalDiscount"></strong></li>
-                <li class="list-group-item flex-fill">Total Due: ৳<strong x-text="model.SupplierDue"></strong></li>
+                <li class="list-group-item flex-fill">
+                    Total Due:
+                    <template x-if="model.SupplierDue">
+                        <a href="/Purchase/PayDueMultiple/@ViewBag.supplier.SupplierId" class="blue-text">৳<strong x-text="model.SupplierDue"></strong></a>
+                    </template>
+                    <template x-if="!model.SupplierDue">
+                        ৳<strong x-text="model.SupplierDue"></strong>
+                    </template>
+                </li>
             </ul>
         </div>
 

@@ -308,6 +308,7 @@ public class SellingRepository : Repository, ISellingRepository
 
         if (vendorModel == null) return new DbResponse<SellingDueViewModel>(false, $"data not found");
 
+        vendorModel.Sellings = vendorModel.Sellings.Where(s => s.SellingDueAmount > 0).ToList();
         vendorModel.Amount = Math.Round(vendorModel.Sellings.Sum(s => s.SellingTotalPrice), 2);
         vendorModel.Due = Math.Round(vendorModel.Sellings.Sum(s => s.SellingDueAmount), 2);
         vendorModel.Paid = Math.Round(vendorModel.Sellings.Sum(s => s.SellingPaidAmount), 2);

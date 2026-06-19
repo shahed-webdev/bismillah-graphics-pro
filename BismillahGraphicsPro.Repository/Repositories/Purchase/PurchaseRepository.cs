@@ -297,6 +297,7 @@ public class PurchaseRepository : Repository, IPurchaseRepository
 
         if (supplierModel == null) return new DbResponse<PurchaseDueViewModel>(false, $"data not found");
 
+        supplierModel.Purchases = supplierModel.Purchases.Where(p => p.PurchaseDueAmount > 0).ToList();
         supplierModel.Amount = Math.Round(supplierModel.Purchases.Sum(s => s.PurchaseTotalPrice), 2);
         supplierModel.Due = Math.Round(supplierModel.Purchases.Sum(s => s.PurchaseDueAmount), 2);
         supplierModel.Paid = Math.Round(supplierModel.Purchases.Sum(s => s.PurchasePaidAmount), 2);
